@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tez Roq Yoz - Professional Typing Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e2b714">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --battle: #ef4444;
+      --online: #22c55e;
+      --offline: #6b7280;
+      --border: #3c3c3c;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #e9ecef;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6c757d;
+      --accent: #e2b714;
+      --border: #e9ecef;
+    }
+
+    [data-theme="blue"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #3b82f6;
+      --accent: #3b82f6;
+      --border: #334155;
+    }
+
+    [data-theme="green"] {
+      --bg-primary: #0f1419;
+      --bg-secondary: #1a2332;
+      --bg-tertiary: #2d3748;
+      --text-primary: #10b981;
+      --accent: #10b981;
+      --border: #2d3748;
+    }
+
+    [data-theme="purple"] {
+      --bg-primary: #1a0f1a;
+      --bg-secondary: #2d1b2d;
+      --bg-tertiary: #4a2d4a;
+      --text-primary: #8b5cf6;
+      --accent: #8b5cf6;
+      --border: #4a2d4a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Block Screen */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .main-layout {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-selector {
+      display: flex;
+      gap: 5px;
+      background: var(--bg-secondary);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .theme-option {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .theme-option.active {
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .theme-dark { background: #e2b714; }
+    .theme-light { background: #1a1a1a; }
+    .theme-blue { background: #3b82f6; }
+    .theme-green { background: #10b981; }
+    .theme-purple { background: #8b5cf6; }
+
+    .sound-toggle, .friends-btn, .notifications-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .sound-toggle:hover, .friends-btn:hover, .notifications-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: var(--error);
+      color: white;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-secondary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-info:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .user-level {
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .user-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--online);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+      padding: 20px 0;
+    }
+
+    .stat-item {
+      text-align: center;
+      min-width: 80px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    #timer.warning {
+      color: var(--error);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Game Settings */
+    .game-settings {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 50px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .setting-group {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .setting-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-width: 80px;
+    }
+
+    .setting-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .setting-option {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .setting-option:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .setting-option.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-color: var(--accent);
+    }
+
+    /* Word Display */
+    .word-display {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 40px;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .word-text {
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.5;
+      letter-spacing: 1px;
+    }
+
+    .word-text.typing {
+      color: var(--accent);
+    }
+
+    /* Input Section */
+    .input-section {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+
+    .word-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 15px 0;
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .word-input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .word-input.correct {
+      border-bottom-color: var(--success);
+      animation: correct 0.3s;
+    }
+
+    .word-input.incorrect {
+      border-bottom-color: var(--error);
+      animation: shake 0.3s;
+    }
+
+    @keyframes correct {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #d4a813;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(226, 183, 20, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+      transform: translateY(-1px);
+    }
+
+    .btn-battle {
+      background: linear-gradient(135deg, var(--battle), #dc2626);
+      color: white;
+      box-shadow: 0 5px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-battle:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-tournament {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+      box-shadow: 0 5px 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-tournament:hover {
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Achievements */
+    .achievements {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .achievement {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .achievement.unlocked {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(226, 183, 20, 0.3);
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 15px rgba(226, 183, 20, 0.3); }
+      to { box-shadow: 0 0 25px rgba(226, 183, 20, 0.5); }
+    }
+
+    .achievement.locked {
+      opacity: 0.3;
+      filter: grayscale(1);
+    }
+
+    .achievement:hover {
+      transform: scale(1.1);
+    }
+
+    .achievement-tooltip {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      border: 1px solid var(--border);
+      z-index: 1000;
+    }
+
+    .achievement:hover .achievement-tooltip {
+      opacity: 1;
+    }
+
+    /* Daily Challenge */
+    .daily-challenge {
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .challenge-title {
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .challenge-description {
+      color: var(--text-secondary);
+      margin-bottom: 15px;
+    }
+
+    .challenge-progress {
+      background: var(--bg-primary);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .challenge-progress-bar {
+      background: var(--accent);
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .challenge-reward {
+      color: var(--success);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer-btn {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .main-layout {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 1025px) and (max-width: 1200px) {
+      .main-content {
+        padding: 80px 20px 40px;
+      }
+      
+      .stats-bar {
+        gap: 30px;
+      }
+      
+      .game-settings {
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo">🎯</div>
+        <div class="logo-text">tezroq yoz</div>
+      </div>
+      
+      <div class="header-controls">
+        <div class="theme-selector">
+          <div class="theme-option theme-dark active" onclick="setTheme('dark')" title="Dark Theme"></div>
+          <div class="theme-option theme-light" onclick="setTheme('light')" title="Light Theme"></div>
+          <div class="theme-option theme-blue" onclick="setTheme('blue')" title="Blue Theme"></div>
+          <div class="theme-option theme-green" onclick="setTheme('green')" title="Green Theme"></div>
+          <div class="theme-option theme-purple" onclick="setTheme('purple')" title="Purple Theme"></div>
+        </div>
+        
+        <button class="sound-toggle" onclick="toggleSound()" title="Tovush">
+          <span id="soundIcon">🔊</span>
+        </button>
+        
+        <button class="friends-btn" onclick="location.href='friends.html'" title="Do'stlar">
+          <span>👥</span>
+        </button>
+        
+        <button class="notifications-btn" onclick="openNotifications()" title="Bildirishnomalar">
+          <span>🔔</span>
+          <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+        </button>
+        
+        <div class="user-info" onclick="location.href='profile.html'">
+          <div class="user-status"></div>
+          <span>👤</span>
+          <span id="userName">Foydalanuvchi</span>
+          <span class="user-level" id="userLevel">LVL 1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat-item" onclick="showDetailedStats('score')">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-value" id="bestScore">0</div>
+          <div class="stat-label">eng yuqori</div>
+        </div>
+        <div class="stat-item" onclick="showDetailedStats('games')">
+          <div class="stat-icon">🎮</div>
+          <div class="stat-value" id="gamesPlayed">0</div>
+          <div class="stat-label">o'yinlar</div>
+        </div>
+        <div class="stat-item" onclick="showDetailedStats('wpm')">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" id="avgWPM">0</div>
+          <div class="stat-label">o'rtacha wpm</div>
+        </div>
+        <div class="stat-item" onclick="showDetailedStats('streak')">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="maxStreak">0</div>
+          <div class="stat-label">eng uzun streak</div>
+        </div>
+      </div>
+
+      <!-- Daily Challenge -->
+      <div class="daily-challenge">
+        <div class="challenge-title">
+          <span>🎯</span>
+          <span>Kunlik Vazifa</span>
+        </div>
+        <div class="challenge-description" id="challengeDescription">30 ta so'zni to'g'ri yozing</div>
+        <div class="challenge-progress">
+          <div class="challenge-progress-bar" id="challengeProgress" style="width: 0%"></div>
+        </div>
+        <div class="challenge-reward">🎁 Mukofot: 50 XP + Maxsus Achievement</div>
+      </div>
+
+      <!-- Game Settings -->
+      <div class="game-settings">
+        <div class="setting-group">
+          <div class="setting-label">⏱ vaqt</div>
+          <div class="setting-options">
+            <div class="setting-option" data-time="15">15s</div>
+            <div class="setting-option active" data-time="30">30s</div>
+            <div class="setting-option" data-time="60">60s</div>
+            <div class="setting-option" data-time="120">120s</div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-label">🎮 qiyinlik</div>
+          <div class="setting-options">
+            <div class="setting-option" data-difficulty="easy">oson</div>
+            <div class="setting-option active" data-difficulty="medium">o'rta</div>
+            <div class="setting-option" data-difficulty="hard">qiyin</div>
+            <div class="setting-option" data-difficulty="expert">ekspert</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Word Display -->
+      <div class="word-display">
+        <div class="word-text" id="wordDisplay">Boshlash uchun tayyor...</div>
+      </div>
+
+      <!-- Input Section -->
+      <div class="input-section">
+        <input type="text" class="word-input" id="wordInput" placeholder="So'zni yozing va Enter bosing..." autocomplete="off" />
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="startGame()">
+          <span>🚀</span>
+          <span>o'yinni boshlash</span>
+        </button>
+        <button class="btn btn-battle" onclick="location.href='battle.html'">
+          <span>⚔️</span>
+          <span>battle mode</span>
+        </button>
+        <button class="btn btn-tournament" onclick="location.href='tournament.html'">
+          <span>🏆</span>
+          <span>tournament</span>
+        </button>
+        <button class="btn btn-secondary" onclick="location.href='reyting.html'">
+          <span>📊</span>
+          <span>reyting</span>
+        </button>
+        <button class="btn btn-secondary" onclick="location.href='learning.html'">
+          <span>🎓</span>
+          <span>o'rganish</span>
+        </button>
+        <button class="btn btn-secondary" onclick="location.href='chat.html'">
+          <span>💬</span>
+          <span>chat</span>
+        </button>
+        <button class="btn btn-secondary" onclick="location.href='feedback.html'">
+          <span>💭</span>
+          <span>fikr bildirish</span>
+        </button>
+      </div>
+
+      <!-- Achievements -->
+      <div class="achievements" id="achievements">
+        <!-- Achievements will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <button class="footer-btn" onclick="openSettings()">
+        <span>⚙️</span>
+        <span>sozlamalar</span>
+      </button>
+      <button class="footer-btn" onclick="deleteAccount()">
+        <span>🗑️</span>
+        <span>akkauntni o'chirish</span>
+      </button>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, runTransaction, onValue, set, get, push, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  // Settings
+  let selectedTime = 30;
+  let selectedDifficulty = 'medium';
+  let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+  let currentTheme = localStorage.getItem('theme') || 'dark';
+
+  // Friends system
+  let friends = [];
+  let notifications = [];
+
+  // Achievement System
+  const achievements = [
+    { id: 'first_game', icon: '🎮', name: 'Birinchi O\'yin', description: 'Birinchi o\'yiningizni o\'ynang', condition: (stats) => stats.gamesPlayed >= 1 },
+    { id: 'speed_demon', icon: '⚡', name: 'Tezlik Shaytoni', description: '40+ WPM ga erishing', condition: (stats) => stats.maxWPM >= 40 },
+    { id: 'streak_master', icon: '🔥', name: 'Streak Ustasi', description: '10+ ketma-ket to\'g\'ri javob', condition: (stats) => stats.maxStreak >= 10 },
+    { id: 'high_scorer', icon: '🏆', name: 'Yuqori Ball', description: '30+ ball to\'plang', condition: (stats) => stats.bestScore >= 30 },
+    { id: 'consistent', icon: '📈', name: 'Barqaror', description: '10+ o\'yin o\'ynang', condition: (stats) => stats.gamesPlayed >= 10 },
+    { id: 'perfectionist', icon: '💎', name: 'Perfeksionist', description: '95%+ aniqlikka erishing', condition: (stats) => stats.accuracy >= 95 },
+    { id: 'marathon', icon: '🏃', name: 'Marafonchi', description: '1 soat o\'ynang', condition: (stats) => stats.totalTime >= 3600 },
+    { id: 'word_master', icon: '📚', name: 'So\'z Ustasi', description: '500+ so\'z yozing', condition: (stats) => stats.wordsTyped >= 500 },
+    { id: 'social_butterfly', icon: '👥', name: 'Ijtimoiy', description: '5+ do\'st qo\'shing', condition: (stats) => stats.friendsCount >= 5 },
+    { id: 'battle_warrior', icon: '⚔️', name: 'Jang Jangchisi', description: '10+ battle o\'ynang', condition: (stats) => stats.battlesPlayed >= 10 }
+  ];
+
+  // Daily challenges
+  const dailyChallenges = [
+    { id: 'daily_words', description: '30 ta so\'zni to\'g\'ri yozing', target: 30, reward: 50 },
+    { id: 'daily_speed', description: '35+ WPM ga erishing', target: 35, reward: 75 },
+    { id: 'daily_accuracy', description: '90%+ aniqlik bilan o\'ynang', target: 90, reward: 60 },
+    { id: 'daily_streak', description: '15+ ketma-ket to\'g\'ri javob', target: 15, reward: 80 },
+    { id: 'daily_games', description: '5 ta o\'yin o\'ynang', target: 5, reward: 40 }
+  ];
+
+  // Sound System
+  const sounds = {
+    click: () => playSound(800, 100, 'square'),
+    success: () => playSound(1000, 200, 'sine'),
+    error: () => playSound(300, 300, 'sawtooth'),
+    notification: () => playSound(600, 400, 'triangle'),
+    achievement: () => playSound([523, 659, 784], 500, 'sine')
+  };
+
+  function playSound(frequency, duration, type = 'sine') {
+    if (!soundEnabled) return;
+    
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      if (Array.isArray(frequency)) {
+        // Play chord for achievements
+        frequency.forEach((freq, index) => {
+          setTimeout(() => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = freq;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+          }, index * 100);
+        });
+      } else {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration / 1000);
+      }
+    } catch (e) {
+      console.log('Sound not supported');
+    }
+  }
+
+  // Theme System
+  window.setTheme = function(theme) {
+    currentTheme = theme;
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    
+    // Update active theme selector
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.classList.remove('active');
+    });
+    document.querySelector(`.theme-${theme}`).classList.add('active');
+    
+    sounds.click();
+  }
+
+  // Sound toggle
+  window.toggleSound = function() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('soundEnabled', soundEnabled);
+    document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+    
+    if (soundEnabled) sounds.click();
+  }
+
+  // Settings handlers
+  document.querySelectorAll('[data-time]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-time]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedTime = parseInt(btn.dataset.time);
+      sounds.click();
+    });
+  });
+
+  document.querySelectorAll('[data-difficulty]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-difficulty]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedDifficulty = btn.dataset.difficulty;
+      sounds.click();
+    });
+  });
+
+  // Load user stats
+  async function loadUserStats() {
+    const userRef = ref(db, "users/" + user.phone);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      updateStatsDisplay(userData);
+      updateAchievements(userData);
+      updateUserLevel(userData);
+      updateDailyChallenge(userData);
+    }
+  }
+
+  function updateStatsDisplay(userData) {
+    document.getElementById('bestScore').textContent = userData.score || 0;
+    document.getElementById('gamesPlayed').textContent = userData.gamesPlayed || 0;
+    document.getElementById('avgWPM').textContent = Math.round(userData.avgWPM || 0);
+    document.getElementById('maxStreak').textContent = userData.maxStreak || 0;
+  }
+
+  function updateUserLevel(userData) {
+    const totalXP = (userData.score || 0) + (userData.gamesPlayed || 0) * 5;
+    const level = Math.floor(totalXP / 100) + 1;
+    document.getElementById('userLevel').textContent = `LVL ${level}`;
+  }
+
+  function updateAchievements(userData) {
+    const container = document.getElementById('achievements');
+    container.innerHTML = '';
+    
+    achievements.forEach(achievement => {
+      const div = document.createElement('div');
+      div.className = 'achievement';
+      
+      const isUnlocked = achievement.condition(userData);
+      div.classList.add(isUnlocked ? 'unlocked' : 'locked');
+      
+      div.innerHTML = `
+        ${achievement.icon}
+        <div class="achievement-tooltip">${achievement.name}: ${achievement.description}</div>
+      `;
+      
+      container.appendChild(div);
+    });
+  }
+
+  function updateDailyChallenge(userData) {
+    const today = new Date().toDateString();
+    const lastChallenge = userData.lastDailyChallenge;
+    
+    if (lastChallenge !== today) {
+      // New day, reset challenge
+      const randomChallenge = dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+      document.getElementById('challengeDescription').textContent = randomChallenge.description;
+      document.getElementById('challengeProgress').style.width = '0%';
+    } else {
+      // Continue existing challenge
+      const progress = userData.dailyChallengeProgress || 0;
+      const target = userData.dailyChallengeTarget || 30;
+      const percentage = Math.min((progress / target) * 100, 100);
+      document.getElementById('challengeProgress').style.width = percentage + '%';
+    }
+  }
+
+  // Load notifications
+  async function loadNotifications() {
+    try {
+      const notificationsRef = ref(db, `notifications/${user.phone}`);
+      onValue(notificationsRef, (snapshot) => {
+        notifications = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          notifications = Object.entries(data).map(([id, notif]) => ({
+            id,
+            ...notif
+          })).sort((a, b) => b.timestamp - a.timestamp);
+        }
+        updateNotificationBadge();
+      });
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  }
+
+  // Update notification badge
+  function updateNotificationBadge() {
+    const badge = document.getElementById('notificationBadge');
+    const unreadCount = notifications.filter(n => !n.read).length;
+    
+    if (unreadCount > 0) {
+      badge.style.display = 'flex';
+      badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // Detailed stats
+  window.showDetailedStats = function(type) {
+    sounds.click();
+    
+    // Create detailed stats modal
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-title">📊 ${type.toUpperCase()} Statistikasi</div>
+        <div id="detailedStatsContent">Yuklanmoqda...</div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Yopish</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Load detailed stats
+    loadDetailedStats(type);
+  }
+
+  async function loadDetailedStats(type) {
+    const userRef = ref(db, "users/" + user.phone);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      const content = document.getElementById('detailedStatsContent');
+      
+      let statsHTML = '';
+      
+      switch(type) {
+        case 'score':
+          statsHTML = `
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${userData.score || 0}</div>
+                <div style="color: var(--text-secondary);">Eng Yuqori Ball</div>
+              </div>
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${Math.round((userData.score || 0) / (userData.gamesPlayed || 1))}</div>
+                <div style="color: var(--text-secondary);">O'rtacha Ball</div>
+              </div>
+            </div>
+            <div style="color: var(--text-secondary); line-height: 1.6;">
+              <p><strong>Ball tizimi:</strong> Har bir to'g'ri so'z uchun 1 ball</p>
+              <p><strong>Bonus:</strong> 3+ streak uchun qo'shimcha vaqt</p>
+              <p><strong>Qiyinlik koeffitsienti:</strong> Easy (1x), Medium (1.2x), Hard (1.5x), Expert (2x)</p>
+            </div>
+          `;
+          break;
+          
+        case 'games':
+          statsHTML = `
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${userData.gamesPlayed || 0}</div>
+                <div style="color: var(--text-secondary);">Jami O'yinlar</div>
+              </div>
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${Math.floor((userData.totalTime || 0) / 60)}m</div>
+                <div style="color: var(--text-secondary);">Jami Vaqt</div>
+              </div>
+            </div>
+            <div style="color: var(--text-secondary); line-height: 1.6;">
+              <p><strong>O'yin statistikasi:</strong></p>
+              <p>• O'rtacha o'yin davomiyligi: ${Math.round((userData.totalTime || 0) / (userData.gamesPlayed || 1))}s</p>
+              <p>• Eng ko'p o'ynagan qiyinlik: ${userData.difficulty || 'Medium'}</p>
+              <p>• Oxirgi o'yin: ${userData.timestamp ? new Date(userData.timestamp).toLocaleDateString('uz-UZ') : 'Noma\'lum'}</p>
+            </div>
+          `;
+          break;
+          
+        case 'wpm':
+          statsHTML = `
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${Math.round(userData.avgWPM || 0)}</div>
+                <div style="color: var(--text-secondary);">O'rtacha WPM</div>
+              </div>
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${Math.round(userData.maxWPM || 0)}</div>
+                <div style="color: var(--text-secondary);">Eng Yuqori WPM</div>
+              </div>
+            </div>
+            <div style="color: var(--text-secondary); line-height: 1.6;">
+              <p><strong>WPM (Words Per Minute):</strong></p>
+              <p>• Beginner: 15-25 WPM</p>
+              <p>• Intermediate: 25-40 WPM</p>
+              <p>• Advanced: 40-60 WPM</p>
+              <p>• Expert: 60+ WPM</p>
+              <p>• Professional: 80+ WPM</p>
+            </div>
+          `;
+          break;
+          
+        case 'streak':
+          statsHTML = `
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${userData.maxStreak || 0}</div>
+                <div style="color: var(--text-secondary);">Eng Uzun Streak</div>
+              </div>
+              <div style="background: var(--bg-primary); padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; color: var(--accent); font-weight: 700;">${Math.round((userData.maxStreak || 0) / (userData.gamesPlayed || 1))}</div>
+                <div style="color: var(--text-secondary);">O'rtacha Streak</div>
+              </div>
+            </div>
+            <div style="color: var(--text-secondary); line-height: 1.6;">
+              <p><strong>Streak tizimi:</strong></p>
+              <p>• Ketma-ket to'g'ri javoblar soni</p>
+              <p>• 3+ streak: +2 sekund bonus vaqt</p>
+              <p>• 5+ streak: Tezlik bonusi</p>
+              <p>• 10+ streak: Achievement ochiladi</p>
+            </div>
+          `;
+          break;
+      }
+      
+      content.innerHTML = statsHTML;
+    }
+  }
+
+  // Game Functions
+  window.startGame = function() {
+    localStorage.setItem("sozTime", selectedTime);
+    localStorage.setItem("sozDifficulty", selectedDifficulty);
+    
+    const btn = document.querySelector('.btn-primary');
+    btn.innerHTML = '<div class="loading"></div><span>yuklanmoqda...</span>';
+    btn.style.pointerEvents = 'none';
+    
+    sounds.click();
+    
+    setTimeout(() => {
+      window.location.href = "oyin.html";
+    }, 1000);
+  }
+
+  // Other functions
+  window.openNotifications = function() {
+    sounds.click();
+    window.location.href = 'friends.html';
+  }
+
+  window.openSettings = function() {
+    sounds.click();
+    showNotification('⚙️ Sozlamalar tez orada qo\'shiladi!', 'success');
+  }
+
+  window.deleteAccount = function() {
+    if (confirm("Haqiqatan ham akkauntingizni o'chirmoqchimisiz?")) {
+      localStorage.removeItem("sozUser");
+      sounds.success();
+      setTimeout(()=> {
+        window.location.href = "register.html";
+      }, 500);
+    }
+  }
+
+  // Notification System
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      z-index: 1001;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+      animation: slideDown 0.3s ease;
+      max-width: 400px;
+    `;
+    
+    if (type === 'success') {
+      notification.style.borderColor = 'var(--success)';
+      notification.style.color = 'var(--success)';
+    } else if (type === 'error') {
+      notification.style.borderColor = 'var(--error)';
+      notification.style.color = 'var(--error)';
+    }
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  // Initialize
+  document.body.setAttribute('data-theme', currentTheme);
+  document.querySelector(`.theme-${currentTheme}`).classList.add('active');
+  document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+  document.getElementById("userName").textContent = user.name;
+
+  // Load everything
+  loadUserStats();
+  loadNotifications();
+
+  // Add click sounds to buttons
+  document.querySelectorAll('.btn, .theme-option, .sound-toggle, .friends-btn, .notifications-btn, .setting-option, .footer-btn, .user-info').forEach(btn => {
+    btn.addEventListener('click', () => sounds.click());
+  });
+</script>
+<script>
+  // O'ng tugma blok
+  window.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
+  // Kalitlar kombinatsiyasi bloklari
+  window.addEventListener("keydown", function (e) {
+    // F12
+    if (e.keyCode === 123) e.preventDefault();
+    // Ctrl+Shift+I, Ctrl+Shift+C, Ctrl+Shift+J
+    if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) {
+      e.preventDefault();
+    }
+    // Ctrl+U, Ctrl+C, Ctrl+S
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 67 || e.keyCode === 83)) {
+      e.preventDefault();
+    }
+  });
+
+  // Tanlash, nusxalash, kesish bloklari
+  ["copy", "cut", "paste", "selectstart", "dragstart", "contextmenu"].forEach(evt => {
+    document.addEventListener(evt, function (e) {
+      e.preventDefault();
+    });
+  });
+
+  // Console hijack (console.log, .warn, .error bloklanadi)
+  const disabledConsole = ["log", "warn", "error", "info", "debug"];
+  for (const method of disabledConsole) {
+    console[method] = function () {};
+  }
+
+  // DevTools ochilganini aniqlash — redirect yoki bloklash
+  let devtoolsOpen = false;
+  const threshold = 160;
+  setInterval(function () {
+    const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+    const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+    if (widthThreshold || heightThreshold) {
+      if (!devtoolsOpen) {
+        devtoolsOpen = true;
+        // Redirect yoki o'chirish
+        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:30vh;'>⚠️ Xatolik: Ruxsat etilmagan harakat</h1>";
+        // yoki:
+        // window.location.href = "https://google.com";
+      }
+    } else {
+      devtoolsOpen = false;
+    }
+  }, 500);
+</script>
+
+</body>
+</html>

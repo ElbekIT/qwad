@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ro'yxatdan o'tish - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .register-layout {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .register-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 60px 50px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    h2 {
+      color: var(--text-primary);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 50px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .form-group {
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .form-group:last-of-type {
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 18px 20px;
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(226, 183, 20, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 18px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover {
+      background: #d4a813;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(226, 183, 20, 0.3);
+    }
+
+    .features {
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 1px solid var(--bg-tertiary);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+      font-weight: 400;
+    }
+
+    .feature-icon {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .notification {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-weight: 500;
+      z-index: 1000;
+      border: 1px solid var(--bg-tertiary);
+      font-size: 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .notification.error {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .register-layout {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Register Layout -->
+  <div class="register-layout">
+    <div class="register-container">
+      <div class="logo">🎯</div>
+      <h2>Xush Kelibsiz!</h2>
+      <p class="subtitle">Professional o'zbek tili typing game'ga qo'shiling va mahoratingizni oshiring!</p>
+      
+      <form onsubmit="register(event)">
+        <div class="form-group">
+          <label for="name">👤 Ism</label>
+          <input type="text" id="name" placeholder="Ismingizni kiriting" required minlength="2" maxlength="20" />
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">📱 Telefon</label>
+          <input type="tel" id="phone" placeholder="Telefon raqamingiz" required pattern="[0-9+\-\s]+" />
+        </div>
+        
+        <button type="submit" class="btn" id="registerBtn">
+          <span>🚀</span>
+          <span>Boshlash</span>
+        </button>
+      </form>
+
+      <div class="features">
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <span>Professional typing experience</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🏆</span>
+          <span>Global reyting va achievements</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🎮</span>
+          <span>Turli qiyinlik darajalari</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">📊</span>
+          <span>Batafsil statistika va tahlil</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem("sozUser")) {
+      window.location.href = "index.html";
+    }
+
+    function register(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const btn = document.getElementById("registerBtn");
+
+      if (!name || !phone) {
+        showError("Iltimos, barcha maydonlarni to'ldiring.");
+        return;
+      }
+
+      if (name.length < 2) {
+        showError("Ism kamida 2 ta harfdan iborat bo'lishi kerak.");
+        return;
+      }
+
+      if (phone.length < 9) {
+        showError("Telefon raqami noto'g'ri formatda.");
+        return;
+      }
+
+      btn.innerHTML = '<div class="loading"></div><span>Yuklanmoqda...</span>';
+      btn.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        const user = { name, phone, registeredAt: Date.now() };
+        localStorage.setItem("sozUser", JSON.stringify(user));
+
+        btn.innerHTML = '<span>✅</span><span>Muvaffaqiyatli!</span>';
+        btn.style.background = 'var(--success)';
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      }, 1500);
+    }
+
+    function showError(message) {
+      const error = document.createElement('div');
+      error.className = 'notification error';
+      error.textContent = message;
+      document.body.appendChild(error);
+      
+      setTimeout(() => error.remove(), 3000);
+    }
+  </script>
+
+</body>
+</html>

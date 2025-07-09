@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Room - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --battle: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .room-layout {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      grid-template-rows: 60px 1fr;
+      grid-template-areas: 
+        "header header header"
+        "players game chat";
+    }
+
+    /* Header */
+    .header {
+      grid-area: header;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .room-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .room-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .room-code {
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .room-status {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    .leave-btn {
+      background: var(--error);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .leave-btn:hover {
+      background: #dc2626;
+    }
+
+    /* Players Panel */
+    .players-panel {
+      grid-area: players;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--bg-tertiary);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .player-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .player-item.host {
+      border-color: var(--accent);
+    }
+
+    .player-item.ready {
+      border-color: var(--success);
+    }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .player-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--bg-primary);
+    }
+
+    .player-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .player-badge {
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .player-badge.host {
+      background: var(--accent);
+    }
+
+    .player-badge.ready {
+      background: var(--success);
+    }
+
+    .player-stats {
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .player-progress {
+      width: 100%;
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .player-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Game Area */
+    .game-area {
+      grid-area: game;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      position: relative;
+    }
+
+    .game-stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .word-display {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 40px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .word-text {
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .input-section {
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 40px;
+    }
+
+    .word-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 1.8rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 15px 0;
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .word-input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .word-input.correct {
+      border-bottom-color: var(--success);
+      animation: correct 0.3s;
+    }
+
+    .word-input.incorrect {
+      border-bottom-color: var(--error);
+      animation: shake 0.3s;
+    }
+
+    @keyframes correct {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .ready-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .ready-btn {
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .ready-btn:hover {
+      background: #22c55e;
+    }
+
+    .ready-btn.ready {
+      background: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    .start-btn {
+      background: var(--battle);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .start-btn:hover {
+      background: #dc2626;
+    }
+
+    .start-btn:disabled {
+      background: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    /* Chat Panel */
+    .chat-panel {
+      grid-area: chat;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--bg-tertiary);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      padding: 20px 20px 0 20px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-message {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .chat-message.system {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-style: italic;
+      text-align: center;
+    }
+
+    .message-author {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-bottom: 3px;
+    }
+
+    .message-text {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .message-time {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      margin-top: 3px;
+    }
+
+    .chat-input-section {
+      padding: 20px;
+      border-top: 1px solid var(--bg-tertiary);
+    }
+
+    .chat-input {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 6px;
+      color: var(--text-primary);
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Countdown */
+    .countdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8rem;
+      font-weight: 700;
+      color: var(--battle);
+      z-index: 100;
+      animation: countdown 1s ease-in-out;
+    }
+
+    @keyframes countdown {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .room-layout {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Room Layout -->
+  <div class="room-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="room-info">
+        <div class="room-name" id="roomName">Loading...</div>
+        <div class="room-code" id="roomCode" onclick="copyRoomCode()" title="Click to copy">ABC123</div>
+      </div>
+      
+      <div class="room-status">
+        <div class="status-indicator">
+          <div class="status-dot"></div>
+          <span id="roomStatus">Waiting</span>
+        </div>
+        <button class="leave-btn" onclick="leaveRoom()">
+          <span>🚪</span>
+          <span>Leave room</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Players Panel -->
+    <div class="players-panel">
+      <div class="panel-title">
+        <span>👥</span>
+        <span>Players (<span id="playerCount">0</span>/<span id="maxPlayers">0</span>)</span>
+      </div>
+      <div id="playersList">
+        <!-- Players will be populated here -->
+      </div>
+    </div>
+
+    <!-- Game Area -->
+    <div class="game-area">
+      <!-- Waiting State -->
+      <div id="waitingState">
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-label">⏱ time</div>
+            <div class="stat-value" id="gameTime">30</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">🎮 difficulty</div>
+            <div class="stat-value" id="gameDifficulty">medium</div>
+          </div>
+        </div>
+
+        <div class="ready-section">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 10px;">⚔️ Battle Ready?</div>
+            <div style="color: var(--text-secondary);">Tayyor bo'lganingizda Ready tugmasini bosing</div>
+          </div>
+          
+          <button class="ready-btn" id="readyBtn" onclick="toggleReady()">
+            <span>✅</span>
+            <span>Ready</span>
+          </button>
+          
+          <div id="hostControls" style="display: none;">
+            <button class="start-btn" id="startBtn" onclick="startGame()" disabled>
+              <span>🚀</span>
+              <span>Start Battle</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game State -->
+      <div id="gameState" style="display: none;">
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-label">⏱ time</div>
+            <div class="stat-value" id="timer">30</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">🎯 score</div>
+            <div class="stat-value" id="score">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">⚡ wpm</div>
+            <div class="stat-value" id="wpm">0</div>
+          </div>
+        </div>
+
+        <div class="word-display">
+          <div class="word-text" id="wordDisplay">Ready...</div>
+        </div>
+
+        <div class="input-section">
+          <input type="text" class="word-input" id="wordInput" placeholder="Type the word..." autocomplete="off" disabled />
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="panel-title">
+          <span>💬</span>
+          <span>Chat</span>
+        </div>
+      </div>
+      
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-message system">
+          <div class="message-text">Welcome to the battle room! 🔥</div>
+        </div>
+      </div>
+      
+      <div class="chat-input-section">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Send a message (press / to focus)" maxlength="200" />
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, push, get, remove, serverTimestamp, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  const roomCode = localStorage.getItem('battleRoomCode');
+
+  if (!user || !roomCode) {
+    window.location.href = 'battle.html';
+  }
+
+  let roomData = null;
+  let isHost = false;
+  let isReady = false;
+  let gameActive = false;
+  let currentWord = '';
+  let gameStartTime = 0;
+  let wordsTyped = 0;
+  let correctWords = 0;
+
+  // Word lists
+  const wordLists = {
+    easy: ["olma", "nok", "uzum", "kitob", "qalam", "stol", "uy", "oy", "suv", "choy"],
+    medium: ["telefon", "kompyuter", "maktab", "daraxt", "mashina", "dastur", "futbol", "musiqa"],
+    hard: ["universitet", "matematika", "texnologiya", "demokratiya", "eksperiment", "infrastruktura"],
+    expert: ["konstitutsiyaviy", "demokratlashtirish", "sistematizatsiya", "professionalizatsiya"]
+  };
+
+  // Initialize room
+  async function initializeRoom() {
+    const roomRef = ref(db, `battleRooms/${roomCode}`);
+    const snapshot = await get(roomRef);
+    
+    if (!snapshot.exists()) {
+      alert('Xona topilmadi!');
+      window.location.href = 'battle.html';
+      return;
+    }
+
+    roomData = snapshot.val();
+    isHost = roomData.host === user.phone;
+    
+    // Show host controls
+    if (isHost) {
+      document.getElementById('hostControls').style.display = 'block';
+    }
+
+    // Listen to room changes
+    onValue(roomRef, (snapshot) => {
+      if (snapshot.exists()) {
+        roomData = snapshot.val();
+        updateRoomDisplay();
+        updatePlayersList();
+        checkStartConditions();
+      } else {
+        alert('Xona o\'chirildi!');
+        window.location.href = 'battle.html';
+      }
+    });
+
+    // Listen to chat messages
+    const chatRef = ref(db, `battleRooms/${roomCode}/chat`);
+    onValue(chatRef, (snapshot) => {
+      if (snapshot.exists()) {
+        updateChatMessages(snapshot.val());
+      }
+    });
+
+    // Listen to game state
+    const gameRef = ref(db, `battleRooms/${roomCode}/gameState`);
+    onValue(gameRef, (snapshot) => {
+      if (snapshot.exists()) {
+        handleGameStateChange(snapshot.val());
+      }
+    });
+  }
+
+  // Update room display
+  function updateRoomDisplay() {
+    document.getElementById('roomName').textContent = roomData.name;
+    document.getElementById('roomCode').textContent = roomData.code;
+    document.getElementById('roomStatus').textContent = roomData.status === 'waiting' ? 'Waiting' : 
+                                                       roomData.status === 'playing' ? 'Playing' : 'Finished';
+    document.getElementById('playerCount').textContent = roomData.currentPlayers;
+    document.getElementById('maxPlayers').textContent = roomData.maxPlayers;
+    document.getElementById('gameTime').textContent = roomData.gameSettings.time;
+    document.getElementById('gameDifficulty').textContent = roomData.gameSettings.difficulty;
+  }
+
+  // Update players list
+  function updatePlayersList() {
+    const playersList = document.getElementById('playersList');
+    const players = Object.values(roomData.players || {});
+    
+    playersList.innerHTML = players.map(player => {
+      const isCurrentUser = player.phone === user.phone;
+      const badges = [];
+      
+      if (player.phone === roomData.host) badges.push('<span class="player-badge host">HOST</span>');
+      if (player.ready) badges.push('<span class="player-badge ready">READY</span>');
+      
+      return `
+        <div class="player-item ${player.phone === roomData.host ? 'host' : ''} ${player.ready ? 'ready' : ''}">
+          <div class="player-header">
+            <div class="player-avatar">${player.name.charAt(0).toUpperCase()}</div>
+            <div class="player-name">${player.name}${isCurrentUser ? ' (You)' : ''}</div>
+            ${badges.join('')}
+          </div>
+          <div class="player-stats">
+            <span>🎯 ${player.score || 0}</span>
+            <span>⚡ ${player.wpm || 0} WPM</span>
+          </div>
+          <div class="player-progress">
+            <div class="player-progress-bar" style="width: ${player.progress || 0}%"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Toggle ready state
+  window.toggleReady = async function() {
+    isReady = !isReady;
+    const readyBtn = document.getElementById('readyBtn');
+    
+    if (isReady) {
+      readyBtn.innerHTML = '<span>⏳</span><span>Not Ready</span>';
+      readyBtn.classList.add('ready');
+    } else {
+      readyBtn.innerHTML = '<span>✅</span><span>Ready</span>';
+      readyBtn.classList.remove('ready');
+    }
+
+    await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/ready`), isReady);
+  }
+
+  // Check start conditions
+  function checkStartConditions() {
+    if (!isHost) return;
+    
+    const players = Object.values(roomData.players || {});
+    const allReady = players.length >= 2 && players.every(p => p.ready);
+    
+    document.getElementById('startBtn').disabled = !allReady;
+  }
+
+  // Start game
+  window.startGame = async function() {
+    if (!isHost) return;
+    
+    const gameState = {
+      status: 'countdown',
+      currentWord: '',
+      timeLeft: roomData.gameSettings.time,
+      startTime: Date.now() + 4000, // 3 second countdown + 1 second buffer
+      words: generateGameWords()
+    };
+
+    await set(ref(db, `battleRooms/${roomCode}/status`), 'playing');
+    await set(ref(db, `battleRooms/${roomCode}/gameState`), gameState);
+    
+    // Send system message
+    await sendSystemMessage('🚀 Battle started! Get ready...');
+  }
+
+  // Generate game words
+  function generateGameWords() {
+    const difficulty = roomData.gameSettings.difficulty;
+    const wordList = wordLists[difficulty] || wordLists.medium;
+    const words = [];
+    
+    for (let i = 0; i < 50; i++) {
+      words.push(wordList[Math.floor(Math.random() * wordList.length)]);
+    }
+    
+    return words;
+  }
+
+  // Handle game state changes
+  function handleGameStateChange(gameState) {
+    if (gameState.status === 'countdown') {
+      startCountdown();
+    } else if (gameState.status === 'playing') {
+      startBattleGame(gameState);
+    } else if (gameState.status === 'finished') {
+      endBattleGame(gameState);
+    }
+  }
+
+  // Start countdown
+  function startCountdown() {
+    document.getElementById('waitingState').style.display = 'none';
+    document.getElementById('gameState').style.display = 'block';
+    
+    let count = 3;
+    const countdownEl = document.createElement('div');
+    countdownEl.className = 'countdown';
+    document.querySelector('.game-area').appendChild(countdownEl);
+    
+    const countdownInterval = setInterval(() => {
+      countdownEl.textContent = count;
+      
+      if (count === 0) {
+        countdownEl.textContent = 'GO!';
+        clearInterval(countdownInterval);
+        
+        setTimeout(() => {
+          countdownEl.remove();
+          if (isHost) {
+            set(ref(db, `battleRooms/${roomCode}/gameState/status`), 'playing');
+          }
+        }, 1000);
+      }
+      
+      count--;
+    }, 1000);
+  }
+
+  // Start battle game
+  function startBattleGame(gameState) {
+    gameActive = true;
+    gameStartTime = Date.now();
+    wordsTyped = 0;
+    correctWords = 0;
+    
+    const wordInput = document.getElementById('wordInput');
+    wordInput.disabled = false;
+    wordInput.focus();
+    
+    // Set first word
+    currentWord = gameState.words[0];
+    document.getElementById('wordDisplay').textContent = currentWord;
+    
+    // Start timer
+    let timeLeft = gameState.timeLeft;
+    document.getElementById('timer').textContent = timeLeft;
+    
+    const timerInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').textContent = timeLeft;
+      
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        if (isHost) {
+          set(ref(db, `battleRooms/${roomCode}/gameState/status`), 'finished');
+        }
+      }
+    }, 1000);
+    
+    // Handle input
+    wordInput.addEventListener('keydown', handleWordInput);
+  }
+
+  // Handle word input
+  function handleWordInput(e) {
+    if (e.key === 'Enter' && gameActive) {
+      const input = e.target.value.trim().toLowerCase();
+      const correct = input === currentWord.toLowerCase();
+      
+      wordsTyped++;
+      if (correct) {
+        correctWords++;
+        e.target.classList.add('correct');
+        
+        // Update score and progress
+        const score = correctWords;
+        const wpm = Math.round((correctWords / ((Date.now() - gameStartTime) / 1000)) * 60);
+        const progress = (correctWords / 50) * 100;
+        
+        document.getElementById('score').textContent = score;
+        document.getElementById('wpm').textContent = wpm;
+        
+        // Update player data
+        set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/score`), score);
+        set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/wpm`), wpm);
+        set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/progress`), progress);
+        
+        // Next word
+        const gameState = roomData.gameState;
+        if (gameState && gameState.words && correctWords < gameState.words.length) {
+          currentWord = gameState.words[correctWords];
+          document.getElementById('wordDisplay').textContent = currentWord;
+        }
+      } else {
+        e.target.classList.add('incorrect');
+      }
+      
+      setTimeout(() => {
+        e.target.classList.remove('correct', 'incorrect');
+      }, 300);
+      
+      e.target.value = '';
+    }
+  }
+
+  // End battle game
+  function endBattleGame(gameState) {
+    gameActive = false;
+    document.getElementById('wordInput').disabled = true;
+    
+    // Show results
+    setTimeout(() => {
+      const players = Object.values(roomData.players || {});
+      const winner = players.reduce((prev, current) => 
+        (prev.score > current.score) ? prev : current
+      );
+      
+      sendSystemMessage(`🏆 Battle finished! Winner: ${winner.name} with ${winner.score} points!`);
+    }, 1000);
+  }
+
+  // Chat functions
+  document.getElementById('chatInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      sendChatMessage();
+    }
+  });
+
+  // Focus chat on '/' key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !e.target.matches('input')) {
+      e.preventDefault();
+      document.getElementById('chatInput').focus();
+    }
+  });
+
+  async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    const chatData = {
+      author: user.name,
+      authorPhone: user.phone,
+      message: message,
+      timestamp: Date.now(),
+      type: 'user'
+    };
+    
+    await push(ref(db, `battleRooms/${roomCode}/chat`), chatData);
+    input.value = '';
+  }
+
+  async function sendSystemMessage(message) {
+    const chatData = {
+      message: message,
+      timestamp: Date.now(),
+      type: 'system'
+    };
+    
+    await push(ref(db, `battleRooms/${roomCode}/chat`), chatData);
+  }
+
+  function updateChatMessages(chatData) {
+    const chatMessages = document.getElementById('chatMessages');
+    const messages = Object.values(chatData || {}).sort((a, b) => a.timestamp - b.timestamp);
+    
+    chatMessages.innerHTML = messages.map(msg => {
+      if (msg.type === 'system') {
+        return `
+          <div class="chat-message system">
+            <div class="message-text">${msg.message}</div>
+          </div>
+        `;
+      } else {
+        const time = new Date(msg.timestamp).toLocaleTimeString('uz-UZ', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        
+        return `
+          <div class="chat-message">
+            <div class="message-author">${msg.author}</div>
+            <div class="message-text">${msg.message}</div>
+            <div class="message-time">${time}</div>
+          </div>
+        `;
+      }
+    }).join('');
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Copy room code
+  window.copyRoomCode = function() {
+    navigator.clipboard.writeText(roomCode).then(() => {
+      // Show notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--success);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        z-index: 1000;
+        animation: slideDown 0.3s ease;
+      `;
+      notification.textContent = '📋 Room code copied!';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.remove(), 2000);
+    });
+  }
+
+  // Leave room
+  window.leaveRoom = async function() {
+    if (confirm('Haqiqatan ham xonani tark etmoqchimisiz?')) {
+      // Remove player from room
+      await remove(ref(db, `battleRooms/${roomCode}/players/${user.phone}`));
+      
+      // Update player count
+      if (roomData.currentPlayers > 1) {
+        await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), roomData.currentPlayers - 1);
+      } else {
+        // Delete room if last player
+        await remove(ref(db, `battleRooms/${roomCode}`));
+      }
+      
+      localStorage.removeItem('battleRoomCode');
+      window.location.href = 'battle.html';
+    }
+  }
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    if (roomCode && user) {
+      // This will run when user closes tab/browser
+      navigator.sendBeacon('/api/leave-room', JSON.stringify({
+        roomCode: roomCode,
+        userPhone: user.phone
+      }));
+    }
+  });
+
+  // Initialize
+  initializeRoom();
+  sendSystemMessage(`👋 ${user.name} joined the battle!`);
+</script>
+<script>
+  
+</script>
+</body>
+</html>

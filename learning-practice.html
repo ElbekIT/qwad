@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎓 Learning Practice - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border: #3c3c3c;
+      --finger-1: #ff6b6b; /* Chap kichik barmoq */
+      --finger-2: #4ecdc4; /* Chap nomsiz */
+      --finger-3: #45b7d1; /* Chap o'rta */
+      --finger-4: #96ceb4; /* Chap ko'rsatkich */
+      --finger-5: #feca57; /* Chap bosh barmoq */
+      --finger-6: #ff9ff3; /* O'ng bosh barmoq */
+      --finger-7: #54a0ff; /* O'ng ko'rsatkich */
+      --finger-8: #5f27cd; /* O'ng o'rta */
+      --finger-9: #00d2d3; /* O'ng nomsiz */
+      --finger-10: #ff9f43; /* O'ng kichik */
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #e9ecef;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6c757d;
+      --accent: #e2b714;
+      --border: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .main-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .back-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Lesson Header */
+    .lesson-header {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lesson-info h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .lesson-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .lesson-progress {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .progress-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) 0deg, var(--bg-tertiary) 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .lesson-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Practice Area */
+    .practice-area {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 20px;
+      flex: 1;
+    }
+
+    .practice-main {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Current Lesson */
+    .current-lesson {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .lesson-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .lesson-instruction {
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .target-keys {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .target-key {
+      width: 60px;
+      height: 60px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .practice-text {
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .typed-char {
+      color: var(--success);
+    }
+
+    .current-char {
+      background: var(--accent);
+      color: var(--bg-primary);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+
+    .untyped-char {
+      color: var(--text-secondary);
+    }
+
+    /* Keyboard */
+    .keyboard-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .keyboard-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .keyboard-row {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .key {
+      min-width: 40px;
+      height: 40px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .key:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .key.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(226, 183, 20, 0.5);
+    }
+
+    .key.pressed {
+      background: var(--success);
+      transform: scale(0.95);
+    }
+
+    .key.error {
+      background: var(--error);
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+
+    /* Finger colors */
+    .key[data-finger="1"] { border-color: var(--finger-1); }
+    .key[data-finger="2"] { border-color: var(--finger-2); }
+    .key[data-finger="3"] { border-color: var(--finger-3); }
+    .key[data-finger="4"] { border-color: var(--finger-4); }
+    .key[data-finger="5"] { border-color: var(--finger-5); }
+    .key[data-finger="6"] { border-color: var(--finger-6); }
+    .key[data-finger="7"] { border-color: var(--finger-7); }
+    .key[data-finger="8"] { border-color: var(--finger-8); }
+    .key[data-finger="9"] { border-color: var(--finger-9); }
+    .key[data-finger="10"] { border-color: var(--finger-10); }
+
+    /* Special keys */
+    .key.space { min-width: 200px; }
+    .key.tab { min-width: 60px; }
+    .key.caps { min-width: 70px; }
+    .key.shift { min-width: 80px; }
+    .key.ctrl { min-width: 50px; }
+    .key.alt { min-width: 50px; }
+    .key.enter { min-width: 80px; }
+    .key.backspace { min-width: 80px; }
+
+    /* Sidebar */
+    .practice-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Finger Guide */
+    .finger-guide {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .finger-guide-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .hands-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .hand {
+      display: flex;
+      gap: 8px;
+    }
+
+    .finger {
+      width: 30px;
+      height: 80px;
+      border-radius: 15px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding-bottom: 5px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .finger.active {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    .finger-1 { background: var(--finger-1); height: 60px; }
+    .finger-2 { background: var(--finger-2); height: 70px; }
+    .finger-3 { background: var(--finger-3); height: 80px; }
+    .finger-4 { background: var(--finger-4); height: 75px; }
+    .finger-5 { background: var(--finger-5); height: 50px; }
+    .finger-6 { background: var(--finger-6); height: 50px; }
+    .finger-7 { background: var(--finger-7); height: 75px; }
+    .finger-8 { background: var(--finger-8); height: 80px; }
+    .finger-9 { background: var(--finger-9); height: 70px; }
+    .finger-10 { background: var(--finger-10); height: 60px; }
+
+    .finger-legend {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    /* Lesson List */
+    .lesson-list {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .lesson-list-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 5px;
+    }
+
+    .lesson-item:hover {
+      background: var(--bg-primary);
+    }
+
+    .lesson-item.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .lesson-item.completed {
+      background: var(--success);
+      color: white;
+    }
+
+    .lesson-number {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .lesson-name {
+      flex: 1;
+      margin-left: 10px;
+      font-size: 0.9rem;
+    }
+
+    .lesson-status {
+      font-size: 0.8rem;
+    }
+
+    /* Controls */
+    .practice-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #d4a813;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-primary);
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .main-layout {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 1025px) and (max-width: 1400px) {
+      .practice-area {
+        grid-template-columns: 1fr 350px;
+      }
+      
+      .key {
+        min-width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo">🎓</div>
+        <div class="logo-text">learning practice</div>
+      </div>
+      
+      <div class="header-controls">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Tema o'zgartirish">
+          <span id="themeIcon">🌙</span>
+        </button>
+        
+        <button class="back-btn" onclick="location.href='learning.html'">
+          <span>⬅️</span>
+          <span>learning center</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Lesson Header -->
+      <div class="lesson-header">
+        <div class="lesson-info">
+          <h2 id="currentModuleName">Boshlang'ich Modul</h2>
+          <div class="lesson-description" id="currentLessonDesc">Asosiy harflar bilan tanishing</div>
+        </div>
+        
+        <div class="lesson-progress">
+          <div class="progress-circle" id="progressCircle">0%</div>
+          <div class="lesson-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="currentWPM">0</div>
+              <div class="stat-label">WPM</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="currentAccuracy">0%</div>
+              <div class="stat-label">Aniqlik</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="currentStreak">0</div>
+              <div class="stat-label">Streak</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice Area -->
+      <div class="practice-area">
+        <!-- Main Practice -->
+        <div class="practice-main">
+          <!-- Current Lesson -->
+          <div class="current-lesson">
+            <div class="lesson-title" id="lessonTitle">1-dars: A va S harflari</div>
+            <div class="lesson-instruction" id="lessonInstruction">
+              A va S harflarini o'rganing. Chap qo'lingizning kichik va nomsiz barmoqlarini ishlatib, bu harflarni bosing.
+            </div>
+            
+            <div class="target-keys" id="targetKeys">
+              <div class="target-key">A</div>
+              <div class="target-key">S</div>
+            </div>
+            
+            <div class="practice-text" id="practiceText">asas sasa asa sas</div>
+            
+            <div class="practice-controls">
+              <button class="btn btn-primary" onclick="startLesson()" id="startBtn">
+                <span>🚀</span>
+                <span>Darsni Boshlash</span>
+              </button>
+              <button class="btn btn-secondary" onclick="resetLesson()">
+                <span>🔄</span>
+                <span>Qayta Boshlash</span>
+              </button>
+              <button class="btn btn-secondary" onclick="nextLesson()">
+                <span>➡️</span>
+                <span>Keyingi Dars</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Keyboard -->
+          <div class="keyboard-container">
+            <div class="keyboard-title">Virtual Klaviatura</div>
+            <div class="keyboard" id="keyboard">
+              <!-- Keyboard will be generated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="practice-sidebar">
+          <!-- Finger Guide -->
+          <div class="finger-guide">
+            <div class="finger-guide-title">Barmoq Pozitsiyasi</div>
+            <div class="hands-container">
+              <div class="hand" id="leftHand">
+                <div class="finger finger-1" data-finger="1">1</div>
+                <div class="finger finger-2" data-finger="2">2</div>
+                <div class="finger finger-3" data-finger="3">3</div>
+                <div class="finger finger-4" data-finger="4">4</div>
+                <div class="finger finger-5" data-finger="5">T</div>
+              </div>
+              <div class="hand" id="rightHand">
+                <div class="finger finger-6" data-finger="6">T</div>
+                <div class="finger finger-7" data-finger="7">4</div>
+                <div class="finger finger-8" data-finger="8">3</div>
+                <div class="finger finger-9" data-finger="9">2</div>
+                <div class="finger finger-10" data-finger="10">1</div>
+              </div>
+            </div>
+            <div class="finger-legend">
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-1);"></div>
+                <span>Chap kichik</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-10);"></div>
+                <span>O'ng kichik</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-2);"></div>
+                <span>Chap nomsiz</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-9);"></div>
+                <span>O'ng nomsiz</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-3);"></div>
+                <span>Chap o'rta</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-8);"></div>
+                <span>O'ng o'rta</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-4);"></div>
+                <span>Chap ko'rsatkich</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-7);"></div>
+                <span>O'ng ko'rsatkich</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-5);"></div>
+                <span>Chap bosh</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: var(--finger-6);"></div>
+                <span>O'ng bosh</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lesson List -->
+          <div class="lesson-list">
+            <div class="lesson-list-title" id="moduleTitle">Boshlang'ich Darslar</div>
+            <div id="lessonsList">
+              <!-- Lessons will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  // Current module and lesson
+  let currentModule = localStorage.getItem('learningModule') || 'beginner';
+  let currentLessonIndex = 0;
+  let lessonActive = false;
+  let currentCharIndex = 0;
+  let startTime = 0;
+  let correctChars = 0;
+  let totalChars = 0;
+  let currentStreak = 0;
+
+  // Keyboard layout with finger assignments
+  const keyboardLayout = [
+    [
+      { key: '`', finger: 1 }, { key: '1', finger: 1 }, { key: '2', finger: 2 }, { key: '3', finger: 3 }, { key: '4', finger: 4 }, 
+      { key: '5', finger: 4 }, { key: '6', finger: 7 }, { key: '7', finger: 7 }, { key: '8', finger: 8 }, { key: '9', finger: 9 }, 
+      { key: '0', finger: 10 }, { key: '-', finger: 10 }, { key: '=', finger: 10 }, { key: 'Backspace', finger: 10, class: 'backspace' }
+    ],
+    [
+      { key: 'Tab', finger: 1, class: 'tab' }, { key: 'Q', finger: 1 }, { key: 'W', finger: 2 }, { key: 'E', finger: 3 }, 
+      { key: 'R', finger: 4 }, { key: 'T', finger: 4 }, { key: 'Y', finger: 7 }, { key: 'U', finger: 7 }, { key: 'I', finger: 8 }, 
+      { key: 'O', finger: 9 }, { key: 'P', finger: 10 }, { key: '[', finger: 10 }, { key: ']', finger: 10 }, { key: '\\', finger: 10 }
+    ],
+    [
+      { key: 'Caps', finger: 1, class: 'caps' }, { key: 'A', finger: 1 }, { key: 'S', finger: 2 }, { key: 'D', finger: 3 }, 
+      { key: 'F', finger: 4 }, { key: 'G', finger: 4 }, { key: 'H', finger: 7 }, { key: 'J', finger: 7 }, { key: 'K', finger: 8 }, 
+      { key: 'L', finger: 9 }, { key: ';', finger: 10 }, { key: "'", finger: 10 }, { key: 'Enter', finger: 10, class: 'enter' }
+    ],
+    [
+      { key: 'Shift', finger: 1, class: 'shift' }, { key: 'Z', finger: 1 }, { key: 'X', finger: 2 }, { key: 'C', finger: 3 }, 
+      { key: 'V', finger: 4 }, { key: 'B', finger: 4 }, { key: 'N', finger: 7 }, { key: 'M', finger: 7 }, { key: ',', finger: 8 }, 
+      { key: '.', finger: 9 }, { key: '/', finger: 10 }, { key: 'Shift', finger: 10, class: 'shift' }
+    ],
+    [
+      { key: 'Ctrl', finger: 1, class: 'ctrl' }, { key: 'Alt', finger: 1, class: 'alt' }, 
+      { key: 'Space', finger: 5, class: 'space' }, { key: 'Alt', finger: 10, class: 'alt' }, 
+      { key: 'Ctrl', finger: 10, class: 'ctrl' }
+    ]
+  ];
+
+  // Learning modules and lessons
+  const learningModules = {
+    beginner: {
+      name: 'Boshlang\'ich',
+      description: 'Asosiy harflar va pozitsiya',
+      lessons: [
+        { 
+          title: '1-dars: A va S harflari', 
+          instruction: 'A va S harflarini o\'rganing. Chap qo\'lingizning kichik va nomsiz barmoqlarini ishlatib, bu harflarni bosing.',
+          keys: ['A', 'S'],
+          text: 'asas sasa asa sas sass asas sasa'
+        },
+        { 
+          title: '2-dars: D va F harflari', 
+          instruction: 'D va F harflarini qo\'shing. Chap qo\'lingizning o\'rta va ko\'rsatkich barmoqlarini ishlating.',
+          keys: ['D', 'F'],
+          text: 'fdfd dfdf fdf dfd fdas sadf asdf'
+        },
+        { 
+          title: '3-dars: J va K harflari', 
+          instruction: 'O\'ng qo\'lingizning ko\'rsatkich va o\'rta barmoqlarini ishlating.',
+          keys: ['J', 'K'],
+          text: 'jkjk kjkj jkj kjk jfkd dkfj asjk'
+        },
+        { 
+          title: '4-dars: L va ; harflari', 
+          instruction: 'O\'ng qo\'lingizning nomsiz va kichik barmoqlarini qo\'shing.',
+          keys: ['L', ';'],
+          text: 'l;l; ;l;l l;l ;l; lask jdkl ;asl'
+        },
+        { 
+          title: '5-dars: Asosiy pozitsiya', 
+          instruction: 'Barcha asosiy harflarni birlashtiring: ASDF JKL;',
+          keys: ['A', 'S', 'D', 'F', 'J', 'K', 'L', ';'],
+          text: 'asdf jkl; fdsa ;lkj ask; fjdk lads'
+        },
+        { 
+          title: '6-dars: G va H harflari', 
+          instruction: 'Ko\'rsatkich barmoqlar bilan G va H harflarini qo\'shing.',
+          keys: ['G', 'H'],
+          text: 'ghgh hghg gfh hjg gash hjfd ghad'
+        },
+        { 
+          title: '7-dars: Q va P harflari', 
+          instruction: 'Yuqori qator harflarini boshlang.',
+          keys: ['Q', 'P'],
+          text: 'qpqp pqpq qap paq qjpk plaq qpas'
+        },
+        { 
+          title: '8-dars: W va O harflari', 
+          instruction: 'W va O harflarini qo\'shing.',
+          keys: ['W', 'O'],
+          text: 'wowo owow wok low woad polo show'
+        },
+        { 
+          title: '9-dars: E va I harflari', 
+          instruction: 'E va I harflarini o\'rganing.',
+          keys: ['E', 'I'],
+          text: 'eiei ieie like idea wise file joke'
+        },
+        { 
+          title: '10-dars: R va U harflari', 
+          instruction: 'R va U harflarini qo\'shing.',
+          keys: ['R', 'U'],
+          text: 'ruru urur rule user fire pure sure'
+        },
+        { 
+          title: '11-dars: T va Y harflari', 
+          instruction: 'T va Y harflarini o\'rganing.',
+          keys: ['T', 'Y'],
+          text: 'tyty ytyt type your true style toy'
+        },
+        { 
+          title: '12-dars: Barcha harflar', 
+          instruction: 'Barcha o\'rgangan harflarni birlashtiring.',
+          keys: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+          text: 'the quick brown fox jumps over lazy dog'
+        }
+      ]
+    },
+    intermediate: {
+      name: 'O\'rta',
+      description: 'Tezlik va aniqlik',
+      lessons: [
+        { 
+          title: '1-dars: Z va X harflari', 
+          instruction: 'Pastki qator harflarini boshlang.',
+          keys: ['Z', 'X'],
+          text: 'zxzx xzxz zax xaz zero taxi next size'
+        },
+        { 
+          title: '2-dars: C va V harflari', 
+          instruction: 'C va V harflarini qo\'shing.',
+          keys: ['C', 'V'],
+          text: 'cvcv vcvc cave vice cool voice civic'
+        },
+        { 
+          title: '3-dars: B va N harflari', 
+          instruction: 'B va N harflarini o\'rganing.',
+          keys: ['B', 'N'],
+          text: 'bnbn nbnb bone noun been nine cabin'
+        },
+        { 
+          title: '4-dars: M va , harflari', 
+          instruction: 'M va vergul harflarini qo\'shing.',
+          keys: ['M', ','],
+          text: 'm,m, ,m,m make, time, come, name, game'
+        },
+        { 
+          title: '5-dars: . va / harflari', 
+          instruction: 'Nuqta va chiziq harflarini o\'rganing.',
+          keys: ['.', '/'],
+          text: './. /./ home. file/ path. code/ end.'
+        },
+        { 
+          title: '6-dars: Raqamlar 1-5', 
+          instruction: 'Chap qo\'l raqamlarini o\'rganing.',
+          keys: ['1', '2', '3', '4', '5'],
+          text: '12345 54321 123 345 12 34 45 123'
+        },
+        { 
+          title: '7-dars: Raqamlar 6-0', 
+          instruction: 'O\'ng qo\'l raqamlarini o\'rganing.',
+          keys: ['6', '7', '8', '9', '0'],
+          text: '67890 09876 678 890 67 89 90 678'
+        },
+        { 
+          title: '8-dars: Maxsus belgilar', 
+          instruction: 'Maxsus belgilarni o\'rganing.',
+          keys: ['-', '=', '[', ']'],
+          text: 'a-b c=d [e] f-g h=i [j] k-l m=n'
+        },
+        { 
+          title: '9-dars: So\'zlar', 
+          instruction: 'Oddiy so\'zlarni yozing.',
+          keys: [],
+          text: 'hello world code type fast good work'
+        },
+        { 
+          title: '10-dars: Jumlalar', 
+          instruction: 'Qisqa jumlalarni yozing.',
+          keys: [],
+          text: 'I can type fast. You are good. We work.'
+        },
+        { 
+          title: '11-dars: Tezlik mashqi', 
+          instruction: 'Tezlikni oshiring.',
+          keys: [],
+          text: 'quick fast speed type write code work'
+        },
+        { 
+          title: '12-dars: Aniqlik mashqi', 
+          instruction: 'Aniqlikni yaxshilang.',
+          keys: [],
+          text: 'precision accuracy careful correct exact'
+        },
+        { 
+          title: '13-dars: Aralash mashq', 
+          instruction: 'Harflar, raqamlar va belgilarni aralashtiring.',
+          keys: [],
+          text: 'abc123 def456 ghi789 jkl012 mno345'
+        },
+        { 
+          title: '14-dars: Uzun matn', 
+          instruction: 'Uzunroq matnlarni yozing.',
+          keys: [],
+          text: 'The quick brown fox jumps over the lazy dog near the river.'
+        },
+        { 
+          title: '15-dars: Yakuniy test', 
+          instruction: 'Barcha o\'rgangan narsalarni sinab ko\'ring.',
+          keys: [],
+          text: 'Programming is fun and challenging. Practice makes perfect typing skills.'
+        }
+      ]
+    },
+    advanced: {
+      name: 'Ilg\'or',
+      description: 'Professional mahorat',
+      lessons: [
+        { 
+          title: '1-dars: Shift bilan harflar', 
+          instruction: 'Katta harflarni yozing.',
+          keys: [],
+          text: 'Hello World Code Type Fast Good Work'
+        },
+        { 
+          title: '2-dars: Maxsus belgilar', 
+          instruction: 'Shift bilan maxsus belgilar.',
+          keys: [],
+          text: '!@#$%^&*()_+ {}|:"<>? ~`'
+        },
+        { 
+          title: '3-dars: Dasturlash', 
+          instruction: 'Dasturlash kodlarini yozing.',
+          keys: [],
+          text: 'function hello() { return "world"; }'
+        },
+        { 
+          title: '4-dars: JSON format', 
+          instruction: 'JSON ma\'lumotlarini yozing.',
+          keys: [],
+          text: '{"name": "user", "age": 25, "active": true}'
+        },
+        { 
+          title: '5-dars: HTML kodlar', 
+          instruction: 'HTML teglarini yozing.',
+          keys: [],
+          text: '<div class="container"><p>Hello World</p></div>'
+        },
+        { 
+          title: '6-dars: CSS stillar', 
+          instruction: 'CSS kodlarini yozing.',
+          keys: [],
+          text: '.container { display: flex; color: #333; }'
+        },
+        { 
+          title: '7-dars: JavaScript', 
+          instruction: 'JavaScript kodlarini yozing.',
+          keys: [],
+          text: 'const arr = [1,2,3]; arr.map(x => x * 2);'
+        },
+        { 
+          title: '8-dars: SQL so\'rovlar', 
+          instruction: 'SQL kodlarini yozing.',
+          keys: [],
+          text: 'SELECT * FROM users WHERE age > 18;'
+        },
+        { 
+          title: '9-dars: Terminal buyruqlar', 
+          instruction: 'Terminal buyruqlarini yozing.',
+          keys: [],
+          text: 'cd /home/user && ls -la | grep .txt'
+        },
+        { 
+          title: '10-dars: Regex ifodalar', 
+          instruction: 'Regex ifodalarini yozing.',
+          keys: [],
+          text: '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/'
+        },
+        { 
+          title: '11-dars: URL manzillar', 
+          instruction: 'URL manzillarini yozing.',
+          keys: [],
+          text: 'https://www.example.com/api/v1/users?page=1&limit=10'
+        },
+        { 
+          title: '12-dars: Email manzillar', 
+          instruction: 'Email manzillarini yozing.',
+          keys: [],
+          text: 'user.name+tag@example.com admin@company.org'
+        },
+        { 
+          title: '13-dars: Parollar', 
+          instruction: 'Murakkab parollarni yozing.',
+          keys: [],
+          text: 'MyP@ssw0rd123! Str0ng#P@ss SecureK3y$'
+        },
+        { 
+          title: '14-dars: Matematik ifodalar', 
+          instruction: 'Matematik ifodalarni yozing.',
+          keys: [],
+          text: '(a + b) * c / d = e^2 - sqrt(f) + log(g)'
+        },
+        { 
+          title: '15-dars: Aralash matn', 
+          instruction: 'Turli formatdagi matnlar.',
+          keys: [],
+          text: 'API_KEY="abc123" PORT=3000 DB_URL=mongodb://localhost:27017/app'
+        },
+        { 
+          title: '16-dars: Tezlik testi', 
+          instruction: 'Tezlik va aniqlikni sinang.',
+          keys: [],
+          text: 'The five boxing wizards jump quickly over the lazy brown dog.'
+        },
+        { 
+          title: '17-dars: Professional test', 
+          instruction: 'Professional darajani sinang.',
+          keys: [],
+          text: 'import React from "react"; export default function App() { return <div>Hello</div>; }'
+        },
+        { 
+          title: '18-dars: Yakuniy imtihon', 
+          instruction: 'Barcha bilimlaringizni sinang.',
+          keys: [],
+          text: 'Advanced typing skills require consistent practice, proper finger positioning, and muscle memory development.'
+        }
+      ]
+    },
+    expert: {
+      name: 'Ekspert',
+      description: 'Ustaxona darajasi',
+      lessons: [
+        { 
+          title: '1-dars: Tez yozish', 
+          instruction: '60+ WPM tezlikda yozing.',
+          keys: [],
+          text: 'Speed typing requires muscle memory and consistent practice every day.'
+        },
+        { 
+          title: '2-dars: Murakkab kodlar', 
+          instruction: 'Murakkab dasturlash kodlari.',
+          keys: [],
+          text: 'async function fetchData() { try { const response = await fetch("/api"); return await response.json(); } catch (error) { console.error(error); } }'
+        },
+        { 
+          title: '3-dars: Konfiguratsiya fayllar', 
+          instruction: 'Konfiguratsiya fayllarini yozing.',
+          keys: [],
+          text: '{ "compilerOptions": { "target": "ES2020", "module": "commonjs", "strict": true, "esModuleInterop": true } }'
+        },
+        { 
+          title: '4-dars: Docker fayllar', 
+          instruction: 'Docker konfiguratsiyalarini yozing.',
+          keys: [],
+          text: 'FROM node:16-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD ["npm", "start"]'
+        },
+        { 
+          title: '5-dars: Git buyruqlar', 
+          instruction: 'Git buyruqlarini yozing.',
+          keys: [],
+          text: 'git add . && git commit -m "feat: add new feature" && git push origin main'
+        },
+        { 
+          title: '6-dars: Bash skriptlar', 
+          instruction: 'Bash skriptlarini yozing.',
+          keys: [],
+          text: '#!/bin/bash\nfor file in *.txt; do\n  echo "Processing $file"\n  cat "$file" | grep -E "^[A-Z]" > "${file%.txt}_filtered.txt"\ndone'
+        },
+        { 
+          title: '7-dars: Markdown hujjatlar', 
+          instruction: 'Markdown formatini yozing.',
+          keys: [],
+          text: '# Project Title\n\n## Installation\n\n```bash\nnpm install\n```\n\n### Features\n\n- [x] Feature 1\n- [ ] Feature 2\n\n> **Note:** This is important!'
+        },
+        { 
+          title: '8-dars: YAML konfiguratsiya', 
+          instruction: 'YAML fayllarini yozing.',
+          keys: [],
+          text: 'version: "3.8"\nservices:\n  web:\n    build: .\n    ports:\n      - "3000:3000"\n    environment:\n      - NODE_ENV=production'
+        },
+        { 
+          title: '9-dars: XML hujjatlar', 
+          instruction: 'XML formatini yozing.',
+          keys: [],
+          text: '<?xml version="1.0" encoding="UTF-8"?>\n<root>\n  <user id="1">\n    <name>John Doe</name>\n    <email>john@example.com</email>\n  </user>\n</root>'
+        },
+        { 
+          title: '10-dars: Regex murakkab', 
+          instruction: 'Murakkab regex ifodalar.',
+          keys: [],
+          text: '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}'
+        },
+        { 
+          title: '11-dars: API dokumentatsiya', 
+          instruction: 'API dokumentatsiyasini yozing.',
+          keys: [],
+          text: 'POST /api/v1/users\nContent-Type: application/json\nAuthorization: Bearer <token>\n\n{\n  "name": "John Doe",\n  "email": "john@example.com"\n}'
+        },
+        { 
+          title: '12-dars: Database schema', 
+          instruction: 'Database sxemasini yozing.',
+          keys: [],
+          text: 'CREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  email VARCHAR(255) UNIQUE NOT NULL,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);'
+        },
+        { 
+          title: '13-dars: Algoritm kodi', 
+          instruction: 'Algoritm kodlarini yozing.',
+          keys: [],
+          text: 'function quickSort(arr) {\n  if (arr.length <= 1) return arr;\n  const pivot = arr[Math.floor(arr.length / 2)];\n  const left = arr.filter(x => x < pivot);\n  const right = arr.filter(x => x > pivot);\n  return [...quickSort(left), pivot, ...quickSort(right)];\n}'
+        },
+        { 
+          title: '14-dars: Kriptografiya', 
+          instruction: 'Kriptografik kodlarni yozing.',
+          keys: [],
+          text: 'const crypto = require("crypto");\nconst hash = crypto.createHash("sha256").update("password").digest("hex");\nconst cipher = crypto.createCipher("aes192", "secret");\nlet encrypted = cipher.update("data", "utf8", "hex");\nencrypted += cipher.final("hex");'
+        },
+        { 
+          title: '15-dars: Mikroservis', 
+          instruction: 'Mikroservis kodlarini yozing.',
+          keys: [],
+          text: 'const express = require("express");\nconst app = express();\napp.use(express.json());\napp.get("/health", (req, res) => res.json({ status: "OK" }));\napp.listen(process.env.PORT || 3000, () => console.log("Server running"));'
+        },
+        { 
+          title: '16-dars: DevOps skriptlar', 
+          instruction: 'DevOps skriptlarini yozing.',
+          keys: [],
+          text: 'pipeline {\n  agent any\n  stages {\n    stage("Build") {\n      steps {\n        sh "npm install"\n        sh "npm run build"\n      }\n    }\n    stage("Test") {\n      steps {\n        sh "npm test"\n      }\n    }\n  }\n}'
+        },
+        { 
+          title: '17-dars: Machine Learning', 
+          instruction: 'ML kodlarini yozing.',
+          keys: [],
+          text: 'import tensorflow as tf\nfrom tensorflow.keras import layers\n\nmodel = tf.keras.Sequential([\n  layers.Dense(128, activation="relu", input_shape=(784,)),\n  layers.Dropout(0.2),\n  layers.Dense(10, activation="softmax")\n])\n\nmodel.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])'
+        },
+        { 
+          title: '18-dars: Blockchain', 
+          instruction: 'Blockchain kodlarini yozing.',
+          keys: [],
+          text: 'pragma solidity ^0.8.0;\n\ncontract SimpleStorage {\n  uint256 private storedData;\n  \n  function set(uint256 x) public {\n    storedData = x;\n  }\n  \n  function get() public view returns (uint256) {\n    return storedData;\n  }\n}'
+        },
+        { 
+          title: '19-dars: Quantum computing', 
+          instruction: 'Quantum kodlarini yozing.',
+          keys: [],
+          text: 'from qiskit import QuantumCircuit, execute, Aer\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\n\nbackend = Aer.get_backend("qasm_simulator")\njob = execute(qc, backend, shots=1024)\nresult = job.result()\ncounts = result.get_counts(qc)'
+        },
+        { 
+          title: '20-dars: Master test', 
+          instruction: 'Ustaxona darajasini sinang.',
+          keys: [],
+          text: 'The expert typist demonstrates exceptional speed, accuracy, and consistency while maintaining proper ergonomic posture and utilizing advanced techniques for maximum efficiency in professional environments.'
+        }
+      ]
+    }
+  };
+
+  // Current lesson data
+  let currentLesson = null;
+  let practiceText = '';
+  let typedText = '';
+
+  // Theme System
+  function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    const currentTheme = body.getAttribute('data-theme');
+    
+    if (currentTheme === 'dark') {
+      body.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '☀️';
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '🌙';
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Generate keyboard
+  function generateKeyboard() {
+    const keyboard = document.getElementById('keyboard');
+    keyboard.innerHTML = '';
+    
+    keyboardLayout.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'keyboard-row';
+      
+      row.forEach(keyData => {
+        const keyDiv = document.createElement('div');
+        keyDiv.className = `key ${keyData.class || ''}`;
+        keyDiv.textContent = keyData.key;
+        keyDiv.dataset.key = keyData.key.toLowerCase();
+        keyDiv.dataset.finger = keyData.finger;
+        
+        rowDiv.appendChild(keyDiv);
+      });
+      
+      keyboard.appendChild(rowDiv);
+    });
+  }
+
+  // Highlight key and finger
+  function highlightKey(key) {
+    // Remove previous highlights
+    document.querySelectorAll('.key.active').forEach(k => k.classList.remove('active'));
+    document.querySelectorAll('.finger.active').forEach(f => f.classList.remove('active'));
+    
+    // Find and highlight key
+    const keyElement = document.querySelector(`[data-key="${key.toLowerCase()}"]`);
+    if (keyElement) {
+      keyElement.classList.add('active');
+      
+      // Highlight corresponding finger
+      const fingerId = keyElement.dataset.finger;
+      const fingerElement = document.querySelector(`[data-finger="${fingerId}"]`);
+      if (fingerElement) {
+        fingerElement.classList.add('active');
+      }
+    }
+  }
+
+  // Key press animation
+  function animateKeyPress(key, correct) {
+    const keyElement = document.querySelector(`[data-key="${key.toLowerCase()}"]`);
+    if (keyElement) {
+      keyElement.classList.add(correct ? 'pressed' : 'error');
+      setTimeout(() => {
+        keyElement.classList.remove('pressed', 'error');
+      }, 200);
+    }
+  }
+
+  // Load module and lessons
+  function loadModule() {
+    const module = learningModules[currentModule];
+    if (!module) return;
+    
+    document.getElementById('currentModuleName').textContent = module.name + ' Modul';
+    document.getElementById('moduleTitle').textContent = module.name + ' Darslar';
+    
+    // Load lessons list
+    const lessonsList = document.getElementById('lessonsList');
+    lessonsList.innerHTML = '';
+    
+    module.lessons.forEach((lesson, index) => {
+      const lessonDiv = document.createElement('div');
+      lessonDiv.className = `lesson-item ${index === currentLessonIndex ? 'active' : ''}`;
+      lessonDiv.onclick = () => selectLesson(index);
+      
+      lessonDiv.innerHTML = `
+        <div class="lesson-number">${index + 1}</div>
+        <div class="lesson-name">${lesson.title}</div>
+        <div class="lesson-status">📝</div>
+      `;
+      
+      lessonsList.appendChild(lessonDiv);
+    });
+    
+    loadLesson();
+  }
+
+  // Select lesson
+  function selectLesson(index) {
+    currentLessonIndex = index;
+    
+    // Update active lesson
+    document.querySelectorAll('.lesson-item').forEach((item, i) => {
+      item.classList.toggle('active', i === index);
+    });
+    
+    loadLesson();
+  }
+
+  // Load current lesson
+  function loadLesson() {
+    const module = learningModules[currentModule];
+    currentLesson = module.lessons[currentLessonIndex];
+    
+    if (!currentLesson) return;
+    
+    document.getElementById('lessonTitle').textContent = currentLesson.title;
+    document.getElementById('lessonInstruction').textContent = currentLesson.instruction;
+    document.getElementById('currentLessonDesc').textContent = currentLesson.instruction;
+    
+    // Update target keys
+    const targetKeysContainer = document.getElementById('targetKeys');
+    targetKeysContainer.innerHTML = '';
+    
+    if (currentLesson.keys && currentLesson.keys.length > 0) {
+      currentLesson.keys.forEach(key => {
+        const keyDiv = document.createElement('div');
+        keyDiv.className = 'target-key';
+        keyDiv.textContent = key;
+        targetKeysContainer.appendChild(keyDiv);
+      });
+    } else {
+      targetKeysContainer.innerHTML = '<div class="target-key">ALL</div>';
+    }
+    
+    // Set practice text
+    practiceText = currentLesson.text;
+    document.getElementById('practiceText').textContent = practiceText;
+    
+    // Reset lesson state
+    resetLesson();
+  }
+
+  // Start lesson
+  window.startLesson = function() {
+    if (lessonActive) return;
+    
+    lessonActive = true;
+    currentCharIndex = 0;
+    typedText = '';
+    startTime = Date.now();
+    correctChars = 0;
+    totalChars = 0;
+    currentStreak = 0;
+    
+    document.getElementById('startBtn').innerHTML = '<span>⏸️</span><span>To\'xtatish</span>';
+    
+    // Highlight first character
+    updatePracticeText();
+    highlightNextKey();
+    
+    // Focus on practice area
+    document.addEventListener('keydown', handleKeyPress);
+  }
+
+  // Reset lesson
+  window.resetLesson = function() {
+    lessonActive = false;
+    currentCharIndex = 0;
+    typedText = '';
+    correctChars = 0;
+    totalChars = 0;
+    currentStreak = 0;
+    
+    document.getElementById('startBtn').innerHTML = '<span>🚀</span><span>Darsni Boshlash</span>';
+    document.getElementById('practiceText').textContent = practiceText;
+    
+    // Clear highlights
+    document.querySelectorAll('.key.active').forEach(k => k.classList.remove('active'));
+    document.querySelectorAll('.finger.active').forEach(f => f.classList.remove('active'));
+    
+    // Remove event listener
+    document.removeEventListener('keydown', handleKeyPress);
+    
+    updateStats();
+  }
+
+  // Next lesson
+  window.nextLesson = function() {
+    const module = learningModules[currentModule];
+    if (currentLessonIndex < module.lessons.length - 1) {
+      selectLesson(currentLessonIndex + 1);
+    } else {
+      alert('Bu modulning barcha darslari tugallandi! 🎉');
+    }
+  }
+
+  // Handle key press
+  function handleKeyPress(event) {
+    if (!lessonActive) return;
+    
+    event.preventDefault();
+    
+    const pressedKey = event.key;
+    const expectedKey = practiceText[currentCharIndex];
+    
+    if (!expectedKey) return;
+    
+    totalChars++;
+    
+    const isCorrect = pressedKey === expectedKey;
+    
+    if (isCorrect) {
+      correctChars++;
+      currentStreak++;
+      typedText += pressedKey;
+      currentCharIndex++;
+      
+      animateKeyPress(pressedKey, true);
+      
+      // Check if lesson completed
+      if (currentCharIndex >= practiceText.length) {
+        completeLesson();
+        return;
+      }
+      
+      updatePracticeText();
+      highlightNextKey();
+    } else {
+      currentStreak = 0;
+      animateKeyPress(pressedKey, false);
+    }
+    
+    updateStats();
+  }
+
+  // Update practice text display
+  function updatePracticeText() {
+    const textElement = document.getElementById('practiceText');
+    let html = '';
+    
+    for (let i = 0; i < practiceText.length; i++) {
+      const char = practiceText[i];
+      if (i < currentCharIndex) {
+        html += `<span class="typed-char">${char}</span>`;
+      } else if (i === currentCharIndex) {
+        html += `<span class="current-char">${char}</span>`;
+      } else {
+        html += `<span class="untyped-char">${char}</span>`;
+      }
+    }
+    
+    textElement.innerHTML = html;
+  }
+
+  // Highlight next key
+  function highlightNextKey() {
+    if (currentCharIndex < practiceText.length) {
+      const nextChar = practiceText[currentCharIndex];
+      highlightKey(nextChar);
+    }
+  }
+
+  // Update stats
+  function updateStats() {
+    const timeElapsed = lessonActive ? (Date.now() - startTime) / 1000 : 0;
+    const wpm = timeElapsed > 0 ? Math.round((correctChars / 5) / (timeElapsed / 60)) : 0;
+    const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+    const progress = practiceText.length > 0 ? Math.round((currentCharIndex / practiceText.length) * 100) : 0;
+    
+    document.getElementById('currentWPM').textContent = wpm;
+    document.getElementById('currentAccuracy').textContent = accuracy + '%';
+    document.getElementById('currentStreak').textContent = currentStreak;
+    document.getElementById('progressCircle').textContent = progress + '%';
+    document.getElementById('progressCircle').style.background = 
+      `conic-gradient(var(--accent) ${progress * 3.6}deg, var(--bg-tertiary) ${progress * 3.6}deg)`;
+  }
+
+  // Complete lesson
+  function completeLesson() {
+    lessonActive = false;
+    
+    const timeElapsed = (Date.now() - startTime) / 1000;
+    const wpm = Math.round((correctChars / 5) / (timeElapsed / 60));
+    const accuracy = Math.round((correctChars / totalChars) * 100);
+    
+    // Remove event listener
+    document.removeEventListener('keydown', handleKeyPress);
+    
+    // Show completion message
+    setTimeout(() => {
+      alert(`🎉 Dars tugallandi!\n\nWPM: ${wpm}\nAniqlik: ${accuracy}%\nVaqt: ${Math.round(timeElapsed)}s`);
+      
+      // Mark lesson as completed
+      const lessonItem = document.querySelectorAll('.lesson-item')[currentLessonIndex];
+      lessonItem.classList.add('completed');
+      lessonItem.querySelector('.lesson-status').textContent = '✅';
+      
+      // Auto advance to next lesson
+      setTimeout(() => {
+        nextLesson();
+      }, 1000);
+    }, 500);
+    
+    // Save progress
+    saveLessonProgress(wpm, accuracy, timeElapsed);
+  }
+
+  // Save lesson progress
+  async function saveLessonProgress(wpm, accuracy, timeElapsed) {
+    try {
+      const progressRef = ref(db, `learning/${user.phone}/${currentModule}/lessons/${currentLessonIndex}`);
+      await set(progressRef, {
+        completed: true,
+        wpm: wpm,
+        accuracy: accuracy,
+        timeElapsed: timeElapsed,
+        completedAt: Date.now()
+      });
+      
+      // Update module progress
+      const moduleRef = ref(db, `learning/${user.phone}/${currentModule}`);
+      const moduleSnapshot = await get(moduleRef);
+      const moduleData = moduleSnapshot.val() || {};
+      
+      const completedLessons = (moduleData.completedLessons || 0) + 1;
+      const totalLessons = learningModules[currentModule].lessons.length;
+      const progress = Math.round((completedLessons / totalLessons) * 100);
+      
+      await set(moduleRef, {
+        ...moduleData,
+        completedLessons: completedLessons,
+        progress: progress,
+        lastUpdated: Date.now()
+      });
+      
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+  // Global functions
+  window.toggleTheme = toggleTheme;
+
+  // Initialize
+  generateKeyboard();
+  loadModule();
+
+  // Prevent default keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (lessonActive && (e.ctrlKey || e.altKey || e.metaKey)) {
+      e.preventDefault();
+    }
+  });
+</script>
+
+</body>
+</html>

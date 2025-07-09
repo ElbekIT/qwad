@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>👤 Profil - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #e9ecef;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6c757d;
+      --accent: #e2b714;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #d4a813);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 20px;
+      border: 4px solid var(--bg-secondary);
+      box-shadow: 0 10px 30px rgba(226, 183, 20, 0.3);
+    }
+
+    .profile-name {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, var(--accent), var(--text-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .profile-level {
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .profile-joined {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid var(--bg-tertiary);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(226, 183, 20, 0.2);
+      border-color: var(--accent);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .stat-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .stat-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #d4a813);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .achievements-section {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .achievement {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid var(--bg-tertiary);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .achievement.unlocked {
+      border-color: var(--accent);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    .achievement.locked {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+
+    .achievement:hover {
+      transform: scale(1.05);
+    }
+
+    .achievement-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .achievement-name {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .achievement-description {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .achievement-date {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.6rem;
+      font-weight: 600;
+    }
+
+    .game-history {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .history-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .history-details h4 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .history-details p {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .history-score {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .back-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(226, 183, 20, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      .profile-name {
+        font-size: 2rem;
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .achievements-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
+
+      .back-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="header">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name" id="profileName">Foydalanuvchi</div>
+      <div class="profile-level" id="profileLevel">LVL 1</div>
+      <div class="profile-joined" id="profileJoined">Qo'shilgan: 2024</div>
+    </div>
+
+    <!-- Statistics Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-title">Eng yuqori ball</div>
+        </div>
+        <div class="stat-value" id="bestScore">0</div>
+        <div class="stat-description">Sizning eng yaxshi natijangiz</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="scoreProgress"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">🎮</div>
+          <div class="stat-title">O'yinlar soni</div>
+        </div>
+        <div class="stat-value" id="gamesPlayed">0</div>
+        <div class="stat-description">Jami o'ynagan o'yinlar soni</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="gamesProgress"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-title">O'rtacha WPM</div>
+        </div>
+        <div class="stat-value" id="avgWPM">0</div>
+        <div class="stat-description">Daqiqada so'zlar soni</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="wpmProgress"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-title">Eng uzun streak</div>
+        </div>
+        <div class="stat-value" id="maxStreak">0</div>
+        <div class="stat-description">Ketma-ket to'g'ri javoblar</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="streakProgress"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-title">Aniqlik</div>
+        </div>
+        <div class="stat-value" id="accuracy">0%</div>
+        <div class="stat-description">To'g'ri javoblar foizi</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="accuracyProgress"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-title">Jami vaqt</div>
+        </div>
+        <div class="stat-value" id="totalTime">0m</div>
+        <div class="stat-description">O'yinda o'tkazgan vaqt</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="timeProgress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <div class="achievements-section">
+      <div class="section-title">
+        <span>🏅</span>
+        <span>Yutuqlar</span>
+      </div>
+      <div class="achievements-grid" id="achievementsGrid">
+        <!-- Achievements will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Game History -->
+    <div class="game-history">
+      <div class="section-title">
+        <span>📊</span>
+        <span>O'yin tarixi</span>
+      </div>
+      <div id="gameHistory">
+        <div class="history-item">
+          <div class="history-info">
+            <div class="history-icon">🎮</div>
+            <div class="history-details">
+              <h4>Hali o'yinlar yo'q</h4>
+              <p>Birinchi o'yiningizni boshlang!</p>
+            </div>
+          </div>
+          <div class="history-score">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="back-btn" onclick="location.href='index.html'">
+    <span>⬅️</span>
+    <span>Bosh sahifa</span>
+  </button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  // Achievement definitions
+  const achievements = [
+    { 
+      id: 'first_game', 
+      name: 'Birinchi o\'yin', 
+      icon: '🎮', 
+      description: 'Birinchi o\'yiningizni o\'ynang',
+      condition: (stats) => stats.gamesPlayed >= 1 
+    },
+    { 
+      id: 'speed_demon', 
+      name: 'Tezlik shaytoni', 
+      icon: '⚡', 
+      description: '40+ WPM ga erishing',
+      condition: (stats) => stats.maxWPM >= 40 
+    },
+    { 
+      id: 'streak_master', 
+      name: 'Streak ustasi', 
+      icon: '🔥', 
+      description: '10+ ketma-ket to\'g\'ri javob',
+      condition: (stats) => stats.maxStreak >= 10 
+    },
+    { 
+      id: 'high_scorer', 
+      name: 'Yuqori ball', 
+      icon: '🏆', 
+      description: '30+ ball to\'plang',
+      condition: (stats) => stats.bestScore >= 30 
+    },
+    { 
+      id: 'consistent', 
+      name: 'Barqaror', 
+      icon: '📈', 
+      description: '10+ o\'yin o\'ynang',
+      condition: (stats) => stats.gamesPlayed >= 10 
+    },
+    { 
+      id: 'perfectionist', 
+      name: 'Perfeksionist', 
+      icon: '💎', 
+      description: '95%+ aniqlikka erishing',
+      condition: (stats) => stats.accuracy >= 95 
+    },
+    { 
+      id: 'marathon', 
+      name: 'Marafonchi', 
+      icon: '🏃', 
+      description: '1 soat o\'ynang',
+      condition: (stats) => stats.totalTime >= 3600 
+    },
+    { 
+      id: 'word_master', 
+      name: 'So\'z ustasi', 
+      icon: '📚', 
+      description: '500+ so\'z yozing',
+      condition: (stats) => stats.wordsTyped >= 500 
+    }
+  ];
+
+  // Load user profile data
+  async function loadProfile() {
+    const userRef = ref(db, "users/" + user.phone);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      updateProfileDisplay(userData);
+      updateAchievements(userData);
+      updateGameHistory(userData);
+    } else {
+      // Default data for new users
+      const defaultData = {
+        name: user.name,
+        phone: user.phone,
+        score: 0,
+        gamesPlayed: 0,
+        avgWPM: 0,
+        maxStreak: 0,
+        accuracy: 0,
+        totalTime: 0,
+        wordsTyped: 0,
+        registeredAt: user.registeredAt || Date.now()
+      };
+      updateProfileDisplay(defaultData);
+      updateAchievements(defaultData);
+    }
+  }
+
+  function updateProfileDisplay(userData) {
+    // Profile header
+    document.getElementById('profileName').textContent = userData.name;
+    
+    // Calculate level
+    const totalXP = (userData.score || 0) + (userData.gamesPlayed || 0) * 5;
+    const level = Math.floor(totalXP / 100) + 1;
+    document.getElementById('profileLevel').textContent = `LVL ${level}`;
+    
+    // Join date
+    const joinDate = new Date(userData.registeredAt || Date.now());
+    document.getElementById('profileJoined').textContent = 
+      `Qo'shilgan: ${joinDate.toLocaleDateString('uz-UZ')}`;
+
+    // Statistics
+    document.getElementById('bestScore').textContent = userData.score || 0;
+    document.getElementById('gamesPlayed').textContent = userData.gamesPlayed || 0;
+    document.getElementById('avgWPM').textContent = Math.round(userData.avgWPM || 0);
+    document.getElementById('maxStreak').textContent = userData.maxStreak || 0;
+    document.getElementById('accuracy').textContent = Math.round(userData.accuracy || 0) + '%';
+    
+    // Format total time
+    const totalMinutes = Math.floor((userData.totalTime || 0) / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    document.getElementById('totalTime').textContent = 
+      hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+
+    // Update progress bars
+    updateProgressBars(userData);
+  }
+
+  function updateProgressBars(userData) {
+    // Score progress (out of 100)
+    const scoreProgress = Math.min((userData.score || 0) / 100 * 100, 100);
+    document.getElementById('scoreProgress').style.width = scoreProgress + '%';
+
+    // Games progress (out of 50)
+    const gamesProgress = Math.min((userData.gamesPlayed || 0) / 50 * 100, 100);
+    document.getElementById('gamesProgress').style.width = gamesProgress + '%';
+
+    // WPM progress (out of 60)
+    const wpmProgress = Math.min((userData.avgWPM || 0) / 60 * 100, 100);
+    document.getElementById('wpmProgress').style.width = wpmProgress + '%';
+
+    // Streak progress (out of 20)
+    const streakProgress = Math.min((userData.maxStreak || 0) / 20 * 100, 100);
+    document.getElementById('streakProgress').style.width = streakProgress + '%';
+
+    // Accuracy progress
+    const accuracyProgress = userData.accuracy || 0;
+    document.getElementById('accuracyProgress').style.width = accuracyProgress + '%';
+
+    // Time progress (out of 2 hours = 7200 seconds)
+    const timeProgress = Math.min((userData.totalTime || 0) / 7200 * 100, 100);
+    document.getElementById('timeProgress').style.width = timeProgress + '%';
+  }
+
+  function updateAchievements(userData) {
+    const grid = document.getElementById('achievementsGrid');
+    grid.innerHTML = '';
+    
+    achievements.forEach(achievement => {
+      const div = document.createElement('div');
+      div.className = 'achievement';
+      
+      const isUnlocked = achievement.condition(userData);
+      div.classList.add(isUnlocked ? 'unlocked' : 'locked');
+      
+      div.innerHTML = `
+        <div class="achievement-icon">${achievement.icon}</div>
+        <div class="achievement-name">${achievement.name}</div>
+        <div class="achievement-description">${achievement.description}</div>
+        ${isUnlocked ? '<div class="achievement-date">✓</div>' : ''}
+      `;
+      
+      div.title = achievement.description;
+      grid.appendChild(div);
+    });
+  }
+
+  function updateGameHistory(userData) {
+    const historyContainer = document.getElementById('gameHistory');
+    
+    if (!userData.gameHistory || userData.gameHistory.length === 0) {
+      historyContainer.innerHTML = `
+        <div class="history-item">
+          <div class="history-info">
+            <div class="history-icon">🎮</div>
+            <div class="history-details">
+              <h4>Hali o'yinlar yo'q</h4>
+              <p>Birinchi o'yiningizni boshlang!</p>
+            </div>
+          </div>
+          <div class="history-score">-</div>
+        </div>
+      `;
+      return;
+    }
+
+    // Show last 10 games
+    const recentGames = userData.gameHistory.slice(-10).reverse();
+    
+    historyContainer.innerHTML = recentGames.map(game => {
+      const date = new Date(game.timestamp);
+      const difficultyIcons = {
+        easy: '😊',
+        medium: '🎯',
+        hard: '🔥',
+        expert: '💀'
+      };
+      
+      return `
+        <div class="history-item">
+          <div class="history-info">
+            <div class="history-icon">${difficultyIcons[game.difficulty] || '🎮'}</div>
+            <div class="history-details">
+              <h4>${game.score} ball - ${game.difficulty || 'medium'}</h4>
+              <p>${date.toLocaleDateString('uz-UZ')} • ${game.wpm || 0} WPM • ${game.accuracy || 0}% aniqlik</p>
+            </div>
+          </div>
+          <div class="history-score">${game.score}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+
+  // Load profile data
+  loadProfile();
+</script>
+
+</body>
+</html>

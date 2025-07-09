@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Mode - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --battle: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .battle-layout {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: var(--battle);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .online-count {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-secondary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .back-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .battle-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--battle);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .battle-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    /* Battle Options */
+    .battle-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 900px;
+      width: 100%;
+      margin-bottom: 60px;
+    }
+
+    .battle-option {
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .battle-option:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 40px rgba(226, 183, 20, 0.2);
+    }
+
+    .battle-option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .battle-option:hover::before {
+      transform: scaleX(1);
+    }
+
+    .option-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .option-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .option-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .option-count {
+      background: var(--bg-primary);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    /* User Info */
+    .user-info-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #d4a813);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      border: 3px solid var(--bg-tertiary);
+    }
+
+    .user-details h3 {
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+
+    .user-stats {
+      display: flex;
+      gap: 15px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .user-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(26, 26, 26, 0.95);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .modal-description {
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    .room-code-display {
+      background: var(--bg-primary);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .room-code-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .room-code-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn:hover {
+      background: #d4a813;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #d4a813;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-primary);
+    }
+
+    .btn-battle {
+      background: var(--battle);
+      color: white;
+    }
+
+    .btn-battle:hover {
+      background: #dc2626;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      z-index: 1001;
+      border: 1px solid var(--bg-tertiary);
+      font-size: 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .notification.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .notification.error {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .battle-layout {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 1025px) and (max-width: 1200px) {
+      .battle-options {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Battle Layout -->
+  <div class="battle-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo">⚔️</div>
+        <div class="logo-text">battle mode</div>
+      </div>
+      
+      <div class="online-count">
+        <div class="online-dot"></div>
+        <span>Online: <span id="onlineCount">1</span></span>
+      </div>
+      
+      <button class="back-btn" onclick="location.href='index.html'">
+        <span>⬅️</span>
+        <span>bosh sahifa</span>
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1 class="battle-title">Welcome to Battle</h1>
+      <p class="battle-subtitle">Real-time multiplayer typing battles</p>
+
+      <!-- Battle Options -->
+      <div class="battle-options">
+        <div class="battle-option" onclick="createRoom()">
+          <span class="option-icon">👥</span>
+          <div class="option-title">Create room</div>
+          <div class="option-description">Yangi xona yarating va do'stlaringizni taklif qiling</div>
+          <div class="option-count">Rooms: <span id="roomCount">0</span></div>
+        </div>
+
+        <div class="battle-option" onclick="browseRooms()">
+          <span class="option-icon">📋</span>
+          <div class="option-title">Browse public rooms</div>
+          <div class="option-description">Ochiq xonalarni ko'ring va qo'shiling</div>
+          <div class="option-count">Public: <span id="publicCount">0</span></div>
+        </div>
+
+        <div class="battle-option" onclick="enterCode()">
+          <span class="option-icon">🔗</span>
+          <div class="option-title">Enter code</div>
+          <div class="option-description">Xona kodini kiritib qo'shiling</div>
+          <div class="option-count">Join using code</div>
+        </div>
+      </div>
+
+      <!-- User Info -->
+      <div class="user-info-section">
+        <div class="user-avatar">👤</div>
+        <div class="user-details">
+          <h3 id="userName">Foydalanuvchi</h3>
+          <div class="user-stats">
+            <div class="user-stat">
+              <span>🏆</span>
+              <span id="userScore">0</span>
+            </div>
+            <div class="user-stat">
+              <span>⚡</span>
+              <span id="userWPM">0</span>
+              <span>WPM</span>
+            </div>
+            <div class="user-stat">
+              <span>🎮</span>
+              <span id="userGames">0</span>
+              <span>games</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Room Modal -->
+  <div class="modal" id="createRoomModal">
+    <div class="modal-content">
+      <div class="modal-title">🏠 Xona Yaratish</div>
+      <div class="modal-description">Yangi battle xonasi yarating va do'stlaringizni taklif qiling</div>
+      
+      <div class="form-group">
+        <label for="roomName">Xona nomi</label>
+        <input type="text" id="roomName" placeholder="Mening xonam" maxlength="30">
+      </div>
+
+      <div class="form-group">
+        <label for="roomType">Xona turi</label>
+        <select id="roomType" style="width: 100%; padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 8px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;">
+          <option value="public">🌐 Public - Hammaga ochiq</option>
+          <option value="private">🔒 Private - Faqat kod bilan</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="maxPlayers">Maksimal o'yinchilar</label>
+        <select id="maxPlayers" style="width: 100%; padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 8px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;">
+          <option value="2">2 o'yinchi</option>
+          <option value="4">4 o'yinchi</option>
+          <option value="6">6 o'yinchi</option>
+          <option value="8">8 o'yinchi</option>
+        </select>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn btn-battle" onclick="confirmCreateRoom()">
+          <span>🚀</span>
+          <span>Xona yaratish</span>
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('createRoomModal')">
+          <span>❌</span>
+          <span>Bekor qilish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Room Created Modal -->
+  <div class="modal" id="roomCreatedModal">
+    <div class="modal-content">
+      <div class="modal-title">🎉 Xona Yaratildi!</div>
+      <div class="modal-description">Xonangiz muvaffaqiyatli yaratildi. Quyidagi kodni do'stlaringizga yuboring:</div>
+      
+      <div class="room-code-display">
+        <div class="room-code-label">Room Code</div>
+        <div class="room-code-value" id="generatedRoomCode">ABC123</div>
+        <button class="copy-btn" onclick="copyRoomCode()">📋 Copy</button>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn btn-primary" onclick="enterRoom()">
+          <span>🚪</span>
+          <span>Xonaga kirish</span>
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('roomCreatedModal')">
+          <span>❌</span>
+          <span>Yopish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enter Code Modal -->
+  <div class="modal" id="enterCodeModal">
+    <div class="modal-content">
+      <div class="modal-title">🔗 Kod Kiritish</div>
+      <div class="modal-description">Xona kodini kiritib battle'ga qo'shiling</div>
+      
+      <div class="form-group">
+        <label for="roomCodeInput">Room Code</label>
+        <input type="text" id="roomCodeInput" placeholder="ABC123" maxlength="6" style="text-transform: uppercase; text-align: center; font-size: 1.2rem; letter-spacing: 2px;">
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn btn-primary" onclick="joinRoom()">
+          <span>🚪</span>
+          <span>Qo'shilish</span>
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('enterCodeModal')">
+          <span>❌</span>
+          <span>Bekor qilish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Browse Rooms Modal -->
+  <div class="modal" id="browseRoomsModal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-title">📋 Ochiq Xonalar</div>
+      <div class="modal-description">Qo'shilish uchun xonani tanlang</div>
+      
+      <div id="roomsList" style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
+        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+          <div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>
+          <div>Hozircha ochiq xonalar yo'q</div>
+          <div style="font-size: 0.9rem; margin-top: 5px;">Birinchi bo'lib xona yarating!</div>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn btn-primary" onclick="refreshRooms()">
+          <span>🔄</span>
+          <span>Yangilash</span>
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('browseRoomsModal')">
+          <span>❌</span>
+          <span>Yopish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, push, get, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  let currentRoomCode = null;
+
+  // Initialize user data
+  document.getElementById('userName').textContent = user.name;
+
+  // Load user stats
+  async function loadUserStats() {
+    const userRef = ref(db, "users/" + user.phone);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      document.getElementById('userScore').textContent = userData.score || 0;
+      document.getElementById('userWPM').textContent = Math.round(userData.avgWPM || 0);
+      document.getElementById('userGames').textContent = userData.gamesPlayed || 0;
+    }
+  }
+
+  // Generate room code
+  function generateRoomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  // Modal functions
+  window.createRoom = function() {
+    document.getElementById('createRoomModal').style.display = 'flex';
+  }
+
+  window.browseRooms = function() {
+    document.getElementById('browseRoomsModal').style.display = 'flex';
+    loadPublicRooms();
+  }
+
+  window.enterCode = function() {
+    document.getElementById('enterCodeModal').style.display = 'flex';
+  }
+
+  window.closeModal = function(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+  }
+
+  // Create room
+  window.confirmCreateRoom = async function() {
+    const roomName = document.getElementById('roomName').value.trim() || 'Unnamed Room';
+    const roomType = document.getElementById('roomType').value;
+    const maxPlayers = parseInt(document.getElementById('maxPlayers').value);
+    
+    const roomCode = generateRoomCode();
+    currentRoomCode = roomCode;
+    
+    const roomData = {
+      code: roomCode,
+      name: roomName,
+      type: roomType,
+      maxPlayers: maxPlayers,
+      currentPlayers: 1,
+      host: user.phone,
+      hostName: user.name,
+      players: {
+        [user.phone]: {
+          name: user.name,
+          phone: user.phone,
+          ready: false,
+          score: 0,
+          wpm: 0,
+          progress: 0,
+          joinedAt: Date.now()
+        }
+      },
+      status: 'waiting', // waiting, playing, finished
+      createdAt: Date.now(),
+      gameSettings: {
+        time: 30,
+        difficulty: 'medium'
+      }
+    };
+
+    try {
+      await set(ref(db, `battleRooms/${roomCode}`), roomData);
+      
+      document.getElementById('generatedRoomCode').textContent = roomCode;
+      closeModal('createRoomModal');
+      document.getElementById('roomCreatedModal').style.display = 'flex';
+      
+      showNotification('🎉 Xona muvaffaqiyatli yaratildi!', 'success');
+    } catch (error) {
+      console.error('Error creating room:', error);
+      showNotification('❌ Xona yaratishda xatolik!', 'error');
+    }
+  }
+
+  // Copy room code
+  window.copyRoomCode = function() {
+    const roomCode = document.getElementById('generatedRoomCode').textContent;
+    navigator.clipboard.writeText(roomCode).then(() => {
+      showNotification('📋 Kod nusxalandi!', 'success');
+    });
+  }
+
+  // Enter room
+  window.enterRoom = function() {
+    if (currentRoomCode) {
+      localStorage.setItem('battleRoomCode', currentRoomCode);
+      window.location.href = 'battle-room.html';
+    }
+  }
+
+  // Join room by code
+  window.joinRoom = async function() {
+    const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+    
+    if (!roomCode || roomCode.length !== 6) {
+      showNotification('❌ Noto\'g\'ri kod formati!', 'error');
+      return;
+    }
+
+    try {
+      const roomRef = ref(db, `battleRooms/${roomCode}`);
+      const snapshot = await get(roomRef);
+      
+      if (!snapshot.exists()) {
+        showNotification('❌ Xona topilmadi!', 'error');
+        return;
+      }
+
+      const roomData = snapshot.val();
+      
+      if (roomData.currentPlayers >= roomData.maxPlayers) {
+        showNotification('❌ Xona to\'liq!', 'error');
+        return;
+      }
+
+      if (roomData.status !== 'waiting') {
+        showNotification('❌ O\'yin allaqachon boshlangan!', 'error');
+        return;
+      }
+
+      // Add player to room
+      const playerData = {
+        name: user.name,
+        phone: user.phone,
+        ready: false,
+        score: 0,
+        wpm: 0,
+        progress: 0,
+        joinedAt: Date.now()
+      };
+
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}`), playerData);
+      await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), roomData.currentPlayers + 1);
+
+      localStorage.setItem('battleRoomCode', roomCode);
+      window.location.href = 'battle-room.html';
+      
+    } catch (error) {
+      console.error('Error joining room:', error);
+      showNotification('❌ Xonaga qo\'shilishda xatolik!', 'error');
+    }
+  }
+
+  // Load public rooms
+  async function loadPublicRooms() {
+    const roomsRef = ref(db, 'battleRooms');
+    const snapshot = await get(roomsRef);
+    const roomsList = document.getElementById('roomsList');
+    
+    if (!snapshot.exists()) {
+      roomsList.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+          <div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>
+          <div>Hozircha ochiq xonalar yo'q</div>
+          <div style="font-size: 0.9rem; margin-top: 5px;">Birinchi bo'lib xona yarating!</div>
+        </div>
+      `;
+      return;
+    }
+
+    const rooms = snapshot.val();
+    const publicRooms = Object.values(rooms).filter(room => 
+      room.type === 'public' && 
+      room.status === 'waiting' && 
+      room.currentPlayers < room.maxPlayers
+    );
+
+    if (publicRooms.length === 0) {
+      roomsList.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+          <div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>
+          <div>Hozircha ochiq xonalar yo'q</div>
+          <div style="font-size: 0.9rem; margin-top: 5px;">Birinchi bo'lib xona yarating!</div>
+        </div>
+      `;
+      return;
+    }
+
+    roomsList.innerHTML = publicRooms.map(room => `
+      <div style="background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 5px;">${room.name}</div>
+          <div style="color: var(--text-secondary); font-size: 0.9rem;">
+            👤 ${room.currentPlayers}/${room.maxPlayers} • 
+            👑 ${room.hostName} • 
+            ⏱ ${room.gameSettings.time}s • 
+            🎮 ${room.gameSettings.difficulty}
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="joinRoomDirect('${room.code}')" style="padding: 8px 16px; font-size: 0.9rem;">
+          <span>🚪</span>
+          <span>Qo'shilish</span>
+        </button>
+      </div>
+    `).join('');
+  }
+
+  // Join room directly
+  window.joinRoomDirect = async function(roomCode) {
+    try {
+      const roomRef = ref(db, `battleRooms/${roomCode}`);
+      const snapshot = await get(roomRef);
+      
+      if (!snapshot.exists()) {
+        showNotification('❌ Xona topilmadi!', 'error');
+        return;
+      }
+
+      const roomData = snapshot.val();
+      
+      if (roomData.currentPlayers >= roomData.maxPlayers) {
+        showNotification('❌ Xona to\'liq!', 'error');
+        return;
+      }
+
+      // Add player to room
+      const playerData = {
+        name: user.name,
+        phone: user.phone,
+        ready: false,
+        score: 0,
+        wpm: 0,
+        progress: 0,
+        joinedAt: Date.now()
+      };
+
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}`), playerData);
+      await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), roomData.currentPlayers + 1);
+
+      localStorage.setItem('battleRoomCode', roomCode);
+      window.location.href = 'battle-room.html';
+      
+    } catch (error) {
+      console.error('Error joining room:', error);
+      showNotification('❌ Xonaga qo\'shilishda xatolik!', 'error');
+    }
+  }
+
+  // Refresh rooms
+  window.refreshRooms = function() {
+    loadPublicRooms();
+    showNotification('🔄 Xonalar yangilandi!', 'success');
+  }
+
+  // Load room counts
+  function loadRoomCounts() {
+    const roomsRef = ref(db, 'battleRooms');
+    onValue(roomsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const rooms = Object.values(snapshot.val());
+        const totalRooms = rooms.length;
+        const publicRooms = rooms.filter(room => room.type === 'public' && room.status === 'waiting').length;
+        
+        document.getElementById('roomCount').textContent = totalRooms;
+        document.getElementById('publicCount').textContent = publicRooms;
+      } else {
+        document.getElementById('roomCount').textContent = '0';
+        document.getElementById('publicCount').textContent = '0';
+      }
+    });
+  }
+
+  // Notification system
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  // Close modals on outside click
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+
+  // Auto-uppercase room code input
+  document.getElementById('roomCodeInput').addEventListener('input', (e) => {
+    e.target.value = e.target.value.toUpperCase();
+  });
+
+  // Initialize
+  loadUserStats();
+  loadRoomCounts();
+
+  // Simulate online count (you can make this real-time)
+  document.getElementById('onlineCount').textContent = Math.floor(Math.random() * 50) + 10;
+</script>
+
+</body>
+</html>

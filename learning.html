@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎓 O'rganish - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border: #3c3c3c;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #e9ecef;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6c757d;
+      --accent: #e2b714;
+      --border: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .main-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .back-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 40px;
+    }
+
+    /* Page Title */
+    .page-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .page-title h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    /* Learning Modules */
+    .learning-modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .module-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 40px rgba(226, 183, 20, 0.2);
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .module-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .module-icon {
+      font-size: 2.5rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+
+    .module-info h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .module-level {
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .module-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .module-progress {
+      margin-bottom: 20px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .progress-text {
+      color: var(--text-secondary);
+    }
+
+    .progress-percentage {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .module-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .module-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #d4a813;
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Learning Stats */
+    .learning-stats {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+
+    .stats-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stat-card-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Achievements */
+    .achievements-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .achievement {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .achievement.unlocked {
+      border-color: var(--accent);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    .achievement.locked {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+
+    .achievement:hover {
+      transform: scale(1.05);
+    }
+
+    .achievement-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .achievement-name {
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .achievement-description {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .main-layout {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 1025px) and (max-width: 1200px) {
+      .main-content {
+        padding: 30px;
+      }
+      
+      .learning-modules {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo">🎓</div>
+        <div class="logo-text">tez roq yoz</div>
+      </div>
+      
+      <div class="header-controls">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Tema o'zgartirish">
+          <span id="themeIcon">🌙</span>
+        </button>
+        
+        <button class="back-btn" onclick="location.href='index.html'">
+          <span>⬅️</span>
+          <span>bosh sahifa</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Page Title -->
+      <div class="page-title">
+        <h1>Learning Center</h1>
+        <p class="page-subtitle">Typing mahoratingizni oshiring va yangi texnikalarni o'rganing</p>
+      </div>
+
+      <!-- Learning Stats -->
+      <div class="learning-stats">
+        <div class="stats-title">
+          <span>📊</span>
+          <span>O'rganish Statistikasi</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-value" id="totalLessons">0</div>
+            <div class="stat-card-label">Tugallangan Darslar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="learningTime">0h</div>
+            <div class="stat-card-label">O'rganish Vaqti</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="improvementRate">+0%</div>
+            <div class="stat-card-label">Yaxshilanish</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="currentStreak">0</div>
+            <div class="stat-card-label">Kunlik Streak</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Learning Modules -->
+      <div class="learning-modules">
+        <!-- Beginner Module -->
+        <div class="module-card" onclick="startModule('beginner')">
+          <div class="module-header">
+            <div class="module-icon">🌱</div>
+            <div class="module-info">
+              <h3>Boshlang'ich</h3>
+              <div class="module-level">BEGINNER</div>
+            </div>
+          </div>
+          <div class="module-description">
+            Asosiy harflar va so'zlar bilan tanishing. Barmoq pozitsiyasi va typing asoslarini o'rganing.
+          </div>
+          <div class="module-progress">
+            <div class="progress-label">
+              <span class="progress-text">Progress</span>
+              <span class="progress-percentage" id="beginnerProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="beginnerBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="module-stats">
+            <div class="stat-item">
+              <div class="stat-value">12</div>
+              <div class="stat-label">Darslar</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">~2h</div>
+              <div class="stat-label">Vaqt</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">15-25</div>
+              <div class="stat-label">WPM</div>
+            </div>
+          </div>
+          <div class="module-actions">
+            <button class="btn btn-primary">
+              <span>🚀</span>
+              <span>Boshlash</span>
+            </button>
+            <button class="btn btn-secondary">
+              <span>📋</span>
+              <span>Darslar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Intermediate Module -->
+        <div class="module-card" onclick="startModule('intermediate')">
+          <div class="module-header">
+            <div class="module-icon">🎯</div>
+            <div class="module-info">
+              <h3>O'rta</h3>
+              <div class="module-level">INTERMEDIATE</div>
+            </div>
+          </div>
+          <div class="module-description">
+            Tezlikni oshiring va aniqlikni yaxshilang. Murakkab so'zlar va iboralar bilan ishlang.
+          </div>
+          <div class="module-progress">
+            <div class="progress-label">
+              <span class="progress-text">Progress</span>
+              <span class="progress-percentage" id="intermediateProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="intermediateBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="module-stats">
+            <div class="stat-item">
+              <div class="stat-value">15</div>
+              <div class="stat-label">Darslar</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">~3h</div>
+              <div class="stat-label">Vaqt</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">25-40</div>
+              <div class="stat-label">WPM</div>
+            </div>
+          </div>
+          <div class="module-actions">
+            <button class="btn btn-primary">
+              <span>🚀</span>
+              <span>Davom etish</span>
+            </button>
+            <button class="btn btn-secondary">
+              <span>📋</span>
+              <span>Darslar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Advanced Module -->
+        <div class="module-card" onclick="startModule('advanced')">
+          <div class="module-header">
+            <div class="module-icon">🔥</div>
+            <div class="module-info">
+              <h3>Ilg'or</h3>
+              <div class="module-level">ADVANCED</div>
+            </div>
+          </div>
+          <div class="module-description">
+            Professional darajaga yeting. Murakkab matnlar va maxsus belgilar bilan ishlang.
+          </div>
+          <div class="module-progress">
+            <div class="progress-label">
+              <span class="progress-text">Progress</span>
+              <span class="progress-percentage" id="advancedProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="advancedBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="module-stats">
+            <div class="stat-item">
+              <div class="stat-value">18</div>
+              <div class="stat-label">Darslar</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">~4h</div>
+              <div class="stat-label">Vaqt</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">40-60</div>
+              <div class="stat-label">WPM</div>
+            </div>
+          </div>
+          <div class="module-actions">
+            <button class="btn btn-primary">
+              <span>🚀</span>
+              <span>Boshlash</span>
+            </button>
+            <button class="btn btn-secondary">
+              <span>📋</span>
+              <span>Darslar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Expert Module -->
+        <div class="module-card" onclick="startModule('expert')">
+          <div class="module-header">
+            <div class="module-icon">👑</div>
+            <div class="module-info">
+              <h3>Ekspert</h3>
+              <div class="module-level">EXPERT</div>
+            </div>
+          </div>
+          <div class="module-description">
+            Typing ustasi bo'ling. Eng qiyin matnlar va professional texnikalar bilan ishlang.
+          </div>
+          <div class="module-progress">
+            <div class="progress-label">
+              <span class="progress-text">Progress</span>
+              <span class="progress-percentage" id="expertProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="expertBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="module-stats">
+            <div class="stat-item">
+              <div class="stat-value">20</div>
+              <div class="stat-label">Darslar</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">~5h</div>
+              <div class="stat-label">Vaqt</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">60+</div>
+              <div class="stat-label">WPM</div>
+            </div>
+          </div>
+          <div class="module-actions">
+            <button class="btn btn-primary">
+              <span>🚀</span>
+              <span>Boshlash</span>
+            </button>
+            <button class="btn btn-secondary">
+              <span>📋</span>
+              <span>Darslar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="achievements-section">
+        <div class="stats-title">
+          <span>🏅</span>
+          <span>O'rganish Yutuqlari</span>
+        </div>
+        <div class="achievements-grid" id="learningAchievements">
+          <!-- Achievements will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  // Learning achievements
+  const learningAchievements = [
+    { id: 'first_lesson', icon: '🎓', name: 'Birinchi Dars', description: 'Birinchi darsni tugallang' },
+    { id: 'week_streak', icon: '🔥', name: 'Haftalik Streak', description: '7 kun ketma-ket o\'rganing' },
+    { id: 'speed_boost', icon: '⚡', name: 'Tezlik Oshishi', description: 'WPM ni 10 ga oshiring' },
+    { id: 'accuracy_master', icon: '🎯', name: 'Aniqlik Ustasi', description: '95%+ aniqlikka erishing' },
+    { id: 'module_complete', icon: '✅', name: 'Modul Tugallandi', description: 'Bitta modulni tugallang' },
+    { id: 'dedicated_learner', icon: '📚', name: 'Sadoqatli O\'quvchi', description: '50+ dars tugallang' },
+    { id: 'typing_guru', icon: '🧘', name: 'Typing Guru', description: 'Barcha modullarni tugallang' },
+    { id: 'perfectionist', icon: '💎', name: 'Perfeksionist', description: '100% aniqlik bilan dars tugallang' }
+  ];
+
+  // Theme System
+  function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    const currentTheme = body.getAttribute('data-theme');
+    
+    if (currentTheme === 'dark') {
+      body.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '☀️';
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '🌙';
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Start learning module
+  window.startModule = function(moduleType) {
+    localStorage.setItem('learningModule', moduleType);
+    window.location.href = 'learning-practice.html';
+  }
+
+  // Load learning progress
+  async function loadLearningProgress() {
+    const learningRef = ref(db, `learning/${user.phone}`);
+    const snapshot = await get(learningRef);
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      updateLearningStats(data);
+      updateModuleProgress(data);
+    } else {
+      // Initialize learning data
+      const initialData = {
+        totalLessons: 0,
+        learningTime: 0,
+        improvementRate: 0,
+        currentStreak: 0,
+        modules: {
+          beginner: { progress: 0, completed: 0, total: 12 },
+          intermediate: { progress: 0, completed: 0, total: 15 },
+          advanced: { progress: 0, completed: 0, total: 18 },
+          expert: { progress: 0, completed: 0, total: 20 }
+        }
+      };
+      
+      await set(learningRef, initialData);
+      updateLearningStats(initialData);
+      updateModuleProgress(initialData);
+    }
+  }
+
+  function updateLearningStats(data) {
+    document.getElementById('totalLessons').textContent = data.totalLessons || 0;
+    document.getElementById('learningTime').textContent = Math.floor((data.learningTime || 0) / 3600) + 'h';
+    document.getElementById('improvementRate').textContent = '+' + (data.improvementRate || 0) + '%';
+    document.getElementById('currentStreak').textContent = data.currentStreak || 0;
+  }
+
+  function updateModuleProgress(data) {
+    const modules = data.modules || {};
+    
+    Object.keys(modules).forEach(moduleType => {
+      const module = modules[moduleType];
+      const progress = Math.round((module.completed / module.total) * 100);
+      
+      const progressElement = document.getElementById(`${moduleType}Progress`);
+      const barElement = document.getElementById(`${moduleType}Bar`);
+      
+      if (progressElement && barElement) {
+        progressElement.textContent = progress + '%';
+        barElement.style.width = progress + '%';
+      }
+    });
+  }
+
+  function updateLearningAchievements(data) {
+    const container = document.getElementById('learningAchievements');
+    container.innerHTML = '';
+    
+    learningAchievements.forEach(achievement => {
+      const div = document.createElement('div');
+      div.className = 'achievement';
+      
+      // Check if achievement is unlocked (simplified logic)
+      const isUnlocked = (data.totalLessons || 0) > 0; // Simplified for demo
+      div.classList.add(isUnlocked ? 'unlocked' : 'locked');
+      
+      div.innerHTML = `
+        <div class="achievement-icon">${achievement.icon}</div>
+        <div class="achievement-name">${achievement.name}</div>
+        <div class="achievement-description">${achievement.description}</div>
+      `;
+      
+      container.appendChild(div);
+    });
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+  // Global functions
+  window.toggleTheme = toggleTheme;
+
+  // Load data
+  loadLearningProgress();
+</script>
+
+</body>
+</html>

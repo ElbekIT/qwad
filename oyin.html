@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'yin - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --border: #3c3c3c;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #e9ecef;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6c757d;
+      --accent: #e2b714;
+      --border: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .game-layout {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .back-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Game Content */
+    .game-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Game Stats */
+    .game-stats {
+      display: flex;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+
+    .stat-item {
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-value {
+      color: var(--accent);
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    #timer.warning {
+      color: var(--error);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      max-width: 800px;
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: 3px;
+      margin-bottom: 60px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* Word Display */
+    .word-display {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 120px;
+    }
+
+    #wordBox {
+      font-size: 4rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      transition: color 0.2s;
+      user-select: none;
+      line-height: 1.2;
+    }
+
+    /* Input Section */
+    .input-section {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 60px;
+    }
+
+    #inputWord {
+      width: 100%;
+      padding: 20px 0;
+      border: none;
+      border-bottom: 3px solid var(--border);
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 2rem;
+      font-weight: 500;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    #inputWord:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    #inputWord.correct {
+      border-bottom-color: var(--success);
+      animation: correct 0.3s;
+    }
+
+    #inputWord.incorrect {
+      border-bottom-color: var(--error);
+      animation: shake 0.3s;
+    }
+
+    @keyframes correct {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    /* Leaderboard */
+    .leaderboard {
+      width: 100%;
+      max-width: 600px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .leaderboard h3 {
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .leaderboard-item:last-child {
+      border-bottom: none;
+    }
+
+    .leaderboard-rank {
+      width: 40px;
+      font-weight: 600;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .leaderboard-name {
+      flex: 1;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .leaderboard-score {
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    /* Game Over Modal */
+    .game-over {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(26, 26, 26, 0.95);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-over-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 50px;
+      text-align: center;
+      min-width: 400px;
+    }
+
+    .game-over h2 {
+      color: var(--text-primary);
+      font-size: 2rem;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .final-score {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+
+    .game-over-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .game-over-stat {
+      text-align: center;
+    }
+
+    .game-over-stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    .game-over-stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .restart-btn {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 8px;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .restart-btn:hover {
+      background: #d4a813;
+      transform: translateY(-1px);
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .game-layout {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 1025px) and (max-width: 1200px) {
+      .game-content {
+        padding: 30px;
+      }
+      
+      .game-stats {
+        gap: 40px;
+      }
+      
+      #wordBox {
+        font-size: 3rem;
+      }
+      
+      #inputWord {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Game Layout -->
+  <div class="game-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo">🎯</div>
+        <div class="logo-text">tez roq yoz</div>
+      </div>
+      
+      <div class="header-controls">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Tema o'zgartirish">
+          <span id="themeIcon">🌙</span>
+        </button>
+        
+        <button class="back-btn" onclick="location.href='index.html'">
+          <span>⬅️</span>
+          <span>bosh sahifa</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Game Content -->
+    <div class="game-content">
+      <!-- Game Stats -->
+      <div class="game-stats">
+        <div class="stat-item">
+          <div class="stat-label">vaqt</div>
+          <div class="stat-value" id="timer">30</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">ball</div>
+          <div class="stat-value" id="score">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">streak</div>
+          <div class="stat-value" id="streak">0</div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <!-- Word Display -->
+      <div class="word-display">
+        <div id="wordBox">Boshlash uchun tayyor...</div>
+      </div>
+
+      <!-- Input Section -->
+      <div class="input-section">
+        <input type="text" id="inputWord" placeholder="So'zni yozing va Enter bosing" autocomplete="off" />
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="leaderboard">
+        <h3>
+          <span>🏆</span>
+          <span>Top Players</span>
+        </h3>
+        <div id="scores">Yuklanmoqda...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over Modal -->
+  <div class="game-over" id="gameOver">
+    <div class="game-over-content">
+      <h2>🎉 O'yin Tugadi!</h2>
+      <div class="final-score" id="finalScore">0</div>
+      
+      <div class="game-over-stats">
+        <div class="game-over-stat">
+          <div class="game-over-stat-value" id="finalWPM">0</div>
+          <div class="game-over-stat-label">WPM</div>
+        </div>
+        <div class="game-over-stat">
+          <div class="game-over-stat-value" id="finalAccuracy">0%</div>
+          <div class="game-over-stat-label">Aniqlik</div>
+        </div>
+        <div class="game-over-stat">
+          <div class="game-over-stat-value" id="finalStreak">0</div>
+          <div class="game-over-stat-label">Max Streak</div>
+        </div>
+      </div>
+      
+      <button class="restart-btn" onclick="restartGame()">
+        🔄 Qayta O'ynash
+      </button>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "index.html";
+
+  let time = parseInt(localStorage.getItem("sozTime") || "30");
+  const difficulty = localStorage.getItem("sozDifficulty") || "medium";
+  
+  const wordLists = {
+    easy: [
+      "olma", "nok", "uzum", "shaftoli", "gilos", "qovun", "tarvuz", "banan",
+      "kitob", "qalam", "daftar", "stol", "stul", "deraza", "eshik", "kalit",
+      "uy", "xona", "oshxona", "hammom", "yotoqxona", "bog'", "hovli", "ko'cha",
+      "oy", "quyosh", "yulduz", "bulut", "yomg'ir", "qor", "shamol", "issiq",
+      "suv", "choy", "qahva", "non", "guruch", "makaron", "go'sht", "baliq",
+      "bola", "qiz", "ona", "ota", "aka", "opa", "uka", "singil",
+      "it", "mushuk", "ot", "sigir", "qo'y", "tovuq", "parranda", "baliq",
+      "qizil", "ko'k", "sariq", "yashil", "oq", "qora", "jigarrang", "pushti",
+      "bir", "ikki", "uch", "to'rt", "besh", "olti", "yetti", "sakkiz"
+    ],
+    medium: [
+      "telefon", "kompyuter", "televizor", "muzlatgich", "kir yuvish mashinasi",
+      "maktab", "universitet", "kutubxona", "shifoxona", "dorixona", "bozor",
+      "daraxt", "gul", "barg", "meva", "sabzavot", "don", "urug'", "ildiz",
+      "qush", "hasharot", "kapalak", "chumoli", "ari", "chivin", "pashshacha",
+      "mashina", "avtobus", "poyezd", "samolyot", "kema", "velosiped", "mototsikl",
+      "dastur", "internet", "sayt", "elektron pochta", "parol", "fayl", "papka",
+      "futbol", "basketbol", "tennis", "suzish", "yugurish", "sakrash", "kurash",
+      "musiqa", "qo'shiq", "raqs", "teatr", "kino", "konsert", "festival",
+      "ish", "kasb", "maosh", "bozor", "savdo", "xarid", "pul", "karta",
+      "sog'liq", "kasallik", "dori", "shifokor", "hamshira", "operatsiya",
+      "ta'lim", "dars", "imtihon", "baho", "diplom", "sertifikat", "kurs"
+    ],
+    hard: [
+      "universitet", "matematika", "fizika", "kimyo", "biologiya", "geografiya",
+      "tarix", "adabiyot", "falsafa", "psixologiya", "sotsiologiya", "iqtisod",
+      "astronomiya", "geologiya", "ekologiya", "antropologiya", "arxeologiya",
+      "demokratiya", "respublika", "konstitutsiya", "parlament", "prezident",
+      "texnologiya", "innovatsiya", "raqamlashtirish", "sun'iy intellekt",
+      "biotexnologiya", "nanotexnologiya", "robototexnika", "kiberxavfsizlik",
+      "globallashuv", "urbanizatsiya", "industrializatsiya", "modernizatsiya",
+      "transformatsiya", "integratsiya", "diversifikatsiya", "optimallashtirish",
+      "eksperiment", "tadqiqot", "metodologiya", "statistika", "analitika",
+      "infrastruktura", "arxitektura", "muhandislik", "loyihalash", "qurilish",
+      "ekosistema", "biodiversitet", "iqlim o'zgarishi", "barqarorlik",
+      "qayta tiklanuvchi energiya", "fotosintez", "evolyutsiya", "genetika",
+      "mikroorganizm", "antibiotik", "vaktsina", "immunitet", "metabolizm",
+      "neyron", "sinaps", "gormon", "ferment", "protein", "DNK", "RNK"
+    ],
+    expert: [
+      "konstitutsiyaviy", "demokratlashtirish", "liberalizatsiya", "globalizatsiya",
+      "institutlashtirish", "dekonstruktsiya", "postmodernizm", "fenomenologiya",
+      "epistemologiya", "ontologiya", "metodologiya", "terminologiya",
+      "sistematizatsiya", "kategoriyalashtirish", "klassifikatsiya", "tipologiya",
+      "differentsiatsiya", "integratsiya", "koordinatsiya", "sinxronizatsiya",
+      "optimizatsiya", "maksimizatsiya", "minimizatsiya", "standartlashtirish",
+      "unifikatsiya", "diversifikatsiya", "spetsializatsiya", "universalizatsiya",
+      "individualizatsiya", "personalizatsiya", "sotsializatsiya", "institutionalizatsiya",
+      "professionalizatsiya", "kommertsializatsiya", "industrializatsiya", "urbanizatsiya",
+      "modernizatsiya", "texnologizatsiya", "raqamlashtirish", "avtomatlashtirish",
+      "robotlashtirish", "intellektualizatsiya", "virtualizatsiya", "tsifrovizatsiya"
+    ]
+  };
+
+  const wordList = wordLists[difficulty];
+  let currentWord = "";
+  let score = 0;
+  let streak = 0;
+  let maxStreak = 0;
+  let gameActive = false;
+  let usedWords = new Set();
+  let correctWords = 0;
+  let totalWords = 0;
+  let gameStartTime = 0;
+
+  const wordBox = document.getElementById("wordBox");
+  const input = document.getElementById("inputWord");
+  const timer = document.getElementById("timer");
+  const scoreBox = document.getElementById("score");
+  const streakBox = document.getElementById("streak");
+  const progressBar = document.getElementById("progressBar");
+
+  // Theme System
+  function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    const currentTheme = body.getAttribute('data-theme');
+    
+    if (currentTheme === 'dark') {
+      body.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '☀️';
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '🌙';
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  function getRandomWord() {
+    if (usedWords.size >= wordList.length) {
+      usedWords.clear();
+    }
+    
+    let randomWord;
+    do {
+      randomWord = wordList[Math.floor(Math.random() * wordList.length)];
+    } while (usedWords.has(randomWord));
+    
+    usedWords.add(randomWord);
+    return randomWord;
+  }
+
+  function newWord() {
+    currentWord = getRandomWord();
+    wordBox.textContent = currentWord;
+    input.value = "";
+    input.focus();
+    input.className = "";
+  }
+
+  function updateScoreboard() {
+    const scoresDiv = document.getElementById("scores");
+    const usersRef = ref(db, "users");
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      scoresDiv.innerHTML = "";
+      if (data) {
+        const sorted = Object.values(data).sort((a, b) => b.score - a.score).slice(0, 5);
+        sorted.forEach((u, i) => {
+          const item = document.createElement('div');
+          item.className = 'leaderboard-item';
+          item.innerHTML = `
+            <div class="leaderboard-rank">${i + 1}</div>
+            <div class="leaderboard-name">${u.name}</div>
+            <div class="leaderboard-score">${u.score}</div>
+          `;
+          scoresDiv.appendChild(item);
+        });
+      } else {
+        scoresDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">Hali natijalar yo\'q</div>';
+      }
+    });
+  }
+
+  function updateProgress() {
+    const totalTime = parseInt(localStorage.getItem("sozTime") || "30");
+    const progress = ((totalTime - time) / totalTime) * 100;
+    progressBar.style.width = progress + "%";
+  }
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && gameActive) {
+      const userInput = input.value.trim().toLowerCase();
+      const correctAnswer = currentWord.toLowerCase();
+      
+      totalWords++;
+      
+      if (userInput === correctAnswer) {
+        score++;
+        streak++;
+        correctWords++;
+        maxStreak = Math.max(maxStreak, streak);
+        
+        scoreBox.textContent = score;
+        streakBox.textContent = streak;
+        
+        input.classList.add('correct');
+        setTimeout(() => input.classList.remove('correct'), 300);
+        
+        if (streak >= 3 && streak % 3 === 0) {
+          time += 2;
+        }
+        
+        newWord();
+      } else {
+        streak = 0;
+        streakBox.textContent = streak;
+        
+        input.classList.add('incorrect');
+        setTimeout(() => input.classList.remove('incorrect'), 300);
+        
+        input.value = "";
+      }
+    }
+  });
+
+  function endGame() {
+    gameActive = false;
+    timer.textContent = "0";
+    input.disabled = true;
+    
+    const gameEndTime = Date.now();
+    const gameTimeInSeconds = (gameEndTime - gameStartTime) / 1000;
+    const wpm = Math.round((correctWords / gameTimeInSeconds) * 60);
+    const accuracy = Math.round((correctWords / totalWords) * 100) || 0;
+    
+    document.getElementById("finalScore").textContent = score;
+    document.getElementById("finalWPM").textContent = wpm;
+    document.getElementById("finalAccuracy").textContent = accuracy + "%";
+    document.getElementById("finalStreak").textContent = maxStreak;
+    document.getElementById("gameOver").style.display = "flex";
+    
+    const userRef = ref(db, "users/" + user.phone);
+    onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data || score > data.score) {
+        set(userRef, {
+          name: user.name,
+          phone: user.phone,
+          score,
+          maxStreak,
+          difficulty,
+          timestamp: Date.now(),
+          wordsTyped: correctWords,
+          gamesPlayed: (data?.gamesPlayed || 0) + 1,
+          avgWPM: wpm,
+          accuracy: accuracy,
+          totalTime: (data?.totalTime || 0) + gameTimeInSeconds
+        });
+      }
+    }, { onlyOnce: true });
+  }
+
+  function startGame() {
+    gameActive = true;
+    gameStartTime = Date.now();
+    usedWords.clear();
+    newWord();
+    input.disabled = false;
+    input.focus();
+    
+    const interval = setInterval(() => {
+      time--;
+      timer.textContent = time;
+      
+      if (time <= 10) {
+        timer.classList.add('warning');
+      }
+      
+      updateProgress();
+      
+      if (time <= 0) {
+        clearInterval(interval);
+        endGame();
+      }
+    }, 1000);
+  }
+
+  window.restartGame = function() {
+    location.reload();
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+  // Global functions
+  window.toggleTheme = toggleTheme;
+
+  timer.textContent = time;
+  updateScoreboard();
+  startGame();
+</script>
+
+</body>
+</html>

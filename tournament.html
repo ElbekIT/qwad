@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏆 Tournament - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border: #3c3c3c;
+      --tournament: #8b5cf6;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #e9ecef;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6c757d;
+      --accent: #e2b714;
+      --border: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Block */
+    .mobile-block {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .mobile-block-icon {
+      font-size: 5rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .mobile-block-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .mobile-block-message {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    /* Main Layout */
+    .main-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: var(--tournament);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .back-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 40px;
+    }
+
+    /* Page Title */
+    .page-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .page-title h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    /* Tournament Tabs */
+    .tournament-tabs {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .tournament-tab {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tournament-tab:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .tournament-tab.active {
+      background: var(--tournament);
+      color: white;
+      border-color: var(--tournament);
+    }
+
+    /* Tournament Grid */
+    .tournament-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .tournament-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tournament-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--tournament);
+      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.2);
+    }
+
+    .tournament-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--tournament);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .tournament-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .tournament-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .tournament-info h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .tournament-type {
+      background: var(--tournament);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .tournament-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .status-live { background: var(--error); }
+    .status-upcoming { background: var(--warning); }
+    .status-finished { background: var(--text-secondary); }
+
+    .tournament-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tournament-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .detail-icon {
+      color: var(--tournament);
+    }
+
+    .detail-text {
+      color: var(--text-secondary);
+    }
+
+    .detail-value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .tournament-prize {
+      background: linear-gradient(135deg, var(--accent), #d4a813);
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .prize-label {
+      color: var(--bg-primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .prize-amount {
+      color: var(--bg-primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .tournament-participants {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .participants-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .participants-count {
+      color: var(--tournament);
+      font-weight: 600;
+    }
+
+    .participants-max {
+      color: var(--text-secondary);
+    }
+
+    .tournament-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-tournament {
+      background: var(--tournament);
+      color: white;
+    }
+
+    .btn-tournament:hover {
+      background: #7c3aed;
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Tournament History */
+    .tournament-history {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+    }
+
+    .history-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .history-item:hover {
+      border-color: var(--tournament);
+    }
+
+    .history-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .history-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--tournament);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    .history-details h4 {
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .history-details p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .history-result {
+      text-align: right;
+    }
+
+    .result-position {
+      color: var(--tournament);
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 3px;
+    }
+
+    .result-prize {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Mobile Detection */
+    @media (max-width: 1024px) {
+      .mobile-block {
+        display: flex !important;
+      }
+      
+      .main-layout {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 1025px) and (max-width: 1200px) {
+      .main-content {
+        padding: 30px;
+      }
+      
+      .tournament-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- Mobile Block Screen -->
+  <div class="mobile-block">
+    <div class="mobile-block-icon">🖥️</div>
+    <div class="mobile-block-title">BU SAYT GA FAQAT KOMPYUTERDAN KIRSA BO'LADI</div>
+    <div class="mobile-block-message">
+      UZUR<br><br>
+      Bu professional typing game faqat kompyuter va katta ekranlar uchun mo'ljallangan.
+      Iltimos, kompyuteringizdan foydalaning.
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo">🏆</div>
+        <div class="logo-text">tez roq yoz</div>
+      </div>
+      
+      <div class="header-controls">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Tema o'zgartirish">
+          <span id="themeIcon">🌙</span>
+        </button>
+        
+        <button class="back-btn" onclick="location.href='index.html'">
+          <span>⬅️</span>
+          <span>bosh sahifa</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Page Title -->
+      <div class="page-title">
+        <h1>Tournaments</h1>
+        <p class="page-subtitle">Professional musobaqalarda ishtirok eting va mukofotlar yutib oling</p>
+      </div>
+
+      <!-- Tournament Tabs -->
+      <div class="tournament-tabs">
+        <div class="tournament-tab active" onclick="filterTournaments('live')">
+          <span>🔴</span>
+          <span>Live</span>
+        </div>
+        <div class="tournament-tab" onclick="filterTournaments('upcoming')">
+          <span>⏰</span>
+          <span>Upcoming</span>
+        </div>
+        <div class="tournament-tab" onclick="filterTournaments('finished')">
+          <span>✅</span>
+          <span>Finished</span>
+        </div>
+        <div class="tournament-tab" onclick="filterTournaments('my')">
+          <span>👤</span>
+          <span>My Tournaments</span>
+        </div>
+      </div>
+
+      <!-- Tournament Grid -->
+      <div class="tournament-grid" id="tournamentGrid">
+        <!-- Live Tournament -->
+        <div class="tournament-card">
+          <div class="tournament-header">
+            <div class="tournament-info">
+              <h3>Weekly Speed Championship</h3>
+              <div class="tournament-type">SPEED</div>
+            </div>
+            <div class="tournament-status">
+              <div class="status-dot status-live"></div>
+              <span style="color: var(--error);">LIVE</span>
+            </div>
+          </div>
+          <div class="tournament-description">
+            Haftalik tezlik musobaqasi. Eng tez typing qiluvchi o'yinchilar g'olib bo'ladi!
+          </div>
+          <div class="tournament-details">
+            <div class="detail-item">
+              <span class="detail-icon">⏱️</span>
+              <span class="detail-text">Davomiyligi:</span>
+              <span class="detail-value">60s</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🎮</span>
+              <span class="detail-text">Qiyinlik:</span>
+              <span class="detail-value">Medium</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span class="detail-text">Tugaydi:</span>
+              <span class="detail-value">2h 30m</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🏅</span>
+              <span class="detail-text">Format:</span>
+              <span class="detail-value">Best Score</span>
+            </div>
+          </div>
+          <div class="tournament-prize">
+            <div class="prize-label">Jami Mukofot</div>
+            <div class="prize-amount">1000 XP</div>
+          </div>
+          <div class="tournament-participants">
+            <div class="participants-info">
+              <span>👥</span>
+              <span class="participants-count">47</span>
+              <span class="participants-max">/ 100</span>
+            </div>
+            <div style="color: var(--success); font-weight: 600;">47% to'ldi</div>
+          </div>
+          <div class="tournament-actions">
+            <button class="btn btn-tournament" onclick="joinTournament('weekly-speed')">
+              <span>🚀</span>
+              <span>Qo'shilish</span>
+            </button>
+            <button class="btn btn-secondary" onclick="viewTournament('weekly-speed')">
+              <span>👁️</span>
+              <span>Ko'rish</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Upcoming Tournament -->
+        <div class="tournament-card">
+          <div class="tournament-header">
+            <div class="tournament-info">
+              <h3>Monthly Accuracy Cup</h3>
+              <div class="tournament-type">ACCURACY</div>
+            </div>
+            <div class="tournament-status">
+              <div class="status-dot status-upcoming"></div>
+              <span style="color: var(--warning);">UPCOMING</span>
+            </div>
+          </div>
+          <div class="tournament-description">
+            Oylik aniqlik kubogi. Eng yuqori aniqlik bilan typing qiluvchilar g'olib!
+          </div>
+          <div class="tournament-details">
+            <div class="detail-item">
+              <span class="detail-icon">⏱️</span>
+              <span class="detail-text">Davomiyligi:</span>
+              <span class="detail-value">120s</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🎮</span>
+              <span class="detail-text">Qiyinlik:</span>
+              <span class="detail-value">Hard</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span class="detail-text">Boshlanadi:</span>
+              <span class="detail-value">3 kun</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🏅</span>
+              <span class="detail-text">Format:</span>
+              <span class="detail-value">Best Accuracy</span>
+            </div>
+          </div>
+          <div class="tournament-prize">
+            <div class="prize-label">Jami Mukofot</div>
+            <div class="prize-amount">2500 XP</div>
+          </div>
+          <div class="tournament-participants">
+            <div class="participants-info">
+              <span>👥</span>
+              <span class="participants-count">23</span>
+              <span class="participants-max">/ 50</span>
+            </div>
+            <div style="color: var(--warning); font-weight: 600;">46% to'ldi</div>
+          </div>
+          <div class="tournament-actions">
+            <button class="btn btn-tournament" onclick="registerTournament('monthly-accuracy')">
+              <span>📝</span>
+              <span>Ro'yxatdan o'tish</span>
+            </button>
+            <button class="btn btn-secondary" onclick="viewTournament('monthly-accuracy')">
+              <span>👁️</span>
+              <span>Ko'rish</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Expert Tournament -->
+        <div class="tournament-card">
+          <div class="tournament-header">
+            <div class="tournament-info">
+              <h3>Expert Challenge</h3>
+              <div class="tournament-type">EXPERT</div>
+            </div>
+            <div class="tournament-status">
+              <div class="status-dot status-upcoming"></div>
+              <span style="color: var(--warning);">UPCOMING</span>
+            </div>
+          </div>
+          <div class="tournament-description">
+            Faqat ekspert o'yinchilar uchun! Eng qiyin so'zlar va professional texnikalar.
+          </div>
+          <div class="tournament-details">
+            <div class="detail-item">
+              <span class="detail-icon">⏱️</span>
+              <span class="detail-text">Davomiyligi:</span>
+              <span class="detail-value">180s</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🎮</span>
+              <span class="detail-text">Qiyinlik:</span>
+              <span class="detail-value">Expert</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span class="detail-text">Boshlanadi:</span>
+              <span class="detail-value">1 hafta</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🏅</span>
+              <span class="detail-text">Format:</span>
+              <span class="detail-value">Combined Score</span>
+            </div>
+          </div>
+          <div class="tournament-prize">
+            <div class="prize-label">Jami Mukofot</div>
+            <div class="prize-amount">5000 XP</div>
+          </div>
+          <div class="tournament-participants">
+            <div class="participants-info">
+              <span>👥</span>
+              <span class="participants-count">8</span>
+              <span class="participants-max">/ 20</span>
+            </div>
+            <div style="color: var(--error); font-weight: 600;">40% to'ldi</div>
+          </div>
+          <div class="tournament-actions">
+            <button class="btn btn-tournament" onclick="registerTournament('expert-challenge')" disabled>
+              <span>🔒</span>
+              <span>Talablar bajarilmagan</span>
+            </button>
+            <button class="btn btn-secondary" onclick="viewTournament('expert-challenge')">
+              <span>👁️</span>
+              <span>Ko'rish</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tournament History -->
+      <div class="tournament-history">
+        <div class="history-title">
+          <span>📊</span>
+          <span>Tournament Tarixi</span>
+        </div>
+        <div class="history-list">
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-icon">🏆</div>
+              <div class="history-details">
+                <h4>Daily Speed Challenge</h4>
+                <p>2 kun oldin • 45 ishtirokchi</p>
+              </div>
+            </div>
+            <div class="history-result">
+              <div class="result-position">#3</div>
+              <div class="result-prize">+150 XP</div>
+            </div>
+          </div>
+          
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-icon">🥈</div>
+              <div class="history-details">
+                <h4>Weekend Accuracy Cup</h4>
+                <p>1 hafta oldin • 32 ishtirokchi</p>
+              </div>
+            </div>
+            <div class="history-result">
+              <div class="result-position">#2</div>
+              <div class="result-prize">+300 XP</div>
+            </div>
+          </div>
+          
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-icon">🥉</div>
+              <div class="history-details">
+                <h4>Beginner Tournament</h4>
+                <p>2 hafta oldin • 67 ishtirokchi</p>
+              </div>
+            </div>
+            <div class="history-result">
+              <div class="result-position">#8</div>
+              <div class="result-prize">+50 XP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+    authDomain: "tezroqyoz.firebaseapp.com",
+    databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+    projectId: "tezroqyoz",
+    storageBucket: "tezroqyoz.firebasestorage.app",
+    messagingSenderId: "562891786916",
+    appId: "1:562891786916:web:8372d94bf2128fcc127431",
+    measurementId: "G-C3F6970S7T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  // Theme System
+  function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    const currentTheme = body.getAttribute('data-theme');
+    
+    if (currentTheme === 'dark') {
+      body.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '☀️';
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '🌙';
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Tournament functions
+  window.filterTournaments = function(type) {
+    // Update active tab
+    document.querySelectorAll('.tournament-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Filter logic would go here
+    console.log('Filtering tournaments by:', type);
+  }
+
+  window.joinTournament = function(tournamentId) {
+    // Join tournament logic
+    alert(`Tournament'ga qo'shildingiz: ${tournamentId}`);
+  }
+
+  window.registerTournament = function(tournamentId) {
+    // Register for tournament logic
+    alert(`Tournament uchun ro'yxatdan o'tdingiz: ${tournamentId}`);
+  }
+
+  window.viewTournament = function(tournamentId) {
+    // View tournament details logic
+    alert(`Tournament ma'lumotlari: ${tournamentId}`);
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+  // Global functions
+  window.toggleTheme = toggleTheme;
+</script>
+
+</body>
+</html>
