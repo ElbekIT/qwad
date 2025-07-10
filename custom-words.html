@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📝 Maxsus So'zlar - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border: #3c3c3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .word-sets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .word-set-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .word-set-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(226, 183, 20, 0.2);
+    }
+
+    .word-set-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(226, 183, 20, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      font-size: 1.1rem;
+    }
+
+    .action-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .card-description {
+      color: var(--text-secondary);
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .word-count {
+      background: var(--bg-primary);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .word-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .word-tag {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+    }
+
+    .difficulty-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .difficulty-easy { background: var(--success); color: white; }
+    .difficulty-medium { background: var(--warning); color: white; }
+    .difficulty-hard { background: var(--error); color: white; }
+
+    .create-new {
+      background: linear-gradient(135deg, var(--accent), #d4a813);
+      border: 2px dashed var(--accent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .create-new:hover {
+      background: linear-gradient(135deg, #d4a813, var(--accent));
+      transform: translateY(-5px);
+    }
+
+    .create-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+
+    .create-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--bg-primary);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90vw;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(226, 183, 20, 0.2);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-select {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px;
+      border-radius: 8px;
+      outline: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #d4a813;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-primary);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .back-btn {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0 auto;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .word-sets-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        width: 95vw;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">📝 Maxsus So'zlar</div>
+      <div class="subtitle">O'zingizning so'z to'plamlaringizni yarating va boshqaring</div>
+    </div>
+
+    <div class="word-sets-grid" id="wordSetsGrid">
+      <!-- Create New Card -->
+      <div class="word-set-card create-new" onclick="openCreateModal()">
+        <div class="create-icon">➕</div>
+        <div class="create-text">Yangi to'plam yaratish</div>
+      </div>
+
+      <!-- Default Word Sets -->
+      <div class="word-set-card" onclick="selectWordSet('programming')">
+        <div class="card-header">
+          <div class="card-title">
+            <span>💻</span>
+            <span>Dasturlash</span>
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="event.stopPropagation(); editWordSet('programming')" title="Tahrirlash">✏️</button>
+            <button class="action-btn" onclick="event.stopPropagation(); playWithWordSet('programming')" title="O'ynash">▶️</button>
+          </div>
+        </div>
+        <div class="card-description">Dasturlash atamalar va kodlash so'zlari</div>
+        <div class="word-count">45 ta so'z</div>
+        <div class="word-preview">
+          <span class="word-tag">function</span>
+          <span class="word-tag">variable</span>
+          <span class="word-tag">array</span>
+          <span class="word-tag">object</span>
+          <span class="word-tag">class</span>
+        </div>
+        <div class="card-footer">
+          <div class="difficulty-badge difficulty-hard">Qiyin</div>
+          <div style="color: var(--text-secondary); font-size: 0.8rem;">Ingliz tili</div>
+        </div>
+      </div>
+
+      <div class="word-set-card" onclick="selectWordSet('uzbek-basic')">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🇺🇿</span>
+            <span>O'zbek - Asosiy</span>
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="event.stopPropagation(); editWordSet('uzbek-basic')" title="Tahrirlash">✏️</button>
+            <button class="action-btn" onclick="event.stopPropagation(); playWithWordSet('uzbek-basic')" title="O'ynash">▶️</button>
+          </div>
+        </div>
+        <div class="card-description">Kundalik hayotda ishlatiladigan asosiy so'zlar</div>
+        <div class="word-count">100 ta so'z</div>
+        <div class="word-preview">
+          <span class="word-tag">salom</span>
+          <span class="word-tag">rahmat</span>
+          <span class="word-tag">uy</span>
+          <span class="word-tag">maktab</span>
+          <span class="word-tag">kitob</span>
+        </div>
+        <div class="card-footer">
+          <div class="difficulty-badge difficulty-easy">Oson</div>
+          <div style="color: var(--text-secondary); font-size: 0.8rem;">O'zbek tili</div>
+        </div>
+      </div>
+
+      <div class="word-set-card" onclick="selectWordSet('business')">
+        <div class="card-header">
+          <div class="card-title">
+            <span>💼</span>
+            <span>Biznes</span>
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="event.stopPropagation(); editWordSet('business')" title="Tahrirlash">✏️</button>
+            <button class="action-btn" onclick="event.stopPropagation(); playWithWordSet('business')" title="O'ynash">▶️</button>
+          </div>
+        </div>
+        <div class="card-description">Biznes va moliya sohasidagi atamalar</div>
+        <div class="word-count">60 ta so'z</div>
+        <div class="word-preview">
+          <span class="word-tag">marketing</span>
+          <span class="word-tag">budget</span>
+          <span class="word-tag">profit</span>
+          <span class="word-tag">investment</span>
+          <span class="word-tag">strategy</span>
+        </div>
+        <div class="card-footer">
+          <div class="difficulty-badge difficulty-medium">O'rta</div>
+          <div style="color: var(--text-secondary); font-size: 0.8rem;">Ingliz tili</div>
+        </div>
+      </div>
+
+      <div class="word-set-card" onclick="selectWordSet('science')">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🔬</span>
+            <span>Fan</span>
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="event.stopPropagation(); editWordSet('science')" title="Tahrirlash">✏️</button>
+            <button class="action-btn" onclick="event.stopPropagation(); playWithWordSet('science')" title="O'ynash">▶️</button>
+          </div>
+        </div>
+        <div class="card-description">Ilmiy atamalar va fan so'zlari</div>
+        <div class="word-count">80 ta so'z</div>
+        <div class="word-preview">
+          <span class="word-tag">experiment</span>
+          <span class="word-tag">hypothesis</span>
+          <span class="word-tag">molecule</span>
+          <span class="word-tag">research</span>
+          <span class="word-tag">analysis</span>
+        </div>
+        <div class="card-footer">
+          <div class="difficulty-badge difficulty-hard">Qiyin</div>
+          <div style="color: var(--text-secondary); font-size: 0.8rem;">Ingliz tili</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-btn" onclick="location.href='index.html'">
+      <span>⬅️</span>
+      <span>Bosh sahifaga qaytish</span>
+    </button>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div class="modal" id="wordSetModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Yangi to'plam yaratish</div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+
+      <form id="wordSetForm">
+        <div class="form-group">
+          <label class="form-label">📝 To'plam nomi</label>
+          <input type="text" class="form-input" id="setName" placeholder="Masalan: Mening so'zlarim" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📄 Tavsif</label>
+          <input type="text" class="form-input" id="setDescription" placeholder="Bu to'plam haqida qisqacha ma'lumot">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🎯 Qiyinlik darajasi</label>
+          <select class="form-select" id="setDifficulty">
+            <option value="easy">Oson</option>
+            <option value="medium">O'rta</option>
+            <option value="hard">Qiyin</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🌐 Til</label>
+          <select class="form-select" id="setLanguage">
+            <option value="uz">O'zbek tili</option>
+            <option value="en">Ingliz tili</option>
+            <option value="ru">Rus tili</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📝 So'zlar (har bir so'zni yangi qatorga yozing)</label>
+          <textarea class="form-input form-textarea" id="setWords" placeholder="salom&#10;dunyo&#10;kompyuter&#10;dasturlash&#10;o'yin" required></textarea>
+          <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px;">
+            Har bir so'zni yangi qatorga yozing. Kamida 10 ta so'z kiriting.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🏷️ Teglar (ixtiyoriy)</label>
+          <input type="text" class="form-input" id="setTags" placeholder="dasturlash, texnologiya, o'zbek">
+          <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px;">
+            Teglarni vergul bilan ajrating
+          </div>
+        </div>
+      </form>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Bekor qilish</button>
+        <button class="btn btn-primary" onclick="saveWordSet()">
+          <span>💾</span>
+          <span>Saqlash</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Word sets data
+    let customWordSets = JSON.parse(localStorage.getItem('customWordSets')) || {};
+    let currentEditingSet = null;
+
+    // Default word sets
+    const defaultWordSets = {
+      'programming': {
+        name: 'Dasturlash',
+        icon: '💻',
+        description: 'Dasturlash atamalar va kodlash so\'zlari',
+        difficulty: 'hard',
+        language: 'en',
+        words: ['function', 'variable', 'array', 'object', 'class', 'method', 'string', 'boolean', 'integer', 'loop', 'condition', 'algorithm', 'database', 'framework', 'library', 'syntax', 'debug', 'compile', 'execute', 'parameter'],
+        tags: ['programming', 'coding', 'tech']
+      },
+      'uzbek-basic': {
+        name: 'O\'zbek - Asosiy',
+        icon: '🇺🇿',
+        description: 'Kundalik hayotda ishlatiladigan asosiy so\'zlar',
+        difficulty: 'easy',
+        language: 'uz',
+        words: ['salom', 'rahmat', 'uy', 'maktab', 'kitob', 'qalam', 'daftar', 'stol', 'stul', 'deraza', 'eshik', 'suv', 'non', 'choy', 'qahva', 'oila', 'ota', 'ona', 'bola', 'qiz'],
+        tags: ['basic', 'uzbek', 'daily']
+      },
+      'business': {
+        name: 'Biznes',
+        icon: '💼',
+        description: 'Biznes va moliya sohasidagi atamalar',
+        difficulty: 'medium',
+        language: 'en',
+        words: ['marketing', 'budget', 'profit', 'investment', 'strategy', 'revenue', 'customer', 'product', 'service', 'brand', 'market', 'sales', 'finance', 'economy', 'business', 'company', 'management', 'leadership', 'teamwork', 'success'],
+        tags: ['business', 'finance', 'marketing']
+      },
+      'science': {
+        name: 'Fan',
+        icon: '🔬',
+        description: 'Ilmiy atamalar va fan so\'zlari',
+        difficulty: 'hard',
+        language: 'en',
+        words: ['experiment', 'hypothesis', 'molecule', 'research', 'analysis', 'theory', 'evidence', 'observation', 'conclusion', 'laboratory', 'microscope', 'chemistry', 'physics', 'biology', 'mathematics', 'formula', 'equation', 'calculation', 'measurement', 'discovery'],
+        tags: ['science', 'research', 'academic']
+      }
+    };
+
+    // Open create modal
+    window.openCreateModal = function() {
+      currentEditingSet = null;
+      document.getElementById('modalTitle').textContent = 'Yangi to\'plam yaratish';
+      document.getElementById('wordSetForm').reset();
+      document.getElementById('wordSetModal').style.display = 'flex';
+    }
+
+    // Close modal
+    window.closeModal = function() {
+      document.getElementById('wordSetModal').style.display = 'none';
+      currentEditingSet = null;
+    }
+
+    // Edit word set
+    window.editWordSet = function(setId) {
+      const wordSet = defaultWordSets[setId] || customWordSets[setId];
+      if (!wordSet) return;
+
+      currentEditingSet = setId;
+      document.getElementById('modalTitle').textContent = 'To\'plamni tahrirlash';
+      
+      document.getElementById('setName').value = wordSet.name;
+      document.getElementById('setDescription').value = wordSet.description || '';
+      document.getElementById('setDifficulty').value = wordSet.difficulty;
+      document.getElementById('setLanguage').value = wordSet.language;
+      document.getElementById('setWords').value = wordSet.words.join('\n');
+      document.getElementById('setTags').value = wordSet.tags ? wordSet.tags.join(', ') : '';
+      
+      document.getElementById('wordSetModal').style.display = 'flex';
+    }
+
+    // Save word set
+    window.saveWordSet = function() {
+      const name = document.getElementById('setName').value.trim();
+      const description = document.getElementById('setDescription').value.trim();
+      const difficulty = document.getElementById('setDifficulty').value;
+      const language = document.getElementById('setLanguage').value;
+      const wordsText = document.getElementById('setWords').value.trim();
+      const tagsText = document.getElementById('setTags').value.trim();
+
+      if (!name || !wordsText) {
+        alert('Iltimos, to\'plam nomi va so\'zlarni kiriting!');
+        return;
+      }
+
+      const words = wordsText.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+      
+      if (words.length < 10) {
+        alert('Kamida 10 ta so\'z kiriting!');
+        return;
+      }
+
+      const tags = tagsText ? tagsText.split(',').map(t => t.trim()).filter(t => t.length > 0) : [];
+
+      const wordSet = {
+        name,
+        description,
+        difficulty,
+        language,
+        words,
+        tags,
+        icon: getRandomIcon(),
+        created: Date.now(),
+        custom: true
+      };
+
+      const setId = currentEditingSet || generateId();
+      customWordSets[setId] = wordSet;
+      
+      localStorage.setItem('customWordSets', JSON.stringify(customWordSets));
+      
+      closeModal();
+      loadWordSets();
+      
+      showNotification('✅ To\'plam muvaffaqiyatli saqlandi!', 'success');
+    }
+
+    // Generate random ID
+    function generateId() {
+      return 'custom_' + Math.random().toString(36).substring(2, 9);
+    }
+
+    // Get random icon
+    function getRandomIcon() {
+      const icons = ['📚', '🎯', '🌟', '🎨', '🎵', '🏆', '🎪', '🎭', '🎨', '🎲'];
+      return icons[Math.floor(Math.random() * icons.length)];
+    }
+
+    // Select word set
+    window.selectWordSet = function(setId) {
+      localStorage.setItem('selectedWordSet', setId);
+      showNotification('✅ To\'plam tanlandi! O\'yinni boshlashingiz mumkin.', 'success');
+      
+      // Update visual selection
+      document.querySelectorAll('.word-set-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+    }
+
+    // Play with word set
+    window.playWithWordSet = function(setId) {
+      localStorage.setItem('selectedWordSet', setId);
+      localStorage.setItem('sozTime', 60);
+      localStorage.setItem('sozDifficulty', 'medium');
+      window.location.href = 'oyin.html';
+    }
+
+    // Delete word set
+    window.deleteWordSet = function(setId) {
+      if (confirm('Bu to\'plamni o\'chirmoqchimisiz?')) {
+        delete customWordSets[setId];
+        localStorage.setItem('customWordSets', JSON.stringify(customWordSets));
+        loadWordSets();
+        showNotification('🗑️ To\'plam o\'chirildi!', 'success');
+      }
+    }
+
+    // Load word sets
+    function loadWordSets() {
+      const grid = document.getElementById('wordSetsGrid');
+      const createCard = grid.querySelector('.create-new');
+      
+      // Clear existing cards except create card
+      grid.innerHTML = '';
+      grid.appendChild(createCard);
+
+      // Add default word sets
+      Object.entries(defaultWordSets).forEach(([id, wordSet]) => {
+        addWordSetCard(id, wordSet, false);
+      });
+
+      // Add custom word sets
+      Object.entries(customWordSets).forEach(([id, wordSet]) => {
+        addWordSetCard(id, wordSet, true);
+      });
+    }
+
+    // Add word set card
+    function addWordSetCard(id, wordSet, isCustom) {
+      const grid = document.getElementById('wordSetsGrid');
+      const card = document.createElement('div');
+      card.className = 'word-set-card';
+      card.onclick = () => selectWordSet(id);
+
+      const difficultyClass = `difficulty-${wordSet.difficulty}`;
+      const difficultyText = {
+        easy: 'Oson',
+        medium: 'O\'rta',
+        hard: 'Qiyin'
+      }[wordSet.difficulty];
+
+      const languageText = {
+        uz: 'O\'zbek tili',
+        en: 'Ingliz tili',
+        ru: 'Rus tili'
+      }[wordSet.language];
+
+      const previewWords = wordSet.words.slice(0, 5);
+
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-title">
+            <span>${wordSet.icon}</span>
+            <span>${wordSet.name}</span>
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="event.stopPropagation(); editWordSet('${id}')" title="Tahrirlash">✏️</button>
+            <button class="action-btn" onclick="event.stopPropagation(); playWithWordSet('${id}')" title="O'ynash">▶️</button>
+            ${isCustom ? `<button class="action-btn" onclick="event.stopPropagation(); deleteWordSet('${id}')" title="O'chirish">🗑️</button>` : ''}
+          </div>
+        </div>
+        <div class="card-description">${wordSet.description}</div>
+        <div class="word-count">${wordSet.words.length} ta so'z</div>
+        <div class="word-preview">
+          ${previewWords.map(word => `<span class="word-tag">${word}</span>`).join('')}
+        </div>
+        <div class="card-footer">
+          <div class="difficulty-badge ${difficultyClass}">${difficultyText}</div>
+          <div style="color: var(--text-secondary); font-size: 0.8rem;">${languageText}</div>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        z-index: 10001;
+        animation: slideIn 0.3s ease;
+      `;
+      
+      if (type === 'success') {
+        notification.style.borderColor = 'var(--success)';
+        notification.style.color = 'var(--success)';
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Initialize
+    loadWordSets();
+
+    // Check if a word set is already selected
+    const selectedWordSet = localStorage.getItem('selectedWordSet');
+    if (selectedWordSet) {
+      const selectedCard = document.querySelector(`[onclick*="${selectedWordSet}"]`);
+      if (selectedCard) {
+        selectedCard.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎮 Typing Games - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border: #3c3c3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .game-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), #d4a813);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(226, 183, 20, 0.2);
+    }
+
+    .game-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .game-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .game-icon {
+      font-size: 2rem;
+    }
+
+    .difficulty-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .difficulty-easy { background: var(--success); color: white; }
+    .difficulty-medium { background: var(--warning); color: white; }
+    .difficulty-hard { background: var(--error); color: white; }
+
+    .game-description {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .game-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .feature-tag {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .game-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+      background: var(--bg-primary);
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .play-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #d4a813);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .play-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.4);
+    }
+
+    .coming-soon {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .coming-soon .play-btn {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    .back-btn {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0 auto;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .game-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">🎮 Typing Games</div>
+      <div class="subtitle">Turli xil o'yin rejimlari bilan typing mahoratingizni oshiring</div>
+    </div>
+
+    <div class="games-grid">
+      <!-- Word Rain -->
+      <div class="game-card" onclick="playGame('word-rain')">
+        <div class="game-header">
+          <div class="game-title">
+            <span class="game-icon">🌧️</span>
+            <span>Word Rain</span>
+          </div>
+          <div class="difficulty-badge difficulty-medium">O'rta</div>
+        </div>
+        <div class="game-description">
+          So'zlar yuqoridan yomg'ir kabi tushadi. Ularni tez yozib, yerga tushishdan oldin to'xtating!
+        </div>
+        <div class="game-features">
+          <span class="feature-tag">⏱️ Vaqt bosimi</span>
+          <span class="feature-tag">🎯 Aniqlik</span>
+          <span class="feature-tag">⚡ Tezlik</span>
+        </div>
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-value">45</div>
+            <div class="stat-label">Eng yuqori ball</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">12</div>
+            <div class="stat-label">O'ynagan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">85%</div>
+            <div class="stat-label">Aniqlik</div>
+          </div>
+        </div>
+        <button class="play-btn">
+          <span>▶️</span>
+          <span>O'ynash</span>
+        </button>
+      </div>
+
+      <!-- Speed Typing -->
+      <div class="game-card" onclick="playGame('speed-typing')">
+        <div class="game-header">
+          <div class="game-title">
+            <span class="game-icon">⚡</span>
+            <span>Speed Typing</span>
+          </div>
+          <div class="difficulty-badge difficulty-easy">Oson</div>
+        </div>
+        <div class="game-description">
+          Klassik tezlik testi. Berilgan matnni imkoni boricha tez va aniq yozing.
+        </div>
+        <div class="game-features">
+          <span class="feature-tag">📊 WPM hisoblash</span>
+          <span class="feature-tag">📈 Progress tracking</span>
+          <span class="feature-tag">🎯 Aniqlik</span>
+        </div>
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-value">67</div>
+            <div class="stat-label">Eng yuqori WPM</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">28</div>
+            <div class="stat-label">O'ynagan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">92%</div>
+            <div class="stat-label">Aniqlik</div>
+          </div>
+        </div>
+        <button class="play-btn">
+          <span>▶️</span>
+          <span>O'ynash</span>
+        </button>
+      </div>
+
+      <!-- Zombie Typing -->
+      <div class="game-card" onclick="playGame('zombie-typing')">
+        <div class="game-header">
+          <div class="game-title">
+            <span class="game-icon">🧟</span>
+            <span>Zombie Typing</span>
+          </div>
+          <div class="difficulty-badge difficulty-hard">Qiyin</div>
+        </div>
+        <div class="game-description">
+          Zombilar sizga yaqinlashmoqda! Ularni to'xtatish uchun so'zlarni tez yozing va o'zingizni himoya qiling.
+        </div>
+        <div class="game-features">
+          <span class="feature-tag">🎮 Action</span>
+          <span class="feature-tag">🏆 Survival</span>
+          <span class="feature-tag">💀 Boss fight</span>
+        </div>
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-value">23</div>
+            <div class="stat-label">Eng uzun survival</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">8</div>
+            <div class="stat-label">O'ynagan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">78%</div>
+            <div class="stat-label">Aniqlik</div>
+          </div>
+        </div>
+        <button class="play-btn">
+          <span>▶️</span>
+          <span>O'ynash</span>
+        </button>
+      </div>
+
+      <!-- Code Typing -->
+      <div class="game-card" onclick="playGame('code-typing')">
+        <div class="game-header">
+          <div class="game-title">
+            <span class="game-icon">💻</span>
+            <span>Code Typing</span>
+          </div>
+          <div class="difficulty-badge difficulty-hard">Qiyin</div>
+        </div>
+        <div class="game-description">
+          Dasturlash kodlarini yozing. Sintaksis, belgilar va maxsus karakterlar bilan ishlang.
+        </div>
+        <div class="game-features">
+          <span class="feature-tag">🔤 Sintaksis</span>
+          <span class="feature-tag">⌨️ Maxsus belgilar</span>
+          <span class="feature-tag">🎯 Aniqlik</span>
+        </div>
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-value">34</div>
+            <div class="stat-label">Eng yuqori WPM</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">15</div>
+            <div class="stat-label">O'ynagan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">89%</div>
+            <div class="stat-label">Aniqlik</div>
+          </div>
+        </div>
+        <button class="play-btn">
+          <span>▶️</span>
+          <span>O'ynash</span>
+        </button>
+      </div>
+
+      <!-- Rhythm Typing -->
+      <div class="game-card coming-soon">
+        <div class="game-header">
+          <div class="game-title">
+            <span class="game-icon">🎵</span>
+            <span>Rhythm Typing</span>
+          </div>
+          <div class="difficulty-badge difficulty-medium">O'rta</div>
+        </div>
+        <div class="game-description">
+          Musiqa ritmi bilan so'zlarni yozing. Beat bilan uyg'unlashgan holda typing qiling.
+        </div>
+        <div class="game-features">
+          <span class="feature-tag">🎶 Musiqa</span>
+          <span class="feature-tag">🥁 Ritm</span>
+          <span class="feature-tag">🎯 Timing</span>
+        </div>
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Eng yuqori ball</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">-</div>
+            <div class="stat-label">O'ynagan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Aniqlik</div>
+          </div>
+        </div>
+        <button class="play-btn">
+          <span>🚧</span>
+          <span>Tez orada...</span>
+        </button>
+      </div>
+
+      <!-- Story Mode -->
+      <div class="game-card coming-soon">
+        <div class="game-header">
+          <div class="game-title">
+            <span class="game-icon">📖</span>
+            <span>Story Mode</span>
+          </div>
+          <div class="difficulty-badge difficulty-easy">Oson</div>
+        </div>
+        <div class="game-description">
+          Qiziqarli hikoyalar orqali typing o'rganing. Har bir bo'lim yangi qiyinchilik darajasi.
+        </div>
+        <div class="game-features">
+          <span class="feature-tag">📚 Hikoyalar</span>
+          <span class="feature-tag">🎯 Progressiv</span>
+          <span class="feature-tag">🏆 Achievement</span>
+        </div>
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Bo'limlar</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Progress</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Yulduzlar</div>
+          </div>
+        </div>
+        <button class="play-btn">
+          <span>🚧</span>
+          <span>Tez orada...</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="back-btn" onclick="location.href='index.html'">
+      <span>⬅️</span>
+      <span>Bosh sahifaga qaytish</span>
+    </button>
+  </div>
+
+  <script>
+    // Game statistics from localStorage
+    const gameStats = JSON.parse(localStorage.getItem('gameStats')) || {};
+
+    // Play game function
+    window.playGame = function(gameType) {
+      switch(gameType) {
+        case 'word-rain':
+          localStorage.setItem('gameMode', 'word-rain');
+          window.location.href = 'word-rain.html';
+          break;
+        case 'speed-typing':
+          localStorage.setItem('gameMode', 'speed-typing');
+          window.location.href = 'oyin.html';
+          break;
+        case 'zombie-typing':
+          localStorage.setItem('gameMode', 'zombie-typing');
+          window.location.href = 'zombie-typing.html';
+          break;
+        case 'code-typing':
+          localStorage.setItem('gameMode', 'code-typing');
+          window.location.href = 'code-typing.html';
+          break;
+        default:
+          alert('Bu o\'yin hali tayyor emas!');
+      }
+    }
+
+    // Update game statistics display
+    function updateGameStats() {
+      const cards = document.querySelectorAll('.game-card:not(.coming-soon)');
+      
+      cards.forEach(card => {
+        const gameTitle = card.querySelector('.game-title span:last-child').textContent.toLowerCase().replace(' ', '-');
+        const stats = gameStats[gameTitle] || { highScore: 0, gamesPlayed: 0, accuracy: 0 };
+        
+        const statItems = card.querySelectorAll('.stat-value');
+        if (statItems.length >= 3) {
+          statItems[0].textContent = stats.highScore || 0;
+          statItems[1].textContent = stats.gamesPlayed || 0;
+          statItems[2].textContent = (stats.accuracy || 0) + '%';
+        }
+      });
+    }
+
+    // Initialize
+    updateGameStats();
+
+    // Add some sample data if no stats exist
+    if (Object.keys(gameStats).length === 0) {
+      const sampleStats = {
+        'word-rain': { highScore: 45, gamesPlayed: 12, accuracy: 85 },
+        'speed-typing': { highScore: 67, gamesPlayed: 28, accuracy: 92 },
+        'zombie-typing': { highScore: 23, gamesPlayed: 8, accuracy: 78 },
+        'code-typing': { highScore: 34, gamesPlayed: 15, accuracy: 89 }
+      };
+      
+      localStorage.setItem('gameStats', JSON.stringify(sampleStats));
+      updateGameStats();
+    }
+  </script>
+</body>
+</html>

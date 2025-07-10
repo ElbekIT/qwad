@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Battle Room - Tez Roq Yoz</title>
-  
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -31,6 +30,692 @@
       background: var(--bg-primary);
       color: var(--text-primary);
       overflow: hidden;
+    }
+
+    /* Victory Screen */
+    .victory-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #1a1a1a 100%);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      animation: victoryFadeIn 1s ease-in-out;
+    }
+
+    @keyframes victoryFadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .victory-crown {
+      font-size: 8rem;
+      margin-bottom: 30px;
+      animation: crownBounce 2s infinite;
+      filter: drop-shadow(0 0 20px #e2b714);
+    }
+
+    @keyframes crownBounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(-5deg); }
+      75% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    .victory-title {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-shadow: 0 0 30px rgba(226, 183, 20, 0.8);
+      animation: titleGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes titleGlow {
+      from { text-shadow: 0 0 30px rgba(226, 183, 20, 0.8); }
+      to { text-shadow: 0 0 50px rgba(226, 183, 20, 1), 0 0 80px rgba(226, 183, 20, 0.6); }
+    }
+
+    .winner-name {
+      font-size: 3rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+      animation: nameShine 3s ease-in-out infinite;
+    }
+
+    @keyframes nameShine {
+      0%, 100% { color: #fff; }
+      50% { color: var(--accent); }
+    }
+
+    .victory-stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+      font-size: 1.2rem;
+    }
+
+    .victory-stat {
+      background: rgba(226, 183, 20, 0.1);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 15px 25px;
+      text-align: center;
+      animation: statPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes statPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .victory-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+
+    .victory-stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .victory-buttons {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .victory-btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .victory-btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .victory-btn-primary:hover {
+      background: #d4a813;
+      transform: translateY(-2px);
+    }
+
+    .victory-btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 2px solid var(--bg-tertiary);
+    }
+
+    .victory-btn-secondary:hover {
+      background: var(--bg-tertiary);
+      transform: translateY(-2px);
+    }
+
+    /* Fireworks */
+    .fireworks-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10000;
+    }
+
+    .firework {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      animation: fireworkExplode 2s ease-out forwards;
+    }
+
+    @keyframes fireworkExplode {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    .firework-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      animation: particleMove 1.5s ease-out forwards;
+    }
+
+    @keyframes particleMove {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s linear infinite;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main Layout */
+    .battle-layout {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .room-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .room-code {
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    .room-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.waiting {
+      background: var(--accent);
+    }
+
+    .status-dot.playing {
+      background: var(--battle);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .btn-battle {
+      background: var(--battle);
+      color: white;
+    }
+
+    .btn-battle:hover {
+      background: #dc2626;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      gap: 30px;
+      padding: 30px 40px;
+    }
+
+    /* Players Panel */
+    .players-panel {
+      width: 300px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 25px;
+    }
+
+    .players-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .player-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .player-card.ready {
+      border-color: var(--success);
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+    }
+
+    .player-card.host {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(226, 183, 20, 0.2);
+    }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .player-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .player-badge {
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .badge-host {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .badge-ready {
+      background: var(--success);
+      color: white;
+    }
+
+    .badge-waiting {
+      background: var(--text-secondary);
+      color: white;
+    }
+
+    .player-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .player-progress {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #d4a813);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    /* Game Area */
+    .game-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .game-timer {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(226, 183, 20, 0.5);
+    }
+
+    .game-stats {
+      display: flex;
+      gap: 30px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: block;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Text Display */
+    .text-display {
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 30px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .text-content {
+      font-size: 1.5rem;
+      line-height: 2;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .char {
+      position: relative;
+      transition: all 0.1s;
+    }
+
+    .char.correct {
+      color: var(--success);
+      background: rgba(74, 222, 128, 0.1);
+    }
+
+    .char.incorrect {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .char.current {
+      background: var(--accent);
+      color: var(--bg-primary);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+
+    /* Input Area */
+    .input-area {
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .typing-input {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 1.3rem;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+
+    .typing-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(226, 183, 20, 0.2);
+    }
+
+    .typing-input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .input-hint {
+      margin-top: 15px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Ready Button */
+    .ready-section {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .ready-btn {
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ready-btn.not-ready {
+      background: var(--success);
+      color: white;
+    }
+
+    .ready-btn.not-ready:hover {
+      background: #22c55e;
+      transform: translateY(-2px);
+    }
+
+    .ready-btn.ready {
+      background: var(--text-secondary);
+      color: white;
+    }
+
+    .ready-btn.ready:hover {
+      background: #52525b;
+    }
+
+    /* Waiting Screen */
+    .waiting-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 400px;
+      text-align: center;
+    }
+
+    .waiting-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .waiting-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .waiting-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Countdown */
+    .countdown-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(26, 26, 26, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .countdown-number {
+      font-size: 15rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-shadow: 0 0 50px rgba(226, 183, 20, 0.8);
+      animation: countdownPulse 1s ease-in-out;
+    }
+
+    @keyframes countdownPulse {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      z-index: 1001;
+      border: 1px solid var(--bg-tertiary);
+      font-size: 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .notification.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .notification.error {
+      border-color: var(--error);
+      color: var(--error);
     }
 
     /* Mobile Block */
@@ -71,443 +756,13 @@
       max-width: 400px;
     }
 
-    /* Main Layout */
-    .room-layout {
-      height: 100vh;
-      display: grid;
-      grid-template-columns: 300px 1fr 300px;
-      grid-template-rows: 60px 1fr;
-      grid-template-areas: 
-        "header header header"
-        "players game chat";
-    }
-
-    /* Header */
-    .header {
-      grid-area: header;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 30px;
-      background: var(--bg-primary);
-      border-bottom: 1px solid var(--bg-tertiary);
-    }
-
-    .room-info {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .room-name {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .room-code {
-      background: var(--accent);
-      color: var(--bg-primary);
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .room-status {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-secondary);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      animation: pulse 2s infinite;
-    }
-
-    .leave-btn {
-      background: var(--error);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .leave-btn:hover {
-      background: #dc2626;
-    }
-
-    /* Players Panel */
-    .players-panel {
-      grid-area: players;
-      background: var(--bg-secondary);
-      border-right: 1px solid var(--bg-tertiary);
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .panel-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .player-item {
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 10px;
-      position: relative;
-    }
-
-    .player-item.host {
-      border-color: var(--accent);
-    }
-
-    .player-item.ready {
-      border-color: var(--success);
-    }
-
-    .player-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .player-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      color: var(--bg-primary);
-    }
-
-    .player-name {
-      font-weight: 600;
-      color: var(--text-primary);
-      flex: 1;
-    }
-
-    .player-badge {
-      background: var(--accent);
-      color: var(--bg-primary);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    .player-badge.host {
-      background: var(--accent);
-    }
-
-    .player-badge.ready {
-      background: var(--success);
-    }
-
-    .player-stats {
-      display: flex;
-      gap: 10px;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .player-progress {
-      width: 100%;
-      height: 4px;
-      background: var(--bg-tertiary);
-      border-radius: 2px;
-      margin-top: 8px;
-      overflow: hidden;
-    }
-
-    .player-progress-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      transition: width 0.3s ease;
-    }
-
-    /* Game Area */
-    .game-area {
-      grid-area: game;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      position: relative;
-    }
-
-    .game-stats {
-      display: flex;
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-label {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .word-display {
-      width: 100%;
-      max-width: 600px;
-      margin-bottom: 40px;
-      min-height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .word-text {
-      font-size: 3rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    .input-section {
-      width: 100%;
-      max-width: 500px;
-      margin-bottom: 40px;
-    }
-
-    .word-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 3px solid var(--bg-tertiary);
-      color: var(--text-primary);
-      font-size: 1.8rem;
-      font-weight: 500;
-      text-align: center;
-      padding: 15px 0;
-      outline: none;
-      transition: all 0.2s;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .word-input:focus {
-      border-bottom-color: var(--accent);
-    }
-
-    .word-input.correct {
-      border-bottom-color: var(--success);
-      animation: correct 0.3s;
-    }
-
-    .word-input.incorrect {
-      border-bottom-color: var(--error);
-      animation: shake 0.3s;
-    }
-
-    @keyframes correct {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    .ready-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .ready-btn {
-      background: var(--success);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .ready-btn:hover {
-      background: #22c55e;
-    }
-
-    .ready-btn.ready {
-      background: var(--text-secondary);
-      cursor: not-allowed;
-    }
-
-    .start-btn {
-      background: var(--battle);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .start-btn:hover {
-      background: #dc2626;
-    }
-
-    .start-btn:disabled {
-      background: var(--text-secondary);
-      cursor: not-allowed;
-    }
-
-    /* Chat Panel */
-    .chat-panel {
-      grid-area: chat;
-      background: var(--bg-secondary);
-      border-left: 1px solid var(--bg-tertiary);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .chat-header {
-      padding: 20px 20px 0 20px;
-    }
-
-    .chat-messages {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .chat-message {
-      background: var(--bg-primary);
-      border-radius: 8px;
-      padding: 10px 12px;
-      border: 1px solid var(--bg-tertiary);
-    }
-
-    .chat-message.system {
-      background: var(--bg-tertiary);
-      color: var(--text-secondary);
-      font-style: italic;
-      text-align: center;
-    }
-
-    .message-author {
-      font-weight: 600;
-      color: var(--accent);
-      font-size: 0.9rem;
-      margin-bottom: 3px;
-    }
-
-    .message-text {
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .message-time {
-      color: var(--text-secondary);
-      font-size: 0.7rem;
-      margin-top: 3px;
-    }
-
-    .chat-input-section {
-      padding: 20px;
-      border-top: 1px solid var(--bg-tertiary);
-    }
-
-    .chat-input {
-      width: 100%;
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 6px;
-      color: var(--text-primary);
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .chat-input:focus {
-      border-color: var(--accent);
-    }
-
-    /* Countdown */
-    .countdown {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 8rem;
-      font-weight: 700;
-      color: var(--battle);
-      z-index: 100;
-      animation: countdown 1s ease-in-out;
-    }
-
-    @keyframes countdown {
-      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
     /* Mobile Detection */
     @media (max-width: 1024px) {
       .mobile-block {
         display: flex !important;
       }
       
-      .room-layout {
+      .battle-layout {
         display: none !important;
       }
     }
@@ -525,119 +780,135 @@
     </div>
   </div>
 
-  <!-- Room Layout -->
-  <div class="room-layout">
+  <!-- Victory Screen -->
+  <div class="victory-screen" id="victoryScreen">
+    <div class="victory-crown">👑</div>
+    <div class="victory-title">G'OLIB!</div>
+    <div class="winner-name" id="winnerName">Foydalanuvchi</div>
+    
+    <div class="victory-stats">
+      <div class="victory-stat">
+        <span class="victory-stat-value" id="winnerWPM">0</span>
+        <span class="victory-stat-label">WPM</span>
+      </div>
+      <div class="victory-stat">
+        <span class="victory-stat-value" id="winnerAccuracy">0%</span>
+        <span class="victory-stat-label">Aniqlik</span>
+      </div>
+      <div class="victory-stat">
+        <span class="victory-stat-value" id="winnerTime">0s</span>
+        <span class="victory-stat-label">Vaqt</span>
+      </div>
+    </div>
+
+    <div class="victory-buttons">
+      <button class="victory-btn victory-btn-primary" onclick="playAgain()">
+        <span>🔄</span>
+        <span>Yana o'ynash</span>
+      </button>
+      <button class="victory-btn victory-btn-secondary" onclick="leaveRoom()">
+        <span>🚪</span>
+        <span>Xonadan chiqish</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Fireworks Container -->
+  <div class="fireworks-container" id="fireworksContainer"></div>
+
+  <!-- Battle Layout -->
+  <div class="battle-layout">
     <!-- Header -->
     <div class="header">
       <div class="room-info">
-        <div class="room-name" id="roomName">Loading...</div>
-        <div class="room-code" id="roomCode" onclick="copyRoomCode()" title="Click to copy">ABC123</div>
+        <div class="room-code" id="roomCode">LOADING...</div>
+        <div class="room-status">
+          <div class="status-dot waiting" id="statusDot"></div>
+          <span id="roomStatus">Kutilmoqda...</span>
+        </div>
       </div>
       
-      <div class="room-status">
-        <div class="status-indicator">
-          <div class="status-dot"></div>
-          <span id="roomStatus">Waiting</span>
-        </div>
-        <button class="leave-btn" onclick="leaveRoom()">
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="copyRoomCode()">
+          <span>📋</span>
+          <span>Kodni nusxalash</span>
+        </button>
+        <button class="btn btn-secondary" onclick="leaveRoom()">
           <span>🚪</span>
-          <span>Leave room</span>
+          <span>Chiqish</span>
         </button>
       </div>
     </div>
 
-    <!-- Players Panel -->
-    <div class="players-panel">
-      <div class="panel-title">
-        <span>👥</span>
-        <span>Players (<span id="playerCount">0</span>/<span id="maxPlayers">0</span>)</span>
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Players Panel -->
+      <div class="players-panel">
+        <div class="players-title">
+          <span>👥</span>
+          <span>O'yinchilar</span>
+          <span id="playerCount">(0/0)</span>
+        </div>
+        <div id="playersList">
+          <!-- Players will be loaded here -->
+        </div>
       </div>
-      <div id="playersList">
-        <!-- Players will be populated here -->
-      </div>
-    </div>
 
-    <!-- Game Area -->
-    <div class="game-area">
-      <!-- Waiting State -->
-      <div id="waitingState">
-        <div class="game-stats">
-          <div class="stat-item">
-            <div class="stat-label">⏱ time</div>
-            <div class="stat-value" id="gameTime">30</div>
+      <!-- Game Area -->
+      <div class="game-area">
+        <!-- Waiting Screen -->
+        <div class="waiting-screen" id="waitingScreen">
+          <div class="waiting-icon">⏳</div>
+          <div class="waiting-title">O'yinchilarni kutilmoqda...</div>
+          <div class="waiting-subtitle">Barcha o'yinchilar tayyor bo'lganda o'yin boshlanadi</div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" style="display: none;">
+          <div class="game-header">
+            <div class="game-timer" id="gameTimer">30</div>
+            <div class="game-stats">
+              <div class="stat-item">
+                <span class="stat-value" id="currentWPM">0</span>
+                <span class="stat-label">WPM</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value" id="currentAccuracy">100%</span>
+                <span class="stat-label">Aniqlik</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value" id="currentProgress">0%</span>
+                <span class="stat-label">Progress</span>
+              </div>
+            </div>
           </div>
-          <div class="stat-item">
-            <div class="stat-label">🎮 difficulty</div>
-            <div class="stat-value" id="gameDifficulty">medium</div>
+
+          <div class="text-display">
+            <div class="text-content" id="textContent">
+              <!-- Text will be loaded here -->
+            </div>
+          </div>
+
+          <div class="input-area">
+            <input type="text" class="typing-input" id="typingInput" placeholder="Bu yerga yozing..." disabled>
+            <div class="input-hint">O'yin boshlanishini kuting...</div>
           </div>
         </div>
 
-        <div class="ready-section">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <div style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 10px;">⚔️ Battle Ready?</div>
-            <div style="color: var(--text-secondary);">Tayyor bo'lganingizda Ready tugmasini bosing</div>
-          </div>
-          
-          <button class="ready-btn" id="readyBtn" onclick="toggleReady()">
+        <!-- Ready Section -->
+        <div class="ready-section" id="readySection">
+          <button class="ready-btn not-ready" id="readyBtn" onclick="toggleReady()">
             <span>✅</span>
-            <span>Ready</span>
+            <span>Tayyor</span>
           </button>
-          
-          <div id="hostControls" style="display: none;">
-            <button class="start-btn" id="startBtn" onclick="startGame()" disabled>
-              <span>🚀</span>
-              <span>Start Battle</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Game State -->
-      <div id="gameState" style="display: none;">
-        <div class="game-stats">
-          <div class="stat-item">
-            <div class="stat-label">⏱ time</div>
-            <div class="stat-value" id="timer">30</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">🎯 score</div>
-            <div class="stat-value" id="score">0</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">⚡ wpm</div>
-            <div class="stat-value" id="wpm">0</div>
-          </div>
-        </div>
-
-        <div class="word-display">
-          <div class="word-text" id="wordDisplay">Ready...</div>
-        </div>
-
-        <div class="input-section">
-          <input type="text" class="word-input" id="wordInput" placeholder="Type the word..." autocomplete="off" disabled />
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Chat Panel -->
-    <div class="chat-panel">
-      <div class="chat-header">
-        <div class="panel-title">
-          <span>💬</span>
-          <span>Chat</span>
-        </div>
-      </div>
-      
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-message system">
-          <div class="message-text">Welcome to the battle room! 🔥</div>
-        </div>
-      </div>
-      
-      <div class="chat-input-section">
-        <input type="text" class="chat-input" id="chatInput" placeholder="Send a message (press / to focus)" maxlength="200" />
-      </div>
-    </div>
+  <!-- Countdown Overlay -->
+  <div class="countdown-overlay" id="countdownOverlay">
+    <div class="countdown-number" id="countdownNumber">3</div>
   </div>
 
 <script type="module">
@@ -659,444 +930,526 @@
   const db = getDatabase(app);
 
   const user = JSON.parse(localStorage.getItem("sozUser"));
-  const roomCode = localStorage.getItem('battleRoomCode');
+  const roomCode = localStorage.getItem("battleRoomCode");
 
   if (!user || !roomCode) {
-    window.location.href = 'battle.html';
+    window.location.href = "battle.html";
   }
 
-  let roomData = null;
-  let isHost = false;
-  let isReady = false;
-  let gameActive = false;
-  let currentWord = '';
-  let gameStartTime = 0;
-  let wordsTyped = 0;
-  let correctWords = 0;
-
-  // Word lists
-  const wordLists = {
-    easy: ["olma", "nok", "uzum", "kitob", "qalam", "stol", "uy", "oy", "suv", "choy"],
-    medium: ["telefon", "kompyuter", "maktab", "daraxt", "mashina", "dastur", "futbol", "musiqa"],
-    hard: ["universitet", "matematika", "texnologiya", "demokratiya", "eksperiment", "infrastruktura"],
-    expert: ["konstitutsiyaviy", "demokratlashtirish", "sistematizatsiya", "professionalizatsiya"]
+  let gameState = {
+    isReady: false,
+    isPlaying: false,
+    currentText: "",
+    currentIndex: 0,
+    startTime: null,
+    errors: 0,
+    wpm: 0,
+    accuracy: 100,
+    progress: 0
   };
 
+  let roomRef = ref(db, `battleRooms/${roomCode}`);
+  let playersRef = ref(db, `battleRooms/${roomCode}/players`);
+
+  // Sample texts for battle
+  const battleTexts = [
+    "Tezlik va aniqlik - muvaffaqiyatning kaliti. Har bir harakat muhim, har bir soniya qimmatli.",
+    "Dasturlash - bu san'at va ilm. Kod yozish - bu fikrlash va ijod qilish jarayoni.",
+    "Bilim - eng katta boylik. O'rganish - eng foydali sarmoya. Amaliyot - eng yaxshi o'qituvchi.",
+    "Muvaffaqiyat - bu tayyorgarlik va imkoniyatning uchrashuvi. Omad - bu mehnatning mukofoti.",
+    "Innovatsiya - bu o'zgarishlarni qabul qilish va yangilikka ochiq bo'lish demakdir."
+  ];
+
   // Initialize room
-  async function initializeRoom() {
-    const roomRef = ref(db, `battleRooms/${roomCode}`);
-    const snapshot = await get(roomRef);
-    
-    if (!snapshot.exists()) {
-      alert('Xona topilmadi!');
-      window.location.href = 'battle.html';
-      return;
-    }
+  document.getElementById('roomCode').textContent = roomCode;
 
-    roomData = snapshot.val();
-    isHost = roomData.host === user.phone;
-    
-    // Show host controls
-    if (isHost) {
-      document.getElementById('hostControls').style.display = 'block';
-    }
-
-    // Listen to room changes
+  // Load room data
+  function loadRoomData() {
     onValue(roomRef, (snapshot) => {
-      if (snapshot.exists()) {
-        roomData = snapshot.val();
-        updateRoomDisplay();
-        updatePlayersList();
-        checkStartConditions();
-      } else {
-        alert('Xona o\'chirildi!');
-        window.location.href = 'battle.html';
+      if (!snapshot.exists()) {
+        showNotification('❌ Xona topilmadi!', 'error');
+        setTimeout(() => window.location.href = 'battle.html', 2000);
+        return;
       }
-    });
 
-    // Listen to chat messages
-    const chatRef = ref(db, `battleRooms/${roomCode}/chat`);
-    onValue(chatRef, (snapshot) => {
-      if (snapshot.exists()) {
-        updateChatMessages(snapshot.val());
+      const roomData = snapshot.val();
+      updateRoomStatus(roomData.status);
+      updatePlayersList(roomData.players);
+      
+      // Check if game should start
+      if (roomData.status === 'playing' && !gameState.isPlaying) {
+        startGame(roomData.gameText);
       }
-    });
 
-    // Listen to game state
-    const gameRef = ref(db, `battleRooms/${roomCode}/gameState`);
-    onValue(gameRef, (snapshot) => {
-      if (snapshot.exists()) {
-        handleGameStateChange(snapshot.val());
+      // Check for winner
+      if (roomData.winner && roomData.status === 'finished') {
+        showVictoryScreen(roomData.winner, roomData.winnerStats);
       }
     });
   }
 
-  // Update room display
-  function updateRoomDisplay() {
-    document.getElementById('roomName').textContent = roomData.name;
-    document.getElementById('roomCode').textContent = roomData.code;
-    document.getElementById('roomStatus').textContent = roomData.status === 'waiting' ? 'Waiting' : 
-                                                       roomData.status === 'playing' ? 'Playing' : 'Finished';
-    document.getElementById('playerCount').textContent = roomData.currentPlayers;
-    document.getElementById('maxPlayers').textContent = roomData.maxPlayers;
-    document.getElementById('gameTime').textContent = roomData.gameSettings.time;
-    document.getElementById('gameDifficulty').textContent = roomData.gameSettings.difficulty;
+  // Update room status
+  function updateRoomStatus(status) {
+    const statusDot = document.getElementById('statusDot');
+    const roomStatus = document.getElementById('roomStatus');
+    
+    statusDot.className = `status-dot ${status}`;
+    
+    switch(status) {
+      case 'waiting':
+        roomStatus.textContent = 'Kutilmoqda...';
+        break;
+      case 'playing':
+        roomStatus.textContent = 'O\'yin davom etmoqda';
+        break;
+      case 'finished':
+        roomStatus.textContent = 'O\'yin tugadi';
+        break;
+    }
   }
 
   // Update players list
-  function updatePlayersList() {
+  function updatePlayersList(players) {
     const playersList = document.getElementById('playersList');
-    const players = Object.values(roomData.players || {});
+    const playerCount = document.getElementById('playerCount');
     
-    playersList.innerHTML = players.map(player => {
-      const isCurrentUser = player.phone === user.phone;
-      const badges = [];
-      
-      if (player.phone === roomData.host) badges.push('<span class="player-badge host">HOST</span>');
-      if (player.ready) badges.push('<span class="player-badge ready">READY</span>');
-      
-      return `
-        <div class="player-item ${player.phone === roomData.host ? 'host' : ''} ${player.ready ? 'ready' : ''}">
-          <div class="player-header">
-            <div class="player-avatar">${player.name.charAt(0).toUpperCase()}</div>
-            <div class="player-name">${player.name}${isCurrentUser ? ' (You)' : ''}</div>
-            ${badges.join('')}
+    if (!players) return;
+
+    const playersArray = Object.values(players);
+    playerCount.textContent = `(${playersArray.length}/8)`;
+    
+    playersList.innerHTML = playersArray.map(player => `
+      <div class="player-card ${player.ready ? 'ready' : ''} ${player.phone === user.phone ? 'host' : ''}">
+        <div class="player-header">
+          <div class="player-name">
+            <span>${player.name}</span>
+            ${player.phone === user.phone ? '<span class="player-badge badge-host">Siz</span>' : ''}
           </div>
-          <div class="player-stats">
-            <span>🎯 ${player.score || 0}</span>
-            <span>⚡ ${player.wpm || 0} WPM</span>
-          </div>
-          <div class="player-progress">
-            <div class="player-progress-bar" style="width: ${player.progress || 0}%"></div>
-          </div>
+          <span class="player-badge ${player.ready ? 'badge-ready' : 'badge-waiting'}">
+            ${player.ready ? 'Tayyor' : 'Kutilmoqda'}
+          </span>
         </div>
-      `;
-    }).join('');
+        <div class="player-stats">
+          <span>⚡ ${player.wpm || 0} WPM</span>
+          <span>🎯 ${Math.round(player.accuracy || 100)}%</span>
+          <span>📊 ${player.score || 0}</span>
+        </div>
+        <div class="player-progress">
+          <div class="progress-bar" style="width: ${player.progress || 0}%"></div>
+        </div>
+      </div>
+    `).join('');
+
+    // Check if all players are ready
+    const allReady = playersArray.every(player => player.ready);
+    if (allReady && playersArray.length >= 2) {
+      setTimeout(startCountdown, 1000);
+    }
   }
 
-  // Toggle ready state
+  // Toggle ready status
   window.toggleReady = async function() {
-    isReady = !isReady;
+    gameState.isReady = !gameState.isReady;
+    
     const readyBtn = document.getElementById('readyBtn');
-    
-    if (isReady) {
-      readyBtn.innerHTML = '<span>⏳</span><span>Not Ready</span>';
-      readyBtn.classList.add('ready');
+    if (gameState.isReady) {
+      readyBtn.className = 'ready-btn ready';
+      readyBtn.innerHTML = '<span>⏳</span><span>Kutilmoqda...</span>';
     } else {
-      readyBtn.innerHTML = '<span>✅</span><span>Ready</span>';
-      readyBtn.classList.remove('ready');
+      readyBtn.className = 'ready-btn not-ready';
+      readyBtn.innerHTML = '<span>✅</span><span>Tayyor</span>';
     }
 
-    await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/ready`), isReady);
-  }
-
-  // Check start conditions
-  function checkStartConditions() {
-    if (!isHost) return;
-    
-    const players = Object.values(roomData.players || {});
-    const allReady = players.length >= 2 && players.every(p => p.ready);
-    
-    document.getElementById('startBtn').disabled = !allReady;
-  }
-
-  // Start game
-  window.startGame = async function() {
-    if (!isHost) return;
-    
-    const gameState = {
-      status: 'countdown',
-      currentWord: '',
-      timeLeft: roomData.gameSettings.time,
-      startTime: Date.now() + 4000, // 3 second countdown + 1 second buffer
-      words: generateGameWords()
-    };
-
-    await set(ref(db, `battleRooms/${roomCode}/status`), 'playing');
-    await set(ref(db, `battleRooms/${roomCode}/gameState`), gameState);
-    
-    // Send system message
-    await sendSystemMessage('🚀 Battle started! Get ready...');
-  }
-
-  // Generate game words
-  function generateGameWords() {
-    const difficulty = roomData.gameSettings.difficulty;
-    const wordList = wordLists[difficulty] || wordLists.medium;
-    const words = [];
-    
-    for (let i = 0; i < 50; i++) {
-      words.push(wordList[Math.floor(Math.random() * wordList.length)]);
-    }
-    
-    return words;
-  }
-
-  // Handle game state changes
-  function handleGameStateChange(gameState) {
-    if (gameState.status === 'countdown') {
-      startCountdown();
-    } else if (gameState.status === 'playing') {
-      startBattleGame(gameState);
-    } else if (gameState.status === 'finished') {
-      endBattleGame(gameState);
-    }
+    await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/ready`), gameState.isReady);
+    showNotification(gameState.isReady ? '✅ Tayyor!' : '⏳ Kutilmoqda...', 'success');
   }
 
   // Start countdown
   function startCountdown() {
-    document.getElementById('waitingState').style.display = 'none';
-    document.getElementById('gameState').style.display = 'block';
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const countdownNumber = document.getElementById('countdownNumber');
+    
+    countdownOverlay.style.display = 'flex';
     
     let count = 3;
-    const countdownEl = document.createElement('div');
-    countdownEl.className = 'countdown';
-    document.querySelector('.game-area').appendChild(countdownEl);
-    
     const countdownInterval = setInterval(() => {
-      countdownEl.textContent = count;
-      
-      if (count === 0) {
-        countdownEl.textContent = 'GO!';
-        clearInterval(countdownInterval);
-        
-        setTimeout(() => {
-          countdownEl.remove();
-          if (isHost) {
-            set(ref(db, `battleRooms/${roomCode}/gameState/status`), 'playing');
-          }
-        }, 1000);
-      }
+      countdownNumber.textContent = count;
+      countdownNumber.style.animation = 'none';
+      setTimeout(() => countdownNumber.style.animation = 'countdownPulse 1s ease-in-out', 10);
       
       count--;
+      
+      if (count < 0) {
+        clearInterval(countdownInterval);
+        countdownOverlay.style.display = 'none';
+        initializeGame();
+      }
     }, 1000);
   }
 
-  // Start battle game
-  function startBattleGame(gameState) {
-    gameActive = true;
-    gameStartTime = Date.now();
-    wordsTyped = 0;
-    correctWords = 0;
+  // Initialize game
+  async function initializeGame() {
+    const gameText = battleTexts[Math.floor(Math.random() * battleTexts.length)];
     
-    const wordInput = document.getElementById('wordInput');
-    wordInput.disabled = false;
-    wordInput.focus();
+    await set(ref(db, `battleRooms/${roomCode}/status`), 'playing');
+    await set(ref(db, `battleRooms/${roomCode}/gameText`), gameText);
+    await set(ref(db, `battleRooms/${roomCode}/startTime`), Date.now());
+  }
+
+  // Start game
+  function startGame(text) {
+    gameState.isPlaying = true;
+    gameState.currentText = text;
+    gameState.currentIndex = 0;
+    gameState.startTime = Date.now();
+    gameState.errors = 0;
+
+    document.getElementById('waitingScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    document.getElementById('readySection').style.display = 'none';
+
+    displayText();
     
-    // Set first word
-    currentWord = gameState.words[0];
-    document.getElementById('wordDisplay').textContent = currentWord;
+    const typingInput = document.getElementById('typingInput');
+    typingInput.disabled = false;
+    typingInput.focus();
     
-    // Start timer
-    let timeLeft = gameState.timeLeft;
-    document.getElementById('timer').textContent = timeLeft;
+    startTimer();
+  }
+
+  // Display text with highlighting
+  function displayText() {
+    const textContent = document.getElementById('textContent');
+    const text = gameState.currentText;
+    
+    textContent.innerHTML = text.split('').map((char, index) => {
+      let className = '';
+      if (index < gameState.currentIndex) {
+        className = 'char correct';
+      } else if (index === gameState.currentIndex) {
+        className = 'char current';
+      }
+      return `<span class="${className}">${char}</span>`;
+    }).join('');
+  }
+
+  // Handle typing
+  document.getElementById('typingInput').addEventListener('input', (e) => {
+    if (!gameState.isPlaying) return;
+
+    const input = e.target.value;
+    const currentChar = gameState.currentText[gameState.currentIndex];
+    
+    if (input.endsWith(currentChar)) {
+      gameState.currentIndex++;
+      e.target.value = '';
+      
+      // Check if finished
+      if (gameState.currentIndex >= gameState.currentText.length) {
+        finishGame();
+        return;
+      }
+    } else if (input.length > 0) {
+      gameState.errors++;
+      e.target.value = '';
+    }
+
+    updateStats();
+    displayText();
+  });
+
+  // Update stats
+  function updateStats() {
+    const timeElapsed = (Date.now() - gameState.startTime) / 1000 / 60; // minutes
+    const wordsTyped = gameState.currentIndex / 5; // average word length
+    const wpm = Math.round(wordsTyped / timeElapsed) || 0;
+    const accuracy = Math.round(((gameState.currentIndex - gameState.errors) / gameState.currentIndex) * 100) || 100;
+    const progress = Math.round((gameState.currentIndex / gameState.currentText.length) * 100);
+
+    gameState.wpm = wpm;
+    gameState.accuracy = accuracy;
+    gameState.progress = progress;
+
+    document.getElementById('currentWPM').textContent = wpm;
+    document.getElementById('currentAccuracy').textContent = accuracy + '%';
+    document.getElementById('currentProgress').textContent = progress + '%';
+
+    // Update in database
+    set(ref(db, `battleRooms/${roomCode}/players/${user.phone}`), {
+      name: user.name,
+      phone: user.phone,
+      ready: true,
+      wpm: wpm,
+      accuracy: accuracy,
+      progress: progress,
+      score: Math.round(wpm * (accuracy / 100)),
+      joinedAt: Date.now()
+    });
+  }
+
+  // Start timer
+  function startTimer() {
+    let timeLeft = 30;
+    document.getElementById('gameTimer').textContent = timeLeft;
     
     const timerInterval = setInterval(() => {
       timeLeft--;
-      document.getElementById('timer').textContent = timeLeft;
+      document.getElementById('gameTimer').textContent = timeLeft;
       
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
-        if (isHost) {
-          set(ref(db, `battleRooms/${roomCode}/gameState/status`), 'finished');
-        }
+        finishGame();
       }
     }, 1000);
-    
-    // Handle input
-    wordInput.addEventListener('keydown', handleWordInput);
   }
 
-  // Handle word input
-  function handleWordInput(e) {
-    if (e.key === 'Enter' && gameActive) {
-      const input = e.target.value.trim().toLowerCase();
-      const correct = input === currentWord.toLowerCase();
-      
-      wordsTyped++;
-      if (correct) {
-        correctWords++;
-        e.target.classList.add('correct');
-        
-        // Update score and progress
-        const score = correctWords;
-        const wpm = Math.round((correctWords / ((Date.now() - gameStartTime) / 1000)) * 60);
-        const progress = (correctWords / 50) * 100;
-        
-        document.getElementById('score').textContent = score;
-        document.getElementById('wpm').textContent = wpm;
-        
-        // Update player data
-        set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/score`), score);
-        set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/wpm`), wpm);
-        set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/progress`), progress);
-        
-        // Next word
-        const gameState = roomData.gameState;
-        if (gameState && gameState.words && correctWords < gameState.words.length) {
-          currentWord = gameState.words[correctWords];
-          document.getElementById('wordDisplay').textContent = currentWord;
-        }
-      } else {
-        e.target.classList.add('incorrect');
-      }
-      
-      setTimeout(() => {
-        e.target.classList.remove('correct', 'incorrect');
-      }, 300);
-      
-      e.target.value = '';
-    }
-  }
+  // Finish game
+  async function finishGame() {
+    gameState.isPlaying = false;
+    document.getElementById('typingInput').disabled = true;
 
-  // End battle game
-  function endBattleGame(gameState) {
-    gameActive = false;
-    document.getElementById('wordInput').disabled = true;
-    
-    // Show results
-    setTimeout(() => {
-      const players = Object.values(roomData.players || {});
+    const finalStats = {
+      wpm: gameState.wpm,
+      accuracy: gameState.accuracy,
+      progress: gameState.progress,
+      score: Math.round(gameState.wpm * (gameState.accuracy / 100)),
+      finishTime: Date.now()
+    };
+
+    // Update final stats
+    await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}`), {
+      ...finalStats,
+      name: user.name,
+      phone: user.phone,
+      ready: true,
+      joinedAt: Date.now()
+    });
+
+    // Check if this player won
+    const roomSnapshot = await get(roomRef);
+    if (roomSnapshot.exists()) {
+      const roomData = roomSnapshot.val();
+      const players = Object.values(roomData.players);
+      
+      // Find winner (highest score)
       const winner = players.reduce((prev, current) => 
         (prev.score > current.score) ? prev : current
       );
-      
-      sendSystemMessage(`🏆 Battle finished! Winner: ${winner.name} with ${winner.score} points!`);
-    }, 1000);
-  }
 
-  // Chat functions
-  document.getElementById('chatInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      sendChatMessage();
-    }
-  });
-
-  // Focus chat on '/' key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === '/' && !e.target.matches('input')) {
-      e.preventDefault();
-      document.getElementById('chatInput').focus();
-    }
-  });
-
-  async function sendChatMessage() {
-    const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    const chatData = {
-      author: user.name,
-      authorPhone: user.phone,
-      message: message,
-      timestamp: Date.now(),
-      type: 'user'
-    };
-    
-    await push(ref(db, `battleRooms/${roomCode}/chat`), chatData);
-    input.value = '';
-  }
-
-  async function sendSystemMessage(message) {
-    const chatData = {
-      message: message,
-      timestamp: Date.now(),
-      type: 'system'
-    };
-    
-    await push(ref(db, `battleRooms/${roomCode}/chat`), chatData);
-  }
-
-  function updateChatMessages(chatData) {
-    const chatMessages = document.getElementById('chatMessages');
-    const messages = Object.values(chatData || {}).sort((a, b) => a.timestamp - b.timestamp);
-    
-    chatMessages.innerHTML = messages.map(msg => {
-      if (msg.type === 'system') {
-        return `
-          <div class="chat-message system">
-            <div class="message-text">${msg.message}</div>
-          </div>
-        `;
-      } else {
-        const time = new Date(msg.timestamp).toLocaleTimeString('uz-UZ', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        });
-        
-        return `
-          <div class="chat-message">
-            <div class="message-author">${msg.author}</div>
-            <div class="message-text">${msg.message}</div>
-            <div class="message-time">${time}</div>
-          </div>
-        `;
+      if (winner.phone === user.phone) {
+        // This player won!
+        await set(ref(db, `battleRooms/${roomCode}/winner`), winner);
+        await set(ref(db, `battleRooms/${roomCode}/winnerStats`), finalStats);
+        await set(ref(db, `battleRooms/${roomCode}/status`), 'finished');
       }
-    }).join('');
+    }
+  }
+
+  // Show victory screen with fireworks
+  function showVictoryScreen(winner, stats) {
+    const victoryScreen = document.getElementById('victoryScreen');
+    const winnerName = document.getElementById('winnerName');
+    const winnerWPM = document.getElementById('winnerWPM');
+    const winnerAccuracy = document.getElementById('winnerAccuracy');
+    const winnerTime = document.getElementById('winnerTime');
+
+    winnerName.textContent = winner.name;
+    winnerWPM.textContent = stats.wpm || winner.wpm || 0;
+    winnerAccuracy.textContent = (stats.accuracy || winner.accuracy || 100) + '%';
+    winnerTime.textContent = '30s';
+
+    victoryScreen.style.display = 'flex';
+
+    // Start fireworks
+    startFireworks();
+
+    // Play victory sound (if available)
+    playVictorySound();
+
+    // Confetti
+    startConfetti();
+  }
+
+  // Start fireworks animation
+  function startFireworks() {
+    const container = document.getElementById('fireworksContainer');
+    const colors = ['#e2b714', '#4ade80', '#ef4444', '#3b82f6', '#a855f7', '#f59e0b'];
+
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => {
+        createFirework(container, colors);
+      }, i * 300);
+    }
+  }
+
+  // Create single firework
+  function createFirework(container, colors) {
+    const firework = document.createElement('div');
+    firework.className = 'firework';
+    firework.style.left = Math.random() * window.innerWidth + 'px';
+    firework.style.top = Math.random() * window.innerHeight + 'px';
+    firework.style.background = colors[Math.floor(Math.random() * colors.length)];
     
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    container.appendChild(firework);
+
+    // Create particles
+    for (let i = 0; i < 12; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'firework-particle';
+      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.left = firework.style.left;
+      particle.style.top = firework.style.top;
+      
+      const angle = (i * 30) * Math.PI / 180;
+      const distance = 100 + Math.random() * 100;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+      
+      particle.style.setProperty('--dx', dx + 'px');
+      particle.style.setProperty('--dy', dy + 'px');
+      
+      container.appendChild(particle);
+      
+      setTimeout(() => particle.remove(), 1500);
+    }
+
+    setTimeout(() => firework.remove(), 2000);
+  }
+
+  // Start confetti
+  function startConfetti() {
+    const container = document.getElementById('fireworksContainer');
+    const colors = ['#e2b714', '#4ade80', '#ef4444', '#3b82f6', '#a855f7'];
+    
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        
+        container.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 6000);
+      }, i * 100);
+    }
+  }
+
+  // Play victory sound
+  function playVictorySound() {
+    // Create audio context for victory sound
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Victory melody
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      
+      notes.forEach((freq, index) => {
+        setTimeout(() => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+          oscillator.type = 'triangle';
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.5);
+        }, index * 200);
+      });
+    } catch (error) {
+      console.log('Audio not supported');
+    }
   }
 
   // Copy room code
   window.copyRoomCode = function() {
     navigator.clipboard.writeText(roomCode).then(() => {
-      // Show notification
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--success);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-weight: 600;
-        z-index: 1000;
-        animation: slideDown 0.3s ease;
-      `;
-      notification.textContent = '📋 Room code copied!';
-      document.body.appendChild(notification);
-      
-      setTimeout(() => notification.remove(), 2000);
+      showNotification('📋 Kod nusxalandi!', 'success');
     });
+  }
+
+  // Play again
+  window.playAgain = async function() {
+    await set(ref(db, `battleRooms/${roomCode}/status`), 'waiting');
+    await set(ref(db, `battleRooms/${roomCode}/winner`), null);
+    await set(ref(db, `battleRooms/${roomCode}/winnerStats`), null);
+    
+    // Reset all players
+    const playersSnapshot = await get(playersRef);
+    if (playersSnapshot.exists()) {
+      const players = playersSnapshot.val();
+      for (const playerPhone in players) {
+        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/ready`), false);
+        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/progress`), 0);
+        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/wpm`), 0);
+        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/accuracy`), 100);
+      }
+    }
+
+    document.getElementById('victoryScreen').style.display = 'none';
+    document.getElementById('waitingScreen').style.display = 'flex';
+    document.getElementById('gameScreen').style.display = 'none';
+    document.getElementById('readySection').style.display = 'block';
+    
+    gameState.isReady = false;
+    gameState.isPlaying = false;
+    
+    const readyBtn = document.getElementById('readyBtn');
+    readyBtn.className = 'ready-btn not-ready';
+    readyBtn.innerHTML = '<span>✅</span><span>Tayyor</span>';
   }
 
   // Leave room
   window.leaveRoom = async function() {
-    if (confirm('Haqiqatan ham xonani tark etmoqchimisiz?')) {
-      // Remove player from room
-      await remove(ref(db, `battleRooms/${roomCode}/players/${user.phone}`));
+    await remove(ref(db, `battleRooms/${roomCode}/players/${user.phone}`));
+    
+    // Update player count
+    const roomSnapshot = await get(roomRef);
+    if (roomSnapshot.exists()) {
+      const roomData = roomSnapshot.val();
+      const currentPlayers = Object.keys(roomData.players || {}).length;
+      await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), currentPlayers);
       
-      // Update player count
-      if (roomData.currentPlayers > 1) {
-        await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), roomData.currentPlayers - 1);
-      } else {
-        // Delete room if last player
-        await remove(ref(db, `battleRooms/${roomCode}`));
+      // If no players left, delete room
+      if (currentPlayers === 0) {
+        await remove(roomRef);
       }
-      
-      localStorage.removeItem('battleRoomCode');
-      window.location.href = 'battle.html';
     }
+    
+    localStorage.removeItem('battleRoomCode');
+    window.location.href = 'battle.html';
   }
+
+  // Notification system
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  // Initialize
+  loadRoomData();
 
   // Cleanup on page unload
   window.addEventListener('beforeunload', () => {
-    if (roomCode && user) {
-      // This will run when user closes tab/browser
-      navigator.sendBeacon('/api/leave-room', JSON.stringify({
-        roomCode: roomCode,
-        userPhone: user.phone
-      }));
-    }
+    off(roomRef);
+    off(playersRef);
   });
-
-  // Initialize
-  initializeRoom();
-  sendSystemMessage(`👋 ${user.name} joined the battle!`);
 </script>
+
 <script>
   function showInsult() {
     alert("Urinma! Baribir hech nima qilolmaysan.\nKod senga emas! 🚫🤬");
@@ -1119,10 +1472,9 @@
   window.addEventListener("keydown", function (e) {
     const key = e.key.toLowerCase();
     
-    // Bloklanadigan tugmalar
     if (
-      e.keyCode === 123 || // F12
-      (e.ctrlKey && blockedKeys.includes(e.key)) || // Ctrl + [U, C, G, П, S, I, J...]
+      e.keyCode === 123 || 
+      (e.ctrlKey && blockedKeys.includes(e.key)) || 
       (e.ctrlKey && e.shiftKey && blockedKeys.includes(e.key))
     ) {
       e.preventDefault();
@@ -1130,31 +1482,27 @@
     }
   });
 
-  // O'ng tugma (Right Click)
   window.addEventListener("contextmenu", function (e) {
     e.preventDefault();
     showInsult();
   });
 
-  // Copy event (mouse bilan select qilib Ctrl+C qilmoqchi bo‘lsa)
   document.addEventListener("copy", function (e) {
     e.preventDefault();
     showInsult();
   });
 
-  // DevTools aniqlash (konsol ochilganini sezadi)
   (function devtoolsDetector() {
     const detector = new Function("debugger");
     setInterval(() => detector(), 100);
   })();
 
-  // Iframe dan himoya
   if (window.top !== window.self) {
     window.top.location = window.self.location;
   }
 </script>
 
-<script src="js/protection.js"></script>
+<script src="protection.js"></script>
 
 </body>
 </html>

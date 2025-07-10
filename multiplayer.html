@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏁 Multiplayer Racing - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border: #3c3c3c;
+      --player1: #3b82f6;
+      --player2: #ef4444;
+      --player3: #10b981;
+      --player4: #8b5cf6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .race-track {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+    }
+
+    .players-list {
+      display: grid;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .player-lane {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .player-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+
+    .player-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .player-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .progress-track {
+      height: 12px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-car {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .progress-car::after {
+      content: '🏎️';
+      position: absolute;
+      right: -15px;
+      top: -8px;
+      font-size: 1.5rem;
+    }
+
+    .player1 .player-avatar { background: var(--player1); }
+    .player1 .progress-car { background: var(--player1); }
+    .player2 .player-avatar { background: var(--player2); }
+    .player2 .progress-car { background: var(--player2); }
+    .player3 .player-avatar { background: var(--player3); }
+    .player3 .progress-car { background: var(--player3); }
+    .player4 .player-avatar { background: var(--player4); }
+    .player4 .progress-car { background: var(--player4); }
+
+    .game-area {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .word-display {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 30px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .typing-input {
+      width: 100%;
+      max-width: 600px;
+      background: var(--bg-primary);
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 20px;
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .typing-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(226, 183, 20, 0.3);
+    }
+
+    .game-controls {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #d4a813;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .room-info {
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .room-code {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 10px 0;
+      letter-spacing: 3px;
+    }
+
+    .countdown {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--error);
+      margin: 20px 0;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    .chat-area {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+    }
+
+    .chat-message {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 10px;
+      border-radius: 6px;
+      outline: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .winner-celebration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .celebration-content {
+      text-align: center;
+      color: var(--accent);
+    }
+
+    .celebration-title {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .back-btn {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0 auto;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .game-controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .word-display {
+        font-size: 1.8rem;
+      }
+      
+      .typing-input {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">🏁 Multiplayer Racing</div>
+      <div class="subtitle">Do'stlaringiz bilan real-time poyga!</div>
+    </div>
+
+    <!-- Room Info -->
+    <div class="room-info">
+      <div>🏠 Xona kodi:</div>
+      <div class="room-code" id="roomCode">LOADING...</div>
+      <div style="color: var(--text-secondary); margin-top: 10px;">
+        Bu kodni do'stlaringizga yuboring
+      </div>
+    </div>
+
+    <!-- Race Track -->
+    <div class="race-track">
+      <h3 style="color: var(--accent); margin-bottom: 20px; text-align: center;">🏁 Poyga yo'li</h3>
+      <div class="players-list" id="playersList">
+        <!-- Players will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Game Area -->
+    <div class="game-area">
+      <div class="countdown" id="countdown" style="display: none;">3</div>
+      <div class="word-display" id="wordDisplay">Boshlanishini kutmoqda...</div>
+      <input type="text" class="typing-input" id="typingInput" placeholder="Bu yerga yozing..." disabled>
+    </div>
+
+    <!-- Game Controls -->
+    <div class="game-controls">
+      <button class="btn btn-primary" id="startBtn" onclick="startRace()">
+        <span>🚀</span>
+        <span>Poygani boshlash</span>
+      </button>
+      <button class="btn btn-secondary" onclick="joinRoom()">
+        <span>🚪</span>
+        <span>Xonaga qo'shilish</span>
+      </button>
+      <button class="btn btn-secondary" onclick="inviteFriends()">
+        <span>👥</span>
+        <span>Do'st chaqirish</span>
+      </button>
+      <button class="btn btn-danger" onclick="leaveRoom()">
+        <span>🚪</span>
+        <span>Xonadan chiqish</span>
+      </button>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area">
+      <h4 style="color: var(--accent); margin-bottom: 15px;">💬 Chat</h4>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-message">
+          <strong style="color: var(--accent);">Tizim:</strong> Xonaga xush kelibsiz!
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Xabar yozing..." onkeypress="sendMessage(event)">
+        <button class="btn btn-primary" onclick="sendMessage()">Yuborish</button>
+      </div>
+    </div>
+
+    <button class="back-btn" onclick="location.href='index.html'" style="margin-top: 30px;">
+      <span>⬅️</span>
+      <span>Bosh sahifaga qaytish</span>
+    </button>
+  </div>
+
+  <!-- Winner Celebration -->
+  <div class="winner-celebration" id="winnerCelebration">
+    <div class="celebration-content">
+      <div class="celebration-title">🏆 G'OLIB!</div>
+      <div style="font-size: 2rem; margin-bottom: 30px;">Tabriklaymiz!</div>
+      <button class="btn btn-primary" onclick="playAgain()">Yana o'ynash</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCR8QE6UHlS8qqp7UIqCxyiXto_xlB0xyI",
+      authDomain: "tezroqyoz.firebaseapp.com",
+      databaseURL: "https://tezroqyoz-default-rtdb.firebaseio.com",
+      projectId: "tezroqyoz",
+      storageBucket: "tezroqyoz.firebasestorage.app",
+      messagingSenderId: "562891786916",
+      appId: "1:562891786916:web:8372d94bf2128fcc127431",
+      measurementId: "G-C3F6970S7T"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const user = JSON.parse(localStorage.getItem("sozUser"));
+    if (!user) window.location.href = "register.html";
+
+    // Game state
+    let currentRoom = null;
+    let gameState = 'waiting'; // waiting, countdown, playing, finished
+    let currentWord = '';
+    let playerProgress = {};
+    let words = ['salom', 'dunyo', 'kompyuter', 'dasturlash', 'o\'zbek', 'til', 'o\'yin', 'tezlik', 'matn', 'yozish'];
+
+    // Generate room code
+    function generateRoomCode() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    // Initialize room
+    async function initializeRoom() {
+      const roomCode = generateRoomCode();
+      currentRoom = roomCode;
+      document.getElementById('roomCode').textContent = roomCode;
+
+      // Create room in database
+      const roomRef = ref(db, `multiplayer_rooms/${roomCode}`);
+      await set(roomRef, {
+        host: user.phone,
+        created: Date.now(),
+        state: 'waiting',
+        players: {
+          [user.phone]: {
+            name: user.name,
+            progress: 0,
+            wpm: 0,
+            position: 1
+          }
+        }
+      });
+
+      // Listen for room changes
+      onValue(roomRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const roomData = snapshot.val();
+          updatePlayersDisplay(roomData.players);
+          updateGameState(roomData);
+        }
+      });
+    }
+
+    // Update players display
+    function updatePlayersDisplay(players) {
+      const container = document.getElementById('playersList');
+      container.innerHTML = '';
+
+      const playerColors = ['player1', 'player2', 'player3', 'player4'];
+      let colorIndex = 0;
+
+      Object.entries(players).forEach(([phone, player]) => {
+        const playerDiv = document.createElement('div');
+        playerDiv.className = `player-lane ${playerColors[colorIndex % 4]}`;
+        
+        playerDiv.innerHTML = `
+          <div class="player-info">
+            <div class="player-name">
+              <div class="player-avatar">${player.name.charAt(0).toUpperCase()}</div>
+              <span>${player.name}</span>
+              ${phone === user.phone ? '<span style="color: var(--accent);">(Siz)</span>' : ''}
+            </div>
+            <div class="player-stats">
+              <span>WPM: ${player.wpm || 0}</span>
+              <span>Pozitsiya: ${player.position || 1}</span>
+            </div>
+          </div>
+          <div class="progress-track">
+            <div class="progress-car" style="width: ${player.progress || 0}%"></div>
+          </div>
+        `;
+        
+        container.appendChild(playerDiv);
+        colorIndex++;
+      });
+    }
+
+    // Update game state
+    function updateGameState(roomData) {
+      gameState = roomData.state;
+      
+      if (roomData.currentWord) {
+        currentWord = roomData.currentWord;
+        document.getElementById('wordDisplay').textContent = currentWord;
+      }
+
+      if (gameState === 'countdown') {
+        startCountdown();
+      } else if (gameState === 'playing') {
+        document.getElementById('typingInput').disabled = false;
+        document.getElementById('typingInput').focus();
+      } else if (gameState === 'finished') {
+        showWinner(roomData.winner);
+      }
+    }
+
+    // Start countdown
+    function startCountdown() {
+      const countdownEl = document.getElementById('countdown');
+      const wordDisplay = document.getElementById('wordDisplay');
+      
+      countdownEl.style.display = 'block';
+      wordDisplay.style.display = 'none';
+      
+      let count = 3;
+      countdownEl.textContent = count;
+      
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownEl.textContent = count;
+        } else {
+          countdownEl.textContent = 'START!';
+          setTimeout(() => {
+            countdownEl.style.display = 'none';
+            wordDisplay.style.display = 'flex';
+            startActualRace();
+          }, 1000);
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+
+    // Start actual race
+    async function startActualRace() {
+      const roomRef = ref(db, `multiplayer_rooms/${currentRoom}`);
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      
+      await set(ref(db, `multiplayer_rooms/${currentRoom}/state`), 'playing');
+      await set(ref(db, `multiplayer_rooms/${currentRoom}/currentWord`), randomWord);
+      
+      document.getElementById('typingInput').disabled = false;
+      document.getElementById('typingInput').focus();
+    }
+
+    // Handle typing
+    document.getElementById('typingInput').addEventListener('input', async function(e) {
+      if (gameState !== 'playing') return;
+      
+      const typed = e.target.value;
+      const progress = (typed.length / currentWord.length) * 100;
+      
+      // Update progress in database
+      await set(ref(db, `multiplayer_rooms/${currentRoom}/players/${user.phone}/progress`), Math.min(progress, 100));
+      
+      // Check if word is complete
+      if (typed === currentWord) {
+        // Player finished this word
+        e.target.value = '';
+        
+        // Check if this player won
+        const roomSnapshot = await get(ref(db, `multiplayer_rooms/${currentRoom}`));
+        if (roomSnapshot.exists()) {
+          const roomData = roomSnapshot.val();
+          const players = roomData.players;
+          
+          // Check if this is the first to finish
+          const finishedPlayers = Object.values(players).filter(p => p.progress >= 100);
+          if (finishedPlayers.length === 1) {
+            // This player won!
+            await set(ref(db, `multiplayer_rooms/${currentRoom}/state`), 'finished');
+            await set(ref(db, `multiplayer_rooms/${currentRoom}/winner`), user.name);
+          }
+        }
+        
+        // Generate next word
+        const nextWord = words[Math.floor(Math.random() * words.length)];
+        await set(ref(db, `multiplayer_rooms/${currentRoom}/currentWord`), nextWord);
+        
+        // Reset all players' progress
+        const playersRef = ref(db, `multiplayer_rooms/${currentRoom}/players`);
+        const playersSnapshot = await get(playersRef);
+        if (playersSnapshot.exists()) {
+          const players = playersSnapshot.val();
+          Object.keys(players).forEach(async (phone) => {
+            await set(ref(db, `multiplayer_rooms/${currentRoom}/players/${phone}/progress`), 0);
+          });
+        }
+      }
+    });
+
+    // Show winner
+    function showWinner(winnerName) {
+      const celebration = document.getElementById('winnerCelebration');
+      const title = celebration.querySelector('.celebration-title');
+      
+      if (winnerName === user.name) {
+        title.textContent = '🏆 SIZ G\'OLIB BO\'LDINGIZ!';
+      } else {
+        title.textContent = `🏆 ${winnerName} G'OLIB!`;
+      }
+      
+      celebration.style.display = 'flex';
+      
+      // Play celebration sound
+      playSound([523, 659, 784, 1047], 1000, 'sine');
+    }
+
+    // Sound system
+    function playSound(frequency, duration, type = 'sine') {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        if (Array.isArray(frequency)) {
+          frequency.forEach((freq, index) => {
+            setTimeout(() => {
+              const oscillator = audioContext.createOscillator();
+              const gainNode = audioContext.createGain();
+              
+              oscillator.connect(gainNode);
+              gainNode.connect(audioContext.destination);
+              
+              oscillator.frequency.value = freq;
+              oscillator.type = type;
+              
+              gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+              gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+              
+              oscillator.start(audioContext.currentTime);
+              oscillator.stop(audioContext.currentTime + duration / 1000);
+            }, index * 200);
+          });
+        }
+      } catch (e) {
+        console.log('Sound not supported');
+      }
+    }
+
+    // Global functions
+    window.startRace = async function() {
+      if (!currentRoom) return;
+      
+      const roomRef = ref(db, `multiplayer_rooms/${currentRoom}`);
+      await set(ref(db, `multiplayer_rooms/${currentRoom}/state`), 'countdown');
+      
+      document.getElementById('startBtn').disabled = true;
+    }
+
+    window.joinRoom = function() {
+      const roomCode = prompt('Xona kodini kiriting:');
+      if (roomCode) {
+        // Join existing room logic
+        location.href = `multiplayer.html?room=${roomCode}`;
+      }
+    }
+
+    window.inviteFriends = function() {
+      const inviteText = `Tez Roq Yoz multiplayer o'yiniga qo'shiling!\nXona kodi: ${currentRoom}\nHavola: ${window.location.origin}/multiplayer.html?room=${currentRoom}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'Tez Roq Yoz - Multiplayer',
+          text: inviteText,
+          url: `${window.location.origin}/multiplayer.html?room=${currentRoom}`
+        });
+      } else {
+        navigator.clipboard.writeText(inviteText).then(() => {
+          alert('Taklifnoma nusxalandi! Do\'stlaringizga yuboring.');
+        });
+      }
+    }
+
+    window.leaveRoom = function() {
+      if (confirm('Xonadan chiqmoqchimisiz?')) {
+        location.href = 'index.html';
+      }
+    }
+
+    window.sendMessage = function(event) {
+      if (event && event.key !== 'Enter') return;
+      
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (message) {
+        const messagesContainer = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message';
+        messageDiv.innerHTML = `<strong style="color: var(--accent);">${user.name}:</strong> ${message}`;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        input.value = '';
+      }
+    }
+
+    window.playAgain = function() {
+      document.getElementById('winnerCelebration').style.display = 'none';
+      gameState = 'waiting';
+      document.getElementById('typingInput').disabled = true;
+      document.getElementById('typingInput').value = '';
+      document.getElementById('startBtn').disabled = false;
+    }
+
+    // Initialize
+    initializeRoom();
+  </script>
+</body>
+</html>

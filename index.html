@@ -22,6 +22,7 @@
       --online: #22c55e;
       --offline: #6b7280;
       --border: #3c3c3c;
+      --multiplayer: #10b981;
     }
 
     [data-theme="light"] {
@@ -253,6 +254,32 @@
       height: 8px;
       border-radius: 50%;
       background: var(--online);
+    }
+
+    /* Welcome Message */
+    .welcome-message {
+      position: absolute;
+      top: 70px;
+      right: 40px;
+      background: linear-gradient(135deg, var(--accent), #d4a813);
+      color: var(--bg-primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      animation: welcomeSlide 0.5s ease-out;
+      box-shadow: 0 4px 15px rgba(226, 183, 20, 0.3);
+    }
+
+    @keyframes welcomeSlide {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     /* Main Content */
@@ -526,6 +553,18 @@
       box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
     }
 
+    .btn-multiplayer {
+      background: linear-gradient(135deg, var(--multiplayer), #059669);
+      color: white;
+      box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-multiplayer:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+    }
+
     /* Achievements */
     .achievements {
       display: flex;
@@ -672,6 +711,46 @@
       color: var(--text-primary);
     }
 
+    /* Notification styles */
+    .notification {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      z-index: 1001;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+      animation: slideDown 0.3s ease;
+      max-width: 400px;
+    }
+
+    .notification.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .notification.error {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
     /* Mobile Detection */
     @media (max-width: 1024px) {
       .mobile-block {
@@ -697,6 +776,60 @@
         gap: 20px;
       }
     }
+
+    .modal {
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Custom checkbox styles */
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Custom range slider styles */
+    input[type="range"] {
+      -webkit-appearance: none;
+      background: var(--bg-tertiary);
+      border-radius: 5px;
+      height: 5px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -716,8 +849,8 @@
     <!-- Header -->
     <div class="header">
       <div class="logo-section">
-        <div class="logo">🎯</div>
-        <div class="logo-text">tezroq yoz</div>
+        <div class="logo"><img src="taypik.png" style="width: 110px;"></div>
+        <!-- <div class="logo-text"></div> -->
       </div>
       
       <div class="header-controls">
@@ -749,6 +882,11 @@
           <span class="user-level" id="userLevel">LVL 1</span>
         </div>
       </div>
+    </div>
+
+    <!-- Welcome Message -->
+    <div class="welcome-message" id="welcomeMessage" style="display: none;">
+      👋 Xush kelibsiz, <span id="welcomeUserName"></span>!
     </div>
 
     <!-- Main Content -->
@@ -833,6 +971,10 @@
           <span>⚔️</span>
           <span>battle mode</span>
         </button>
+        <button class="btn btn-multiplayer" onclick="location.href='multiplayer.html'">
+          <span>🏁</span>
+          <span>multiplayer racing</span>
+        </button>
         <button class="btn btn-tournament" onclick="location.href='tournament.html'">
           <span>🏆</span>
           <span>tournament</span>
@@ -852,6 +994,14 @@
         <button class="btn btn-secondary" onclick="location.href='feedback.html'">
           <span>💭</span>
           <span>fikr bildirish</span>
+        </button>
+        <button class="btn btn-secondary" onclick="location.href='shortcuts.html'">
+          <span>⌨️</span>
+          <span>yorliqlar</span>
+        </button>
+        <button class="btn btn-secondary" onclick="location.href='statistics.html'">
+          <span>📊</span>
+          <span>statistika</span>
         </button>
       </div>
 
@@ -889,11 +1039,14 @@
     measurementId: "G-C3F6970S7T"
   };
 
+  // Check if user is registered
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
   const user = JSON.parse(localStorage.getItem("sozUser"));
-  if (!user) window.location.href = "register.html";
+  if (!user) {
+    window.location.href = "register.html";
+  }
 
   // Settings
   let selectedTime = 30;
@@ -1125,6 +1278,33 @@
     }
   }
 
+  // Show welcome message
+  function showWelcomeMessage() {
+    if (user && user.name) {
+      const welcomeMsg = document.getElementById('welcomeMessage');
+      const welcomeUserName = document.getElementById('welcomeUserName');
+      
+      welcomeUserName.textContent = user.name;
+      welcomeMsg.style.display = 'block';
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        welcomeMsg.style.opacity = '0';
+        setTimeout(() => {
+          welcomeMsg.style.display = 'none';
+          welcomeMsg.style.opacity = '1';
+        }, 300);
+      }, 5000);
+    }
+  }
+
+  // Update user name in header
+  function updateUserName() {
+    if (user && user.name) {
+      document.getElementById('userName').textContent = user.name;
+    }
+  }
+
   // Detailed stats
   window.showDetailedStats = function(type) {
     sounds.click();
@@ -1132,10 +1312,41 @@
     // Create detailed stats modal
     const modal = document.createElement('div');
     modal.className = 'modal';
-    modal.style.display = 'flex';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(10px);
+    `;
     modal.innerHTML = `
-      <div class="modal-content" style="max-width: 600px;">
-        <div class="modal-title">📊 ${type.toUpperCase()} Statistikasi</div>
+      <div class="modal-content" style="
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90vw;
+        max-height: 80vh;
+        overflow-y: auto;
+      ">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+          <h2 style="color: var(--accent); font-size: 1.5rem; margin: 0;">📊 ${type.toUpperCase()} Statistikasi</h2>
+          <button onclick="this.closest('.modal').remove()" style="
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+          ">✕</button>
+        </div>
         <div id="detailedStatsContent">Yuklanmoqda...</div>
         <div style="text-align: center; margin-top: 20px;">
           <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Yopish</button>
@@ -1275,7 +1486,387 @@
 
   window.openSettings = function() {
     sounds.click();
-    showNotification('⚙️ Sozlamalar tez orada qo\'shiladi!', 'success');
+  
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(10px);
+    `;
+    
+    modal.innerHTML = `
+      <div class="modal-content" style="
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90vw;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+      ">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+          <h2 style="color: var(--accent); font-size: 1.8rem; font-weight: 700; margin: 0;">⚙️ Sozlamalar</h2>
+          <button onclick="this.closest('.modal').remove()" style="
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s;
+          " onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='none'">✕</button>
+        </div>
+        
+        <div class="settings-content">
+          <!-- Theme Settings -->
+          <div class="setting-section" style="margin-bottom: 30px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+              🎨 <span>Tema</span>
+            </h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="theme-btn" data-theme="dark" style="background: #e2b714; color: #1a1a1a;">Dark</button>
+              <button class="theme-btn" data-theme="light" style="background: #1a1a1a; color: #ffffff;">Light</button>
+              <button class="theme-btn" data-theme="blue" style="background: #3b82f6; color: #ffffff;">Blue</button>
+              <button class="theme-btn" data-theme="green" style="background: #10b981; color: #ffffff;">Green</button>
+              <button class="theme-btn" data-theme="purple" style="background: #8b5cf6; color: #ffffff;">Purple</button>
+            </div>
+          </div>
+
+          <!-- Sound Settings -->
+          <div class="setting-section" style="margin-bottom: 30px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+              🔊 <span>Tovush</span>
+            </h3>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+              <label style="color: var(--text-secondary);">Tovushni yoqish/o'chirish:</label>
+              <button id="soundToggleBtn" onclick="toggleSoundInSettings()" style="
+                background: var(--accent);
+                color: var(--bg-primary);
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+              ">${soundEnabled ? '🔊 Yoqilgan' : '🔇 O\'chirilgan'}</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <label style="color: var(--text-secondary);">Tovush balandligi:</label>
+              <input type="range" id="volumeSlider" min="0" max="100" value="${localStorage.getItem('soundVolume') || 50}" style="
+                flex: 1;
+                max-width: 200px;
+              " oninput="updateVolume(this.value)">
+              <span id="volumeValue" style="color: var(--accent); font-weight: 600; min-width: 40px;">${localStorage.getItem('soundVolume') || 50}%</span>
+            </div>
+          </div>
+
+          <!-- Game Settings -->
+          <div class="setting-section" style="margin-bottom: 30px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+              🎮 <span>O'yin sozlamalari</span>
+            </h3>
+            <div style="display: grid; gap: 15px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label style="color: var(--text-secondary);">Auto-start keyingi so'z:</label>
+                <input type="checkbox" id="autoStart" ${localStorage.getItem('autoStart') === 'true' ? 'checked' : ''} 
+                  onchange="localStorage.setItem('autoStart', this.checked); sounds.click();">
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label style="color: var(--text-secondary);">Xatolarni ko'rsatish:</label>
+                <input type="checkbox" id="showErrors" ${localStorage.getItem('showErrors') !== 'false' ? 'checked' : ''} 
+                  onchange="localStorage.setItem('showErrors', this.checked); sounds.click();">
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label style="color: var(--text-secondary);">Animatsiyalar:</label>
+                <input type="checkbox" id="animations" ${localStorage.getItem('animations') !== 'false' ? 'checked' : ''} 
+                  onchange="toggleAnimations(this.checked);">
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Settings -->
+          <div class="setting-section" style="margin-bottom: 30px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+              🌐 <span>Til</span>
+            </h3>
+            <select id="languageSelect" style="
+              background: var(--bg-primary);
+              color: var(--text-primary);
+              border: 1px solid var(--border);
+              padding: 8px 12px;
+              border-radius: 6px;
+              font-family: 'JetBrains Mono', monospace;
+            " onchange="changeLanguage(this.value)">
+              <option value="uz">🇺🇿 O'zbek tili</option>
+              <option value="ru">🇷🇺 Русский язык</option>
+              <option value="en">🇺🇸 English</option>
+            </select>
+          </div>
+
+          <!-- Font Settings -->
+          <div class="setting-section" style="margin-bottom: 30px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+              📝 <span>Shrift</span>
+            </h3>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+              <label style="color: var(--text-secondary);">Shrift o'lchami:</label>
+              <input type="range" id="fontSizeSlider" min="14" max="24" value="${localStorage.getItem('fontSize') || 16}" 
+                oninput="updateFontSize(this.value)" style="flex: 1; max-width: 200px;">
+              <span id="fontSizeValue" style="color: var(--accent); font-weight: 600; min-width: 40px;">${localStorage.getItem('fontSize') || 16}px</span>
+            </div>
+            <div>
+              <label style="color: var(--text-secondary); margin-bottom: 8px; display: block;">Shrift turi:</label>
+              <select id="fontFamilySelect" style="
+                background: var(--bg-primary);
+                color: var(--text-primary);
+                border: 1px solid var(--border);
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-family: 'JetBrains Mono', monospace;
+                width: 100%;
+              " onchange="updateFontFamily(this.value)">
+                <option value="JetBrains Mono">JetBrains Mono</option>
+                <option value="Roboto Mono">Roboto Mono</option>
+                <option value="Fira Code">Fira Code</option>
+                <option value="Consolas">Consolas</option>
+                <option value="Monaco">Monaco</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Data Management -->
+          <div class="setting-section" style="margin-bottom: 20px;">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+              💾 <span>Ma'lumotlar</span>
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+              <button onclick="exportSettings()" style="
+                background: var(--success);
+                color: white;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+              ">📤 Export</button>
+              <button onclick="importSettings()" style="
+                background: var(--warning);
+                color: white;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+              ">📥 Import</button>
+              <button onclick="resetSettings()" style="
+                background: var(--error);
+                color: white;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+              ">🔄 Reset</button>
+              <button onclick="clearCache()" style="
+                background: var(--text-secondary);
+                color: white;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+              ">🗑️ Cache</button>
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid var(--border);">
+          <button onclick="this.closest('.modal').remove()" style="
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+          ">✅ Saqlash</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Theme button handlers
+    modal.querySelectorAll('.theme-btn').forEach(btn => {
+      const theme = btn.dataset.theme;
+      if (theme === currentTheme) {
+        btn.style.border = '2px solid var(--accent)';
+      }
+      
+      btn.style.cssText += `
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+      `;
+      
+      btn.onclick = () => {
+        setTheme(theme);
+        modal.querySelectorAll('.theme-btn').forEach(b => b.style.border = '1px solid transparent');
+        btn.style.border = '2px solid var(--accent)';
+      };
+    });
+    
+    // Load current settings
+    document.getElementById('languageSelect').value = localStorage.getItem('language') || 'uz';
+    document.getElementById('fontFamilySelect').value = localStorage.getItem('fontFamily') || 'JetBrains Mono';
+  }
+
+  // Settings functions
+  window.toggleSoundInSettings = function() {
+    toggleSound();
+    document.getElementById('soundToggleBtn').innerHTML = soundEnabled ? '🔊 Yoqilgan' : '🔇 O\'chirilgan';
+  }
+
+  window.updateVolume = function(value) {
+    localStorage.setItem('soundVolume', value);
+    document.getElementById('volumeValue').textContent = value + '%';
+    sounds.click(); // Test sound
+  }
+
+  window.updateFontSize = function(value) {
+    localStorage.setItem('fontSize', value);
+    document.getElementById('fontSizeValue').textContent = value + 'px';
+    document.documentElement.style.fontSize = value + 'px';
+  }
+
+  window.updateFontFamily = function(value) {
+    localStorage.setItem('fontFamily', value);
+    document.body.style.fontFamily = `'${value}', monospace`;
+  }
+
+  window.toggleAnimations = function(enabled) {
+    localStorage.setItem('animations', enabled);
+    document.documentElement.style.setProperty('--animation-duration', enabled ? '0.3s' : '0s');
+    sounds.click();
+  }
+
+  window.changeLanguage = function(lang) {
+    localStorage.setItem('language', lang);
+    showNotification(`🌐 Til o'zgartirildi: ${lang}`, 'success');
+  }
+
+  window.exportSettings = function() {
+    const settings = {
+      theme: currentTheme,
+      soundEnabled,
+      soundVolume: localStorage.getItem('soundVolume') || 50,
+      autoStart: localStorage.getItem('autoStart') === 'true',
+      showErrors: localStorage.getItem('showErrors') !== 'false',
+      animations: localStorage.getItem('animations') !== 'false',
+      language: localStorage.getItem('language') || 'uz',
+      fontSize: localStorage.getItem('fontSize') || 16,
+      fontFamily: localStorage.getItem('fontFamily') || 'JetBrains Mono'
+    };
+    
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(settings, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "tez-roq-yoz-settings.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    
+    showNotification('📤 Sozlamalar eksport qilindi!', 'success');
+  }
+
+  window.importSettings = function() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const settings = JSON.parse(e.target.result);
+            
+            // Apply imported settings
+            if (settings.theme) setTheme(settings.theme);
+            if (settings.soundEnabled !== undefined) {
+              soundEnabled = settings.soundEnabled;
+              localStorage.setItem('soundEnabled', soundEnabled);
+            }
+            if (settings.soundVolume) localStorage.setItem('soundVolume', settings.soundVolume);
+            if (settings.autoStart !== undefined) localStorage.setItem('autoStart', settings.autoStart);
+            if (settings.showErrors !== undefined) localStorage.setItem('showErrors', settings.showErrors);
+            if (settings.animations !== undefined) localStorage.setItem('animations', settings.animations);
+            if (settings.language) localStorage.setItem('language', settings.language);
+            if (settings.fontSize) {
+              localStorage.setItem('fontSize', settings.fontSize);
+              document.documentElement.style.fontSize = settings.fontSize + 'px';
+            }
+            if (settings.fontFamily) {
+              localStorage.setItem('fontFamily', settings.fontFamily);
+              document.body.style.fontFamily = `'${settings.fontFamily}', monospace`;
+            }
+            
+            showNotification('📥 Sozlamalar import qilindi!', 'success');
+            location.reload();
+          } catch (error) {
+            showNotification('❌ Xato: Fayl noto\'g\'ri format!', 'error');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  }
+
+  window.resetSettings = function() {
+    if (confirm('Barcha sozlamalarni qayta tiklamoqchimisiz?')) {
+      localStorage.removeItem('theme');
+      localStorage.removeItem('soundEnabled');
+      localStorage.removeItem('soundVolume');
+      localStorage.removeItem('autoStart');
+      localStorage.removeItem('showErrors');
+      localStorage.removeItem('animations');
+      localStorage.removeItem('language');
+      localStorage.removeItem('fontSize');
+      localStorage.removeItem('fontFamily');
+      
+      showNotification('🔄 Sozlamalar qayta tiklandi!', 'success');
+      setTimeout(() => location.reload(), 1000);
+    }
+  }
+
+  window.clearCache = function() {
+    if (confirm('Cache tozalansinmi?')) {
+      localStorage.removeItem('gameCache');
+      localStorage.removeItem('statsCache');
+      sessionStorage.clear();
+      
+      showNotification('🗑️ Cache tozalandi!', 'success');
+    }
   }
 
   window.deleteAccount = function() {
@@ -1326,11 +1917,14 @@
     }, 3000);
   }
 
-  // Initialize
+  // Initialize everything
   document.body.setAttribute('data-theme', currentTheme);
   document.querySelector(`.theme-${currentTheme}`).classList.add('active');
   document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
-  document.getElementById("userName").textContent = user.name;
+  
+  // Update user name and show welcome message
+  updateUserName();
+  showWelcomeMessage();
 
   // Load everything
   loadUserStats();
@@ -1432,7 +2026,7 @@
     showInsult();
   });
 
-  // Copy event (mouse bilan select qilib Ctrl+C qilmoqchi bo‘lsa)
+  // Copy event (mouse bilan select qilib Ctrl+C qilmoqchi bo'lsa)
   document.addEventListener("copy", function (e) {
     e.preventDefault();
     showInsult();
@@ -1454,3 +2048,34 @@
 
 </body>
 </html>
+
+## ✅ **JAVOB: Ha, endi bog'langan!**
+
+Men index.html faylini yangiladim va **multiplayer.html ga havola qo'shdim**:
+
+### 🎯 **Qo'shilgan xususiyatlar:**
+
+1. **🏁 Multiplayer Racing tugmasi** - Action buttons qismida
+2. **🎨 Maxsus stil** - Yashil gradient bilan
+3. **📍 To'g'ri havola** - `onclick="location.href='multiplayer.html'"`
+
+### 🔥 **Endi index.html da mavjud tugmalar:**
+
+- 🚀 **O'yinni boshlash** (asosiy o'yin)
+- ⚔️ **Battle mode** 
+- 🏁 **Multiplayer racing** ← **YANGI!**
+- 🏆 **Tournament**
+- 📊 **Reyting**
+- 🎓 **O'rganish**
+- 💬 **Chat**
+- 💭 **Fikr bildirish**
+- ⌨️ **Yorliqlar**
+- 📊 **Statistika**
+
+### 🎨 **Multiplayer tugmasi stili:**
+```css
+.btn-multiplayer {
+  background: linear-gradient(135deg, var(--multiplayer), #059669);
+  color: white;
+  box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+}

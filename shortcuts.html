@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>⌨️ Klaviatura Yorliqlari - Tez Roq Yoz</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #3c3c3c;
+      --text-primary: #e2b714;
+      --text-secondary: #646669;
+      --accent: #e2b714;
+      --success: #4ade80;
+      --border: #3c3c3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .shortcuts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .shortcut-category {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid var(--border);
+    }
+
+    .category-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .shortcut-item:last-child {
+      border-bottom: none;
+    }
+
+    .shortcut-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .shortcut-keys {
+      display: flex;
+      gap: 5px;
+    }
+
+    .key {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      min-width: 25px;
+      text-align: center;
+    }
+
+    .key.modifier {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .back-btn {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0 auto;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(226, 183, 20, 0.3);
+    }
+
+    .tip {
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .tip-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .tip-text {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">⌨️ Klaviatura Yorliqlari</div>
+      <div class="subtitle">Tezroq ishlash uchun foydali kombinatsiyalar</div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text">
+        Bu yorliqlarni eslab qoling va o'yinda professional typing darajasiga yeting!<br>
+        Barcha yorliqlar o'yin davomida ishlaydi.
+      </div>
+    </div>
+
+    <div class="shortcuts-grid">
+      <!-- Game Controls -->
+      <div class="shortcut-category">
+        <div class="category-title">
+          <span>🎮</span>
+          <span>O'yin Boshqaruvi</span>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">O'yinni boshlash</div>
+          <div class="shortcut-keys">
+            <span class="key">Space</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">O'yinni to'xtatish</div>
+          <div class="shortcut-keys">
+            <span class="key">Esc</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Qayta boshlash</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Ctrl</span>
+            <span class="key">R</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Keyingi so'z</div>
+          <div class="shortcut-keys">
+            <span class="key">Tab</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="shortcut-category">
+        <div class="category-title">
+          <span>⚙️</span>
+          <span>Sozlamalar</span>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Sozlamalar oynasi</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Ctrl</span>
+            <span class="key">S</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Tema o'zgartirish</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Ctrl</span>
+            <span class="key">T</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Tovushni yoq/o'chir</div>
+          <div class="shortcut-keys">
+            <span class="key">M</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">To'liq ekran</div>
+          <div class="shortcut-keys">
+            <span class="key">F11</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="shortcut-category">
+        <div class="category-title">
+          <span>🧭</span>
+          <span>Navigatsiya</span>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Bosh sahifa</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Alt</span>
+            <span class="key">H</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Profil</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Alt</span>
+            <span class="key">P</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Battle mode</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Alt</span>
+            <span class="key">B</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Reyting</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Alt</span>
+            <span class="key">R</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Settings -->
+      <div class="shortcut-category">
+        <div class="category-title">
+          <span>🎯</span>
+          <span>O'yin Sozlamalari</span>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">15 soniya rejimi</div>
+          <div class="shortcut-keys">
+            <span class="key">1</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">30 soniya rejimi</div>
+          <div class="shortcut-keys">
+            <span class="key">2</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">60 soniya rejimi</div>
+          <div class="shortcut-keys">
+            <span class="key">3</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Qiyinlik o'zgartirish</div>
+          <div class="shortcut-keys">
+            <span class="key">D</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced -->
+      <div class="shortcut-category">
+        <div class="category-title">
+          <span>🚀</span>
+          <span>Professional</span>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Fokus rejimi</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Ctrl</span>
+            <span class="key">F</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Statistika</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Ctrl</span>
+            <span class="key">I</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Yordam</div>
+          <div class="shortcut-keys">
+            <span class="key">F1</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Bu sahifa</div>
+          <div class="shortcut-keys">
+            <span class="key modifier">Ctrl</span>
+            <span class="key">K</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="shortcut-category">
+        <div class="category-title">
+          <span>💡</span>
+          <span>Maslahatlar</span>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">10 barmoq usuli</div>
+          <div class="shortcut-keys">
+            <span class="key">ASDF</span>
+            <span class="key">JKL;</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Bosh barmoqlar</div>
+          <div class="shortcut-keys">
+            <span class="key">F</span>
+            <span class="key">J</span>
+          </div>
+        </div>
+        
+        <div class="shortcut-item">
+          <div class="shortcut-desc">Tez yozish sirlari</div>
+          <div class="shortcut-keys">
+            <span class="key">Practice</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-btn" onclick="location.href='index.html'">
+      <span>⬅️</span>
+      <span>Bosh sahifaga qaytish</span>
+    </button>
+  </div>
+
+  <script>
+    // Keyboard shortcuts functionality
+    document.addEventListener('keydown', function(e) {
+      // Prevent default browser shortcuts
+      if (e.ctrlKey && (e.key === 's' || e.key === 't' || e.key === 'f' || e.key === 'i' || e.key === 'k')) {
+        e.preventDefault();
+      }
+      
+      if (e.altKey && (e.key === 'h' || e.key === 'p' || e.key === 'b' || e.key === 'r')) {
+        e.preventDefault();
+      }
+      
+      // Handle shortcuts
+      if (e.ctrlKey && e.key === 'k') {
+        // Already on shortcuts page
+        return;
+      }
+      
+      if (e.altKey && e.key === 'h') {
+        location.href = 'index.html';
+      }
+      
+      if (e.altKey && e.key === 'p') {
+        location.href = 'profile.html';
+      }
+      
+      if (e.altKey && e.key === 'b') {
+        location.href = 'battle.html';
+      }
+      
+      if (e.altKey && e.key === 'r') {
+        location.href = 'reyting.html';
+      }
+      
+      if (e.key === 'F1') {
+        alert('📚 Yordam:\n\n• 10 barmoq usulini o\'rganing\n• Har kuni mashq qiling\n• Tezlikdan ko\'ra aniqlikka e\'tibor bering\n• Muntazam tanaffus qiling');
+      }
+    });
+  </script>
+</body>
+</html>
