@@ -782,39 +782,43 @@
 
   <!-- Victory Screen -->
   <div class="victory-screen" id="victoryScreen">
+    <div class="fireworks-container" id="fireworksContainer"></div>
+    
     <div class="victory-crown">👑</div>
-    <div class="victory-title">G'OLIB!</div>
-    <div class="winner-name" id="winnerName">Foydalanuvchi</div>
+    <div class="victory-title">VICTORY!</div>
+    <div class="winner-name" id="winnerName">Champion</div>
     
     <div class="victory-stats">
       <div class="victory-stat">
-        <span class="victory-stat-value" id="winnerWPM">0</span>
+        <span class="victory-stat-value" id="victoryWPM">0</span>
         <span class="victory-stat-label">WPM</span>
       </div>
       <div class="victory-stat">
-        <span class="victory-stat-value" id="winnerAccuracy">0%</span>
-        <span class="victory-stat-label">Aniqlik</span>
+        <span class="victory-stat-value" id="victoryAccuracy">0%</span>
+        <span class="victory-stat-label">Accuracy</span>
       </div>
       <div class="victory-stat">
-        <span class="victory-stat-value" id="winnerTime">0s</span>
-        <span class="victory-stat-label">Vaqt</span>
+        <span class="victory-stat-value" id="victoryTime">0s</span>
+        <span class="victory-stat-label">Time</span>
       </div>
     </div>
-
+    
     <div class="victory-buttons">
       <button class="victory-btn victory-btn-primary" onclick="playAgain()">
         <span>🔄</span>
-        <span>Yana o'ynash</span>
+        <span>Play Again</span>
       </button>
-      <button class="victory-btn victory-btn-secondary" onclick="leaveRoom()">
-        <span>🚪</span>
-        <span>Xonadan chiqish</span>
+      <button class="victory-btn victory-btn-secondary" onclick="goHome()">
+        <span>🏠</span>
+        <span>Home</span>
       </button>
     </div>
   </div>
 
-  <!-- Fireworks Container -->
-  <div class="fireworks-container" id="fireworksContainer"></div>
+  <!-- Countdown Overlay -->
+  <div class="countdown-overlay" id="countdownOverlay">
+    <div class="countdown-number" id="countdownNumber">3</div>
+  </div>
 
   <!-- Battle Layout -->
   <div class="battle-layout">
@@ -824,18 +828,18 @@
         <div class="room-code" id="roomCode">LOADING...</div>
         <div class="room-status">
           <div class="status-dot waiting" id="statusDot"></div>
-          <span id="roomStatus">Kutilmoqda...</span>
+          <span id="roomStatus">Waiting for players...</span>
         </div>
       </div>
       
       <div class="header-actions">
         <button class="btn btn-secondary" onclick="copyRoomCode()">
           <span>📋</span>
-          <span>Kodni nusxalash</span>
+          <span>Copy Code</span>
         </button>
-        <button class="btn btn-secondary" onclick="leaveRoom()">
+        <button class="btn btn-battle" onclick="leaveRoom()">
           <span>🚪</span>
-          <span>Chiqish</span>
+          <span>Leave</span>
         </button>
       </div>
     </div>
@@ -846,8 +850,7 @@
       <div class="players-panel">
         <div class="players-title">
           <span>👥</span>
-          <span>O'yinchilar</span>
-          <span id="playerCount">(0/0)</span>
+          <span>Players (<span id="playerCount">0</span>/<span id="maxPlayers">0</span>)</span>
         </div>
         <div id="playersList">
           <!-- Players will be loaded here -->
@@ -856,59 +859,50 @@
 
       <!-- Game Area -->
       <div class="game-area">
-        <!-- Waiting Screen -->
-        <div class="waiting-screen" id="waitingScreen">
-          <div class="waiting-icon">⏳</div>
-          <div class="waiting-title">O'yinchilarni kutilmoqda...</div>
-          <div class="waiting-subtitle">Barcha o'yinchilar tayyor bo'lganda o'yin boshlanadi</div>
+        <div class="game-header">
+          <div class="game-timer" id="gameTimer">30</div>
+          <div class="game-stats">
+            <div class="stat-item">
+              <span class="stat-value" id="currentWPM">0</span>
+              <span class="stat-label">WPM</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="currentAccuracy">100%</span>
+              <span class="stat-label">Accuracy</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="currentProgress">0%</span>
+              <span class="stat-label">Progress</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Game Screen -->
-        <div id="gameScreen" style="display: none;">
-          <div class="game-header">
-            <div class="game-timer" id="gameTimer">30</div>
-            <div class="game-stats">
-              <div class="stat-item">
-                <span class="stat-value" id="currentWPM">0</span>
-                <span class="stat-label">WPM</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-value" id="currentAccuracy">100%</span>
-                <span class="stat-label">Aniqlik</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-value" id="currentProgress">0%</span>
-                <span class="stat-label">Progress</span>
-              </div>
+        <!-- Text Display -->
+        <div class="text-display">
+          <div class="text-content" id="textContent">
+            <div class="waiting-screen" id="waitingScreen">
+              <div class="waiting-icon">⏳</div>
+              <div class="waiting-title">Waiting for all players to be ready...</div>
+              <div class="waiting-subtitle">Get ready for an epic typing battle!</div>
             </div>
           </div>
+        </div>
 
-          <div class="text-display">
-            <div class="text-content" id="textContent">
-              <!-- Text will be loaded here -->
-            </div>
-          </div>
-
-          <div class="input-area">
-            <input type="text" class="typing-input" id="typingInput" placeholder="Bu yerga yozing..." disabled>
-            <div class="input-hint">O'yin boshlanishini kuting...</div>
-          </div>
+        <!-- Input Area -->
+        <div class="input-area">
+          <input type="text" class="typing-input" id="typingInput" placeholder="Type here when the game starts..." disabled>
+          <div class="input-hint">Focus on this input and start typing when the game begins</div>
         </div>
 
         <!-- Ready Section -->
-        <div class="ready-section" id="readySection">
+        <div class="ready-section">
           <button class="ready-btn not-ready" id="readyBtn" onclick="toggleReady()">
             <span>✅</span>
-            <span>Tayyor</span>
+            <span>Ready to Battle!</span>
           </button>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Countdown Overlay -->
-  <div class="countdown-overlay" id="countdownOverlay">
-    <div class="countdown-number" id="countdownNumber">3</div>
   </div>
 
 <script type="module">
@@ -930,502 +924,575 @@
   const db = getDatabase(app);
 
   const user = JSON.parse(localStorage.getItem("sozUser"));
-  const roomCode = localStorage.getItem("battleRoomCode");
-
-  if (!user || !roomCode) {
-    window.location.href = "battle.html";
+  if (!user) {
+    window.location.href = "register.html";
   }
 
+  const roomCode = localStorage.getItem('battleRoomCode');
+  if (!roomCode) {
+    window.location.href = 'battle.html';
+  }
+
+  // Game state
   let gameState = {
-    isReady: false,
     isPlaying: false,
-    currentText: "",
-    currentIndex: 0,
     startTime: null,
-    errors: 0,
+    currentText: '',
+    typedText: '',
+    currentIndex: 0,
     wpm: 0,
     accuracy: 100,
-    progress: 0
+    progress: 0,
+    timeLeft: 30
   };
 
-  let roomRef = ref(db, `battleRooms/${roomCode}`);
-  let playersRef = ref(db, `battleRooms/${roomCode}/players`);
+  let roomData = null;
+  let gameTimer = null;
+  let isReady = false;
 
   // Sample texts for battle
   const battleTexts = [
-    "Tezlik va aniqlik - muvaffaqiyatning kaliti. Har bir harakat muhim, har bir soniya qimmatli.",
-    "Dasturlash - bu san'at va ilm. Kod yozish - bu fikrlash va ijod qilish jarayoni.",
-    "Bilim - eng katta boylik. O'rganish - eng foydali sarmoya. Amaliyot - eng yaxshi o'qituvchi.",
-    "Muvaffaqiyat - bu tayyorgarlik va imkoniyatning uchrashuvi. Omad - bu mehnatning mukofoti.",
-    "Innovatsiya - bu o'zgarishlarni qabul qilish va yangilikka ochiq bo'lish demakdir."
+    "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet and is perfect for typing practice.",
+    "In the world of competitive typing, speed and accuracy are equally important. Master both to become a true typing champion.",
+    "Technology has revolutionized the way we communicate, work, and live. Embrace the digital age with confidence and skill.",
+    "Practice makes perfect, but perfect practice makes champions. Focus on accuracy first, then gradually increase your speed.",
+    "The art of touch typing is a valuable skill that will serve you well throughout your career and personal endeavors."
   ];
 
   // Initialize room
-  document.getElementById('roomCode').textContent = roomCode;
-
-  // Load room data
-  function loadRoomData() {
+  async function initializeRoom() {
+    document.getElementById('roomCode').textContent = roomCode;
+    
+    // Listen to room changes
+    const roomRef = ref(db, `battleRooms/${roomCode}`);
     onValue(roomRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        showNotification('❌ Xona topilmadi!', 'error');
-        setTimeout(() => window.location.href = 'battle.html', 2000);
-        return;
-      }
-
-      const roomData = snapshot.val();
-      updateRoomStatus(roomData.status);
-      updatePlayersList(roomData.players);
-      
-      // Check if game should start
-      if (roomData.status === 'playing' && !gameState.isPlaying) {
-        startGame(roomData.gameText);
-      }
-
-      // Check for winner
-      if (roomData.winner && roomData.status === 'finished') {
-        showVictoryScreen(roomData.winner, roomData.winnerStats);
+      if (snapshot.exists()) {
+        roomData = snapshot.val();
+        updateRoomDisplay();
+        updatePlayersDisplay();
+        checkGameStart();
+      } else {
+        showNotification('❌ Room not found!', 'error');
+        setTimeout(() => {
+          window.location.href = 'battle.html';
+        }, 2000);
       }
     });
   }
 
-  // Update room status
-  function updateRoomStatus(status) {
+  // Update room display
+  function updateRoomDisplay() {
+    if (!roomData) return;
+
+    document.getElementById('maxPlayers').textContent = roomData.maxPlayers;
+    document.getElementById('playerCount').textContent = roomData.currentPlayers;
+    
     const statusDot = document.getElementById('statusDot');
     const roomStatus = document.getElementById('roomStatus');
     
-    statusDot.className = `status-dot ${status}`;
-    
-    switch(status) {
+    switch (roomData.status) {
       case 'waiting':
-        roomStatus.textContent = 'Kutilmoqda...';
+        statusDot.className = 'status-dot waiting';
+        roomStatus.textContent = 'Waiting for players...';
+        break;
+      case 'ready':
+        statusDot.className = 'status-dot ready';
+        roomStatus.textContent = 'All players ready!';
         break;
       case 'playing':
-        roomStatus.textContent = 'O\'yin davom etmoqda';
+        statusDot.className = 'status-dot playing';
+        roomStatus.textContent = 'Battle in progress!';
         break;
       case 'finished':
-        roomStatus.textContent = 'O\'yin tugadi';
+        statusDot.className = 'status-dot';
+        roomStatus.textContent = 'Battle finished!';
         break;
     }
   }
 
-  // Update players list
-  function updatePlayersList(players) {
+  // Update players display
+  function updatePlayersDisplay() {
+    if (!roomData || !roomData.players) return;
+
     const playersList = document.getElementById('playersList');
-    const playerCount = document.getElementById('playerCount');
+    const players = Object.values(roomData.players);
     
-    if (!players) return;
-
-    const playersArray = Object.values(players);
-    playerCount.textContent = `(${playersArray.length}/8)`;
-    
-    playersList.innerHTML = playersArray.map(player => `
-      <div class="player-card ${player.ready ? 'ready' : ''} ${player.phone === user.phone ? 'host' : ''}">
-        <div class="player-header">
-          <div class="player-name">
-            <span>${player.name}</span>
-            ${player.phone === user.phone ? '<span class="player-badge badge-host">Siz</span>' : ''}
+    playersList.innerHTML = players.map(player => {
+      const isHost = player.phone === roomData.host;
+      const isCurrentUser = player.phone === user.phone;
+      
+      return `
+        <div class="player-card ${player.ready ? 'ready' : ''} ${isHost ? 'host' : ''}">
+          <div class="player-header">
+            <div class="player-name">
+              <span>${player.name}</span>
+              ${isHost ? '<span class="player-badge badge-host">👑 Host</span>' : ''}
+              ${isCurrentUser ? '<span style="opacity: 0.7;">(You)</span>' : ''}
+            </div>
+            <span class="player-badge ${player.ready ? 'badge-ready' : 'badge-waiting'}">
+              ${player.ready ? '✅ Ready' : '⏳ Waiting'}
+            </span>
           </div>
-          <span class="player-badge ${player.ready ? 'badge-ready' : 'badge-waiting'}">
-            ${player.ready ? 'Tayyor' : 'Kutilmoqda'}
-          </span>
+          <div class="player-stats">
+            <span>WPM: ${Math.round(player.wpm || 0)}</span>
+            <span>Progress: ${Math.round(player.progress || 0)}%</span>
+          </div>
+          <div class="player-progress">
+            <div class="progress-bar" style="width: ${player.progress || 0}%"></div>
+          </div>
         </div>
-        <div class="player-stats">
-          <span>⚡ ${player.wpm || 0} WPM</span>
-          <span>🎯 ${Math.round(player.accuracy || 100)}%</span>
-          <span>📊 ${player.score || 0}</span>
-        </div>
-        <div class="player-progress">
-          <div class="progress-bar" style="width: ${player.progress || 0}%"></div>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
-    // Check if all players are ready
-    const allReady = playersArray.every(player => player.ready);
-    if (allReady && playersArray.length >= 2) {
-      setTimeout(startCountdown, 1000);
+    // Update ready button state
+    const currentPlayer = roomData.players[user.phone];
+    if (currentPlayer) {
+      isReady = currentPlayer.ready;
+      updateReadyButton();
     }
   }
 
-  // Toggle ready status
+  // Toggle ready state
   window.toggleReady = async function() {
-    gameState.isReady = !gameState.isReady;
+    if (!roomData || gameState.isPlaying) return;
+
+    isReady = !isReady;
     
+    try {
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/ready`), isReady);
+      updateReadyButton();
+      
+      if (isReady) {
+        showNotification('✅ You are ready!', 'success');
+      } else {
+        showNotification('⏳ You are not ready', 'info');
+      }
+    } catch (error) {
+      console.error('Error updating ready state:', error);
+      showNotification('❌ Error updating ready state!', 'error');
+    }
+  }
+
+  // Update ready button
+  function updateReadyButton() {
     const readyBtn = document.getElementById('readyBtn');
-    if (gameState.isReady) {
+    
+    if (isReady) {
       readyBtn.className = 'ready-btn ready';
-      readyBtn.innerHTML = '<span>⏳</span><span>Kutilmoqda...</span>';
+      readyBtn.innerHTML = '<span>⏳</span><span>Cancel Ready</span>';
     } else {
       readyBtn.className = 'ready-btn not-ready';
-      readyBtn.innerHTML = '<span>✅</span><span>Tayyor</span>';
+      readyBtn.innerHTML = '<span>✅</span><span>Ready to Battle!</span>';
     }
+  }
 
-    await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/ready`), gameState.isReady);
-    showNotification(gameState.isReady ? '✅ Tayyor!' : '⏳ Kutilmoqda...', 'success');
+  // Check if game should start
+  function checkGameStart() {
+    if (!roomData || !roomData.players) return;
+
+    const players = Object.values(roomData.players);
+    const allReady = players.length >= 2 && players.every(player => player.ready);
+    
+    if (allReady && roomData.status === 'waiting') {
+      startCountdown();
+    }
   }
 
   // Start countdown
-  function startCountdown() {
-    const countdownOverlay = document.getElementById('countdownOverlay');
-    const countdownNumber = document.getElementById('countdownNumber');
-    
-    countdownOverlay.style.display = 'flex';
-    
-    let count = 3;
-    const countdownInterval = setInterval(() => {
-      countdownNumber.textContent = count;
-      countdownNumber.style.animation = 'none';
-      setTimeout(() => countdownNumber.style.animation = 'countdownPulse 1s ease-in-out', 10);
+  async function startCountdown() {
+    try {
+      await set(ref(db, `battleRooms/${roomCode}/status`), 'ready');
       
-      count--;
+      const countdownOverlay = document.getElementById('countdownOverlay');
+      const countdownNumber = document.getElementById('countdownNumber');
       
-      if (count < 0) {
-        clearInterval(countdownInterval);
-        countdownOverlay.style.display = 'none';
-        initializeGame();
+      countdownOverlay.style.display = 'flex';
+      
+      for (let i = 3; i > 0; i--) {
+        countdownNumber.textContent = i;
+        countdownNumber.style.animation = 'none';
+        setTimeout(() => {
+          countdownNumber.style.animation = 'countdownPulse 1s ease-in-out';
+        }, 10);
+        
+        // Play countdown sound
+        playSound('countdown');
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
-    }, 1000);
-  }
-
-  // Initialize game
-  async function initializeGame() {
-    const gameText = battleTexts[Math.floor(Math.random() * battleTexts.length)];
-    
-    await set(ref(db, `battleRooms/${roomCode}/status`), 'playing');
-    await set(ref(db, `battleRooms/${roomCode}/gameText`), gameText);
-    await set(ref(db, `battleRooms/${roomCode}/startTime`), Date.now());
+      
+      countdownNumber.textContent = 'GO!';
+      countdownNumber.style.color = 'var(--success)';
+      playSound('start');
+      
+      setTimeout(() => {
+        countdownOverlay.style.display = 'none';
+        startGame();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error starting countdown:', error);
+    }
   }
 
   // Start game
-  function startGame(text) {
-    gameState.isPlaying = true;
-    gameState.currentText = text;
-    gameState.currentIndex = 0;
-    gameState.startTime = Date.now();
-    gameState.errors = 0;
-
-    document.getElementById('waitingScreen').style.display = 'none';
-    document.getElementById('gameScreen').style.display = 'block';
-    document.getElementById('readySection').style.display = 'none';
-
-    displayText();
-    
-    const typingInput = document.getElementById('typingInput');
-    typingInput.disabled = false;
-    typingInput.focus();
-    
-    startTimer();
+  async function startGame() {
+    try {
+      // Select random text
+      const selectedText = battleTexts[Math.floor(Math.random() * battleTexts.length)];
+      
+      await set(ref(db, `battleRooms/${roomCode}/status`), 'playing');
+      await set(ref(db, `battleRooms/${roomCode}/gameText`), selectedText);
+      await set(ref(db, `battleRooms/${roomCode}/startTime`), Date.now());
+      
+      // Initialize game state
+      gameState.isPlaying = true;
+      gameState.startTime = Date.now();
+      gameState.currentText = selectedText;
+      gameState.typedText = '';
+      gameState.currentIndex = 0;
+      gameState.timeLeft = 30;
+      
+      // Show game text
+      displayGameText();
+      
+      // Enable input
+      const typingInput = document.getElementById('typingInput');
+      typingInput.disabled = false;
+      typingInput.placeholder = 'Start typing...';
+      typingInput.focus();
+      
+      // Hide waiting screen
+      document.getElementById('waitingScreen').style.display = 'none';
+      
+      // Start timer
+      startGameTimer();
+      
+      showNotification('🚀 Battle started!', 'success');
+      
+    } catch (error) {
+      console.error('Error starting game:', error);
+    }
   }
 
-  // Display text with highlighting
-  function displayText() {
+  // Display game text
+  function displayGameText() {
     const textContent = document.getElementById('textContent');
     const text = gameState.currentText;
     
-    textContent.innerHTML = text.split('').map((char, index) => {
-      let className = '';
-      if (index < gameState.currentIndex) {
-        className = 'char correct';
-      } else if (index === gameState.currentIndex) {
-        className = 'char current';
+    let html = '';
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      let className = 'char';
+      
+      if (i < gameState.currentIndex) {
+        className += gameState.typedText[i] === char ? ' correct' : ' incorrect';
+      } else if (i === gameState.currentIndex) {
+        className += ' current';
       }
-      return `<span class="${className}">${char}</span>`;
-    }).join('');
+      
+      html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+    }
+    
+    textContent.innerHTML = html;
+  }
+
+  // Start game timer
+  function startGameTimer() {
+    gameTimer = setInterval(() => {
+      gameState.timeLeft--;
+      document.getElementById('gameTimer').textContent = gameState.timeLeft;
+      
+      if (gameState.timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
   }
 
   // Handle typing
   document.getElementById('typingInput').addEventListener('input', (e) => {
     if (!gameState.isPlaying) return;
-
-    const input = e.target.value;
-    const currentChar = gameState.currentText[gameState.currentIndex];
     
-    if (input.endsWith(currentChar)) {
-      gameState.currentIndex++;
-      e.target.value = '';
-      
-      // Check if finished
-      if (gameState.currentIndex >= gameState.currentText.length) {
-        finishGame();
-        return;
-      }
-    } else if (input.length > 0) {
-      gameState.errors++;
-      e.target.value = '';
-    }
-
+    const input = e.target.value;
+    gameState.typedText = input;
+    gameState.currentIndex = input.length;
+    
+    // Update display
+    displayGameText();
     updateStats();
-    displayText();
+    updateProgress();
+    
+    // Check if finished
+    if (input.length >= gameState.currentText.length) {
+      endGame();
+    }
   });
 
   // Update stats
   function updateStats() {
-    const timeElapsed = (Date.now() - gameState.startTime) / 1000 / 60; // minutes
-    const wordsTyped = gameState.currentIndex / 5; // average word length
-    const wpm = Math.round(wordsTyped / timeElapsed) || 0;
-    const accuracy = Math.round(((gameState.currentIndex - gameState.errors) / gameState.currentIndex) * 100) || 100;
-    const progress = Math.round((gameState.currentIndex / gameState.currentText.length) * 100);
-
+    const timeElapsed = (Date.now() - gameState.startTime) / 1000;
+    const wordsTyped = gameState.typedText.length / 5;
+    const wpm = timeElapsed > 0 ? Math.round((wordsTyped / timeElapsed) * 60) : 0;
+    
+    let correctChars = 0;
+    for (let i = 0; i < gameState.typedText.length; i++) {
+      if (gameState.typedText[i] === gameState.currentText[i]) {
+        correctChars++;
+      }
+    }
+    
+    const accuracy = gameState.typedText.length > 0 ? Math.round((correctChars / gameState.typedText.length) * 100) : 100;
+    const progress = Math.round((gameState.typedText.length / gameState.currentText.length) * 100);
+    
     gameState.wpm = wpm;
     gameState.accuracy = accuracy;
     gameState.progress = progress;
-
+    
     document.getElementById('currentWPM').textContent = wpm;
     document.getElementById('currentAccuracy').textContent = accuracy + '%';
     document.getElementById('currentProgress').textContent = progress + '%';
-
-    // Update in database
-    set(ref(db, `battleRooms/${roomCode}/players/${user.phone}`), {
-      name: user.name,
-      phone: user.phone,
-      ready: true,
-      wpm: wpm,
-      accuracy: accuracy,
-      progress: progress,
-      score: Math.round(wpm * (accuracy / 100)),
-      joinedAt: Date.now()
-    });
   }
 
-  // Start timer
-  function startTimer() {
-    let timeLeft = 30;
-    document.getElementById('gameTimer').textContent = timeLeft;
-    
-    const timerInterval = setInterval(() => {
-      timeLeft--;
-      document.getElementById('gameTimer').textContent = timeLeft;
-      
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        finishGame();
-      }
-    }, 1000);
-  }
-
-  // Finish game
-  async function finishGame() {
-    gameState.isPlaying = false;
-    document.getElementById('typingInput').disabled = true;
-
-    const finalStats = {
-      wpm: gameState.wpm,
-      accuracy: gameState.accuracy,
-      progress: gameState.progress,
-      score: Math.round(gameState.wpm * (gameState.accuracy / 100)),
-      finishTime: Date.now()
-    };
-
-    // Update final stats
-    await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}`), {
-      ...finalStats,
-      name: user.name,
-      phone: user.phone,
-      ready: true,
-      joinedAt: Date.now()
-    });
-
-    // Check if this player won
-    const roomSnapshot = await get(roomRef);
-    if (roomSnapshot.exists()) {
-      const roomData = roomSnapshot.val();
-      const players = Object.values(roomData.players);
-      
-      // Find winner (highest score)
-      const winner = players.reduce((prev, current) => 
-        (prev.score > current.score) ? prev : current
-      );
-
-      if (winner.phone === user.phone) {
-        // This player won!
-        await set(ref(db, `battleRooms/${roomCode}/winner`), winner);
-        await set(ref(db, `battleRooms/${roomCode}/winnerStats`), finalStats);
-        await set(ref(db, `battleRooms/${roomCode}/status`), 'finished');
-      }
+  // Update progress in database
+  async function updateProgress() {
+    try {
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/wpm`), gameState.wpm);
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/progress`), gameState.progress);
+    } catch (error) {
+      console.error('Error updating progress:', error);
     }
   }
 
-  // Show victory screen with fireworks
-  function showVictoryScreen(winner, stats) {
+  // End game
+  async function endGame() {
+    if (!gameState.isPlaying) return;
+    
+    gameState.isPlaying = false;
+    clearInterval(gameTimer);
+    
+    // Disable input
+    document.getElementById('typingInput').disabled = true;
+    
+    try {
+      // Update final stats
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/finalWPM`), gameState.wpm);
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/finalAccuracy`), gameState.accuracy);
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/finalProgress`), gameState.progress);
+      await set(ref(db, `battleRooms/${roomCode}/players/${user.phone}/finished`), true);
+      
+      // Check if all players finished
+      checkGameEnd();
+      
+    } catch (error) {
+      console.error('Error ending game:', error);
+    }
+  }
+
+  // Check if game should end
+  async function checkGameEnd() {
+    if (!roomData || !roomData.players) return;
+    
+    const players = Object.values(roomData.players);
+    const allFinished = players.every(player => player.finished || false);
+    
+    if (allFinished) {
+      await set(ref(db, `battleRooms/${roomCode}/status`), 'finished');
+      
+      // Determine winner
+      const winner = players.reduce((prev, current) => {
+        const prevScore = (prev.finalWPM || 0) * (prev.finalAccuracy || 0) / 100;
+        const currentScore = (current.finalWPM || 0) * (current.finalAccuracy || 0) / 100;
+        return currentScore > prevScore ? current : prev;
+      });
+      
+      await set(ref(db, `battleRooms/${roomCode}/winner`), winner);
+      
+      // Show victory screen
+      setTimeout(() => {
+        showVictoryScreen(winner);
+      }, 1000);
+    }
+  }
+
+  // Show victory screen
+  function showVictoryScreen(winner) {
     const victoryScreen = document.getElementById('victoryScreen');
     const winnerName = document.getElementById('winnerName');
-    const winnerWPM = document.getElementById('winnerWPM');
-    const winnerAccuracy = document.getElementById('winnerAccuracy');
-    const winnerTime = document.getElementById('winnerTime');
-
-    winnerName.textContent = winner.name;
-    winnerWPM.textContent = stats.wpm || winner.wpm || 0;
-    winnerAccuracy.textContent = (stats.accuracy || winner.accuracy || 100) + '%';
-    winnerTime.textContent = '30s';
-
-    victoryScreen.style.display = 'flex';
-
-    // Start fireworks
-    startFireworks();
-
-    // Play victory sound (if available)
-    playVictorySound();
-
-    // Confetti
-    startConfetti();
-  }
-
-  // Start fireworks animation
-  function startFireworks() {
-    const container = document.getElementById('fireworksContainer');
-    const colors = ['#e2b714', '#4ade80', '#ef4444', '#3b82f6', '#a855f7', '#f59e0b'];
-
-    for (let i = 0; i < 15; i++) {
-      setTimeout(() => {
-        createFirework(container, colors);
-      }, i * 300);
-    }
-  }
-
-  // Create single firework
-  function createFirework(container, colors) {
-    const firework = document.createElement('div');
-    firework.className = 'firework';
-    firework.style.left = Math.random() * window.innerWidth + 'px';
-    firework.style.top = Math.random() * window.innerHeight + 'px';
-    firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+    const victoryWPM = document.getElementById('victoryWPM');
+    const victoryAccuracy = document.getElementById('victoryAccuracy');
+    const victoryTime = document.getElementById('victoryTime');
     
-    container.appendChild(firework);
-
-    // Create particles
-    for (let i = 0; i < 12; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'firework-particle';
-      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-      particle.style.left = firework.style.left;
-      particle.style.top = firework.style.top;
-      
-      const angle = (i * 30) * Math.PI / 180;
-      const distance = 100 + Math.random() * 100;
-      const dx = Math.cos(angle) * distance;
-      const dy = Math.sin(angle) * distance;
-      
-      particle.style.setProperty('--dx', dx + 'px');
-      particle.style.setProperty('--dy', dy + 'px');
-      
-      container.appendChild(particle);
-      
-      setTimeout(() => particle.remove(), 1500);
-    }
-
-    setTimeout(() => firework.remove(), 2000);
+    winnerName.textContent = winner.name;
+    victoryWPM.textContent = Math.round(winner.finalWPM || 0);
+    victoryAccuracy.textContent = Math.round(winner.finalAccuracy || 0) + '%';
+    victoryTime.textContent = (30 - gameState.timeLeft) + 's';
+    
+    victoryScreen.style.display = 'flex';
+    
+    // Create fireworks
+    createFireworks();
+    createConfetti();
+    
+    // Play victory sound
+    playSound('victory');
   }
 
-  // Start confetti
-  function startConfetti() {
+  // Create fireworks
+  function createFireworks() {
     const container = document.getElementById('fireworksContainer');
+    const colors = ['#e2b714', '#4ade80', '#ef4444', '#3b82f6', '#a855f7'];
+    
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        const firework = document.createElement('div');
+        firework.className = 'firework';
+        firework.style.left = Math.random() * 100 + '%';
+        firework.style.top = Math.random() * 100 + '%';
+        firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        container.appendChild(firework);
+        
+        // Create particles
+        for (let j = 0; j < 12; j++) {
+          const particle = document.createElement('div');
+          particle.className = 'firework-particle';
+          particle.style.left = firework.style.left;
+          particle.style.top = firework.style.top;
+          particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          const angle = (j * 30) * Math.PI / 180;
+          const distance = 100 + Math.random() * 100;
+          particle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+          particle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+          
+          container.appendChild(particle);
+          
+          setTimeout(() => particle.remove(), 1500);
+        }
+        
+        setTimeout(() => firework.remove(), 2000);
+      }, i * 500);
+    }
+  }
+
+  // Create confetti
+  function createConfetti() {
     const colors = ['#e2b714', '#4ade80', '#ef4444', '#3b82f6', '#a855f7'];
     
     for (let i = 0; i < 50; i++) {
       setTimeout(() => {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.left = Math.random() * 100 + '%';
         confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.animationDelay = Math.random() * 3 + 's';
         confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
         
-        container.appendChild(confetti);
+        document.body.appendChild(confetti);
         
         setTimeout(() => confetti.remove(), 6000);
       }, i * 100);
     }
   }
 
-  // Play victory sound
-  function playVictorySound() {
-    // Create audio context for victory sound
-    try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
-      // Victory melody
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-      
-      notes.forEach((freq, index) => {
-        setTimeout(() => {
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-          oscillator.type = 'triangle';
-          
-          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-          
-          oscillator.start(audioContext.currentTime);
-          oscillator.stop(audioContext.currentTime + 0.5);
-        }, index * 200);
-      });
-    } catch (error) {
-      console.log('Audio not supported');
+  // Play sound
+  function playSound(type) {
+    // Create audio context for sound effects
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    let frequency, duration;
+    
+    switch (type) {
+      case 'countdown':
+        frequency = 800;
+        duration = 0.1;
+        break;
+      case 'start':
+        frequency = 1000;
+        duration = 0.3;
+        break;
+      case 'victory':
+        // Play victory melody
+        const notes = [523, 659, 784, 1047];
+        notes.forEach((freq, index) => {
+          setTimeout(() => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = freq;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+          }, index * 200);
+        });
+        return;
+      default:
+        return;
     }
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = frequency;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration);
   }
 
   // Copy room code
   window.copyRoomCode = function() {
     navigator.clipboard.writeText(roomCode).then(() => {
-      showNotification('📋 Kod nusxalandi!', 'success');
+      showNotification('📋 Room code copied!', 'success');
     });
-  }
-
-  // Play again
-  window.playAgain = async function() {
-    await set(ref(db, `battleRooms/${roomCode}/status`), 'waiting');
-    await set(ref(db, `battleRooms/${roomCode}/winner`), null);
-    await set(ref(db, `battleRooms/${roomCode}/winnerStats`), null);
-    
-    // Reset all players
-    const playersSnapshot = await get(playersRef);
-    if (playersSnapshot.exists()) {
-      const players = playersSnapshot.val();
-      for (const playerPhone in players) {
-        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/ready`), false);
-        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/progress`), 0);
-        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/wpm`), 0);
-        await set(ref(db, `battleRooms/${roomCode}/players/${playerPhone}/accuracy`), 100);
-      }
-    }
-
-    document.getElementById('victoryScreen').style.display = 'none';
-    document.getElementById('waitingScreen').style.display = 'flex';
-    document.getElementById('gameScreen').style.display = 'none';
-    document.getElementById('readySection').style.display = 'block';
-    
-    gameState.isReady = false;
-    gameState.isPlaying = false;
-    
-    const readyBtn = document.getElementById('readyBtn');
-    readyBtn.className = 'ready-btn not-ready';
-    readyBtn.innerHTML = '<span>✅</span><span>Tayyor</span>';
   }
 
   // Leave room
   window.leaveRoom = async function() {
-    await remove(ref(db, `battleRooms/${roomCode}/players/${user.phone}`));
-    
-    // Update player count
-    const roomSnapshot = await get(roomRef);
-    if (roomSnapshot.exists()) {
-      const roomData = roomSnapshot.val();
-      const currentPlayers = Object.keys(roomData.players || {}).length;
-      await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), currentPlayers);
-      
-      // If no players left, delete room
-      if (currentPlayers === 0) {
-        await remove(roomRef);
+    if (confirm('Are you sure you want to leave the battle?')) {
+      try {
+        // Remove player from room
+        await remove(ref(db, `battleRooms/${roomCode}/players/${user.phone}`));
+        
+        // Update player count
+        if (roomData && roomData.currentPlayers > 1) {
+          await set(ref(db, `battleRooms/${roomCode}/currentPlayers`), roomData.currentPlayers - 1);
+        } else {
+          // Delete room if last player
+          await remove(ref(db, `battleRooms/${roomCode}`));
+        }
+        
+        localStorage.removeItem('battleRoomCode');
+        window.location.href = 'battle.html';
+        
+      } catch (error) {
+        console.error('Error leaving room:', error);
+        showNotification('❌ Error leaving room!', 'error');
       }
     }
-    
+  }
+
+  // Victory screen actions
+  window.playAgain = function() {
+    window.location.reload();
+  }
+
+  window.goHome = function() {
     localStorage.removeItem('battleRoomCode');
-    window.location.href = 'battle.html';
+    window.location.href = 'index.html';
   }
 
   // Notification system
@@ -1441,12 +1508,14 @@
   }
 
   // Initialize
-  loadRoomData();
+  initializeRoom();
 
   // Cleanup on page unload
   window.addEventListener('beforeunload', () => {
-    off(roomRef);
-    off(playersRef);
+    if (roomData && roomData.players && roomData.players[user.phone]) {
+      // Remove player from room
+      remove(ref(db, `battleRooms/${roomCode}/players/${user.phone}`));
+    }
   });
 </script>
 
@@ -1502,7 +1571,7 @@
   }
 </script>
 
-<script src="protection.js"></script>
+<script src="js/protection.js"></script>
 
 </body>
 </html>

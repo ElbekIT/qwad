@@ -342,7 +342,7 @@
       margin-bottom: 8px;
     }
 
-    .form-group input {
+    .form-group input, .form-group select {
       width: 100%;
       padding: 12px 16px;
       background: var(--bg-primary);
@@ -355,7 +355,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
       border-color: var(--accent);
     }
 
@@ -620,7 +620,7 @@
 
       <div class="form-group">
         <label for="roomType">Xona turi</label>
-        <select id="roomType" style="width: 100%; padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 8px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;">
+        <select id="roomType">
           <option value="public">🌐 Public - Hammaga ochiq</option>
           <option value="private">🔒 Private - Faqat kod bilan</option>
         </select>
@@ -628,7 +628,7 @@
 
       <div class="form-group">
         <label for="maxPlayers">Maksimal o'yinchilar</label>
-        <select id="maxPlayers" style="width: 100%; padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 8px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;">
+        <select id="maxPlayers">
           <option value="2">2 o'yinchi</option>
           <option value="4">4 o'yinchi</option>
           <option value="6">6 o'yinchi</option>
@@ -1063,6 +1063,7 @@
   // Simulate online count (you can make this real-time)
   document.getElementById('onlineCount').textContent = Math.floor(Math.random() * 50) + 10;
 </script>
+
 <script>
   function showInsult() {
     alert("Urinma! Baribir hech nima qilolmaysan.\nKod senga emas! 🚫🤬");
@@ -1085,10 +1086,9 @@
   window.addEventListener("keydown", function (e) {
     const key = e.key.toLowerCase();
     
-    // Bloklanadigan tugmalar
     if (
-      e.keyCode === 123 || // F12
-      (e.ctrlKey && blockedKeys.includes(e.key)) || // Ctrl + [U, C, G, П, S, I, J...]
+      e.keyCode === 123 || 
+      (e.ctrlKey && blockedKeys.includes(e.key)) || 
       (e.ctrlKey && e.shiftKey && blockedKeys.includes(e.key))
     ) {
       e.preventDefault();
@@ -1096,25 +1096,21 @@
     }
   });
 
-  // O'ng tugma (Right Click)
   window.addEventListener("contextmenu", function (e) {
     e.preventDefault();
     showInsult();
   });
 
-  // Copy event (mouse bilan select qilib Ctrl+C qilmoqchi bo‘lsa)
   document.addEventListener("copy", function (e) {
     e.preventDefault();
     showInsult();
   });
 
-  // DevTools aniqlash (konsol ochilganini sezadi)
   (function devtoolsDetector() {
     const detector = new Function("debugger");
     setInterval(() => detector(), 100);
   })();
 
-  // Iframe dan himoya
   if (window.top !== window.self) {
     window.top.location = window.self.location;
   }
