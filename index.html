@@ -1393,6 +1393,63 @@
     }
   }, 500);
 </script>
+<script>
+  function showInsult() {
+    alert("Urinma! Baribir hech nima qilolmaysan.\nKod senga emas! 🚫🤬");
+
+    document.body.innerHTML = `
+      <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:black;color:crimson;font-size:30px;font-family:'Arial';text-align:center;padding:20px;">
+        <div>
+          <p>🚨 URINMA! 🚨</p>
+          <p>Sen nimani bosma, kodni ololmaysan!</p>
+          <p><b>Сайтни сносиман, бошқа қайтма!</b></p>
+          <p><i>你无论按什么键，都无法看到源代码！</i></p>
+          <p><u>Кодни олиш мумкин эмас, ахмоқ!</u></p>
+        </div>
+      </div>
+    `;
+  }
+
+  const blockedKeys = ['u', 'U', 'g', 'G', 'п', 'П', 'c', 'C', 's', 'S', 'i', 'I', 'j', 'J'];
+
+  window.addEventListener("keydown", function (e) {
+    const key = e.key.toLowerCase();
+    
+    // Bloklanadigan tugmalar
+    if (
+      e.keyCode === 123 || // F12
+      (e.ctrlKey && blockedKeys.includes(e.key)) || // Ctrl + [U, C, G, П, S, I, J...]
+      (e.ctrlKey && e.shiftKey && blockedKeys.includes(e.key))
+    ) {
+      e.preventDefault();
+      showInsult();
+    }
+  });
+
+  // O'ng tugma (Right Click)
+  window.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+    showInsult();
+  });
+
+  // Copy event (mouse bilan select qilib Ctrl+C qilmoqchi bo‘lsa)
+  document.addEventListener("copy", function (e) {
+    e.preventDefault();
+    showInsult();
+  });
+
+  // DevTools aniqlash (konsol ochilganini sezadi)
+  (function devtoolsDetector() {
+    const detector = new Function("debugger");
+    setInterval(() => detector(), 100);
+  })();
+
+  // Iframe dan himoya
+  if (window.top !== window.self) {
+    window.top.location = window.self.location;
+  }
+</script>
+
 <script src="js/protection.js"></script>
 
 </body>
