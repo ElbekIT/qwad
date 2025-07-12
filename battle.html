@@ -7,15 +7,19 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #1a1a1a;
-      --bg-secondary: #2c2c2c;
-      --bg-tertiary: #3c3c3c;
-      --text-primary: #e2b714;
-      --text-secondary: #646669;
-      --accent: #e2b714;
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #888888;
+      --accent: #00ff88;
+      --accent-secondary: #ff6b35;
       --success: #4ade80;
       --error: #ef4444;
-      --battle: #ef4444;
+      --battle: #ff3366;
+      --gold: #ffd700;
+      --silver: #c0c0c0;
+      --bronze: #cd7f32;
     }
 
     * {
@@ -27,9 +31,40 @@
     html, body {
       height: 100vh;
       font-family: 'JetBrains Mono', monospace;
-      background: var(--bg-primary);
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a2e 50%, var(--bg-primary) 100%);
       color: var(--text-primary);
       overflow: hidden;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--accent-secondary) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, var(--battle) 0%, transparent 50%);
+      animation: bgMove 20s ease-in-out infinite;
+    }
+
+    @keyframes bgMove {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      33% { transform: translateX(-20px) translateY(-20px); }
+      66% { transform: translateX(20px) translateY(-10px); }
     }
 
     /* Mobile Block */
@@ -53,6 +88,12 @@
       font-size: 5rem;
       margin-bottom: 30px;
       opacity: 0.8;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
     }
 
     .mobile-block-title {
@@ -80,74 +121,112 @@
 
     /* Header */
     .header {
-      height: 60px;
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 40px;
-      background: var(--bg-primary);
-      border-bottom: 1px solid var(--bg-tertiary);
+      background: rgba(26, 26, 26, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+      animation: headerScan 3s linear infinite;
+    }
+
+    @keyframes headerScan {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
 
     .logo-section {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
+      z-index: 1;
     }
 
     .logo {
-      font-size: 1.8rem;
-      color: var(--battle);
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, var(--battle), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: logoGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoGlow {
+      from { filter: drop-shadow(0 0 10px var(--battle)); }
+      to { filter: drop-shadow(0 0 20px var(--accent-secondary)); }
     }
 
     .logo-text {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 700;
       color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .online-count {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: var(--bg-secondary);
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--bg-tertiary);
-      color: var(--text-secondary);
-      font-size: 0.9rem;
+      gap: 12px;
+      background: rgba(0, 255, 136, 0.1);
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 600;
+      z-index: 1;
     }
 
     .online-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--success);
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 10px var(--accent);
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
     }
 
     .back-btn {
-      background: var(--bg-secondary);
+      background: linear-gradient(45deg, var(--bg-secondary), var(--bg-tertiary));
       color: var(--text-primary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 0.9rem;
+      border: 2px solid var(--accent);
+      border-radius: 15px;
+      padding: 12px 24px;
+      font-size: 1rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
       font-family: 'JetBrains Mono', monospace;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
+      font-weight: 600;
+      z-index: 1;
     }
 
     .back-btn:hover {
-      background: var(--bg-tertiary);
+      background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
+      color: var(--bg-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
     }
 
     /* Main Content */
@@ -158,49 +237,56 @@
       align-items: center;
       justify-content: center;
       padding: 40px;
+      position: relative;
     }
 
     .battle-title {
-      font-size: 3rem;
+      font-size: 4rem;
       font-weight: 700;
-      color: var(--battle);
-      margin-bottom: 10px;
+      background: linear-gradient(45deg, var(--battle), var(--accent-secondary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
       text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      animation: titlePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     .battle-subtitle {
       color: var(--text-secondary);
-      font-size: 1.2rem;
-      margin-bottom: 60px;
+      font-size: 1.4rem;
+      margin-bottom: 80px;
       text-align: center;
+      font-weight: 500;
     }
 
     /* Battle Options */
     .battle-options {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-      max-width: 900px;
+      gap: 50px;
+      max-width: 1200px;
       width: 100%;
-      margin-bottom: 60px;
+      margin-bottom: 80px;
     }
 
     .battle-option {
-      background: var(--bg-secondary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 16px;
-      padding: 40px 30px;
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(42, 42, 42, 0.8));
+      border: 2px solid transparent;
+      border-radius: 20px;
+      padding: 50px 30px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
       position: relative;
       overflow: hidden;
-    }
-
-    .battle-option:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 15px 40px rgba(226, 183, 20, 0.2);
+      backdrop-filter: blur(10px);
     }
 
     .battle-option::before {
@@ -209,88 +295,150 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
+      bottom: 0;
+      background: linear-gradient(45deg, var(--accent), var(--accent-secondary), var(--battle));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
     }
 
     .battle-option:hover::before {
-      transform: scaleX(1);
+      opacity: 0.1;
+    }
+
+    .battle-option:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: var(--accent);
+      box-shadow: 
+        0 20px 50px rgba(0, 255, 136, 0.2),
+        0 0 30px rgba(0, 255, 136, 0.1);
+    }
+
+    .battle-option::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .battle-option:hover::after {
+      left: 100%;
     }
 
     .option-icon {
-      font-size: 3rem;
-      margin-bottom: 20px;
+      font-size: 4rem;
+      margin-bottom: 25px;
       display: block;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .option-title {
-      font-size: 1.3rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .option-description {
       color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 15px;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
 
     .option-count {
-      background: var(--bg-primary);
-      color: var(--accent);
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
+      color: var(--bg-primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
       display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     /* User Info */
     .user-info-section {
-      background: var(--bg-secondary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 12px;
-      padding: 20px 30px;
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(42, 42, 42, 0.9));
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 30px 40px;
       display: flex;
       align-items: center;
-      gap: 20px;
-      max-width: 500px;
+      gap: 30px;
+      max-width: 600px;
       width: 100%;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .user-info-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--battle));
+      animation: progressMove 2s linear infinite;
+    }
+
+    @keyframes progressMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     .user-avatar {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #d4a813);
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
+      font-size: 2.5rem;
       border: 3px solid var(--bg-tertiary);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      animation: avatarGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes avatarGlow {
+      from { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+      to { box-shadow: 0 0 30px rgba(0, 255, 136, 0.6); }
     }
 
     .user-details h3 {
       color: var(--text-primary);
-      font-size: 1.2rem;
-      margin-bottom: 5px;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
 
     .user-stats {
       display: flex;
-      gap: 15px;
-      font-size: 0.9rem;
+      gap: 25px;
+      font-size: 1rem;
       color: var(--text-secondary);
     }
 
     .user-stat {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      font-weight: 600;
     }
 
     /* Modals */
@@ -301,157 +449,213 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(26, 26, 26, 0.95);
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
       z-index: 1000;
       justify-content: center;
       align-items: center;
     }
 
     .modal-content {
-      background: var(--bg-secondary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 16px;
-      padding: 40px;
-      max-width: 500px;
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 50px;
+      max-width: 600px;
       width: 90%;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: modalSlideIn 0.4s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: scale(0.8) translateY(-50px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--battle));
+      animation: progressMove 2s linear infinite;
     }
 
     .modal-title {
-      font-size: 1.8rem;
-      font-weight: 600;
+      font-size: 2.2rem;
+      font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .modal-description {
       color: var(--text-secondary);
-      margin-bottom: 30px;
-      line-height: 1.5;
+      margin-bottom: 40px;
+      line-height: 1.6;
+      font-size: 1.1rem;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       text-align: left;
     }
 
     .form-group label {
       display: block;
       color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 8px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .form-group input, .form-group select {
       width: 100%;
-      padding: 12px 16px;
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-tertiary);
-      border-radius: 8px;
+      padding: 15px 20px;
+      background: rgba(10, 10, 10, 0.8);
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 12px;
       color: var(--text-primary);
-      font-size: 1rem;
+      font-size: 1.1rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.3s;
       font-family: 'JetBrains Mono', monospace;
     }
 
     .form-group input:focus, .form-group select:focus {
       border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
     }
 
     .room-code-display {
-      background: var(--bg-primary);
-      border: 2px solid var(--accent);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
+      background: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(26, 26, 26, 0.9));
+      border: 3px solid var(--accent);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px 0;
       position: relative;
+      overflow: hidden;
+    }
+
+    .room-code-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+      animation: codeScan 2s linear infinite;
+    }
+
+    @keyframes codeScan {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
 
     .room-code-label {
       color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 10px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .room-code-value {
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: 700;
       color: var(--accent);
-      letter-spacing: 4px;
-      margin-bottom: 10px;
+      letter-spacing: 6px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
     }
 
     .copy-btn {
-      background: var(--accent);
+      background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
       color: var(--bg-primary);
       border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 0.8rem;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
       font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      text-transform: uppercase;
     }
 
     .copy-btn:hover {
-      background: #d4a813;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
     }
 
     .modal-buttons {
       display: flex;
-      gap: 15px;
+      gap: 20px;
       justify-content: center;
-      margin-top: 30px;
+      margin-top: 40px;
     }
 
     .btn {
-      padding: 12px 24px;
+      padding: 15px 30px;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
       font-family: 'JetBrains Mono', monospace;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .btn-primary {
-      background: var(--accent);
+      background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
       color: var(--bg-primary);
     }
 
     .btn-primary:hover {
-      background: #d4a813;
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 255, 136, 0.4);
     }
 
     .btn-secondary {
-      background: var(--bg-tertiary);
+      background: linear-gradient(45deg, var(--bg-tertiary), var(--bg-secondary));
       color: var(--text-primary);
+      border: 2px solid var(--bg-tertiary);
     }
 
     .btn-secondary:hover {
-      background: var(--bg-primary);
+      background: linear-gradient(45deg, var(--bg-secondary), var(--bg-primary));
+      border-color: var(--accent);
     }
 
     .btn-battle {
-      background: var(--battle);
+      background: linear-gradient(45deg, var(--battle), var(--accent-secondary));
       color: white;
     }
 
     .btn-battle:hover {
-      background: #dc2626;
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(255, 51, 102, 0.4);
     }
 
     /* Loading */
     .loading {
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--bg-tertiary);
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--bg-tertiary);
       border-radius: 50%;
       border-top-color: var(--accent);
       animation: spin 1s linear infinite;
@@ -464,25 +668,26 @@
     /* Notification */
     .notification {
       position: fixed;
-      top: 80px;
+      top: 100px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--bg-secondary);
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
       color: var(--text-primary);
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 500;
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-weight: 600;
       z-index: 1001;
-      border: 1px solid var(--bg-tertiary);
-      font-size: 0.9rem;
+      border: 2px solid var(--accent);
+      font-size: 1rem;
       font-family: 'JetBrains Mono', monospace;
-      animation: slideDown 0.3s ease;
+      animation: notificationSlide 0.4s ease;
+      backdrop-filter: blur(10px);
     }
 
-    @keyframes slideDown {
+    @keyframes notificationSlide {
       from {
         opacity: 0;
-        transform: translateX(-50%) translateY(-10px);
+        transform: translateX(-50%) translateY(-20px);
       }
       to {
         opacity: 1;
@@ -500,6 +705,44 @@
       color: var(--error);
     }
 
+    /* Room List */
+    .room-item {
+      background: linear-gradient(135deg, rgba(10, 10, 10, 0.8), rgba(26, 26, 26, 0.8));
+      border: 2px solid var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .room-item:hover {
+      border-color: var(--accent);
+      transform: translateX(5px);
+      box-shadow: 0 10px 25px rgba(0, 255, 136, 0.1);
+    }
+
+    .room-info {
+      flex: 1;
+    }
+
+    .room-name {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .room-details {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
     /* Mobile Detection */
     @media (max-width: 1024px) {
       .mobile-block {
@@ -515,12 +758,18 @@
     @media (min-width: 1025px) and (max-width: 1200px) {
       .battle-options {
         grid-template-columns: repeat(2, 1fr);
-        max-width: 600px;
+        max-width: 800px;
+      }
+      
+      .battle-title {
+        font-size: 3rem;
       }
     }
   </style>
 </head>
 <body>
+  <div class="bg-animation"></div>
+
   <!-- Mobile Block Screen -->
   <div class="mobile-block">
     <div class="mobile-block-icon">🖥️</div>
@@ -538,7 +787,7 @@
     <div class="header">
       <div class="logo-section">
         <div class="logo">⚔️</div>
-        <div class="logo-text">battle mode</div>
+        <div class="logo-text">battle arena</div>
       </div>
       
       <div class="online-count">
@@ -554,42 +803,43 @@
 
     <!-- Main Content -->
     <div class="main-content">
-      <h1 class="battle-title">Welcome to Battle</h1>
-      <p class="battle-subtitle">Real-time multiplayer typing battles</p>
+      <h1 class="battle-title">typing race</h1>
+      <p class="battle-subtitle">Real-time multiplayer typing battles • Compete with players worldwide</p>
 
       <!-- Battle Options -->
       <div class="battle-options">
         <div class="battle-option" onclick="createRoom()">
-          <span class="option-icon">👥</span>
-          <div class="option-title">Create room</div>
-          <div class="option-description">Yangi xona yarating va do'stlaringizni taklif qiling</div>
+          <span class="option-icon">🏁</span>
+          <div class="option-title">create race</div>
+          <div class="option-description">Yangi poyga yarating va do'stlaringizni taklif qiling</div>
           <div class="option-count">Rooms: <span id="roomCount">0</span></div>
         </div>
 
         <div class="battle-option" onclick="browseRooms()">
-          <span class="option-icon">📋</span>
-          <div class="option-title">Browse public rooms</div>
-          <div class="option-description">Ochiq xonalarni ko'ring va qo'shiling</div>
-          <div class="option-count">Public: <span id="publicCount">0</span></div>
+          <span class="option-icon">🏆</span>
+          <div class="option-title">join race</div>
+          <div class="option-description">Ochiq poygalarga qo'shiling va g'olib bo'ling</div>
+          <div class="option-count">Active: <span id="publicCount">0</span></div>
         </div>
 
         <div class="battle-option" onclick="enterCode()">
-          <span class="option-icon">🔗</span>
-          <div class="option-title">Enter code</div>
-          <div class="option-description">Xona kodini kiritib qo'shiling</div>
-          <div class="option-count">Join using code</div>
+          <span class="option-icon">🎯</span>
+          <div class="option-title">private race</div>
+          <div class="option-description">Maxfiy kod bilan do'stlar bilan poyga</div>
+          <div class="option-count">Enter code</div>
         </div>
       </div>
 
       <!-- User Info -->
       <div class="user-info-section">
-        <div class="user-avatar">👤</div>
+        <div class="user-avatar">🏎️</div>
         <div class="user-details">
-          <h3 id="userName">Foydalanuvchi</h3>
+          <h3 id="userName">Racer</h3>
           <div class="user-stats">
             <div class="user-stat">
               <span>🏆</span>
               <span id="userScore">0</span>
+              <span>wins</span>
             </div>
             <div class="user-stat">
               <span>⚡</span>
@@ -599,7 +849,7 @@
             <div class="user-stat">
               <span>🎮</span>
               <span id="userGames">0</span>
-              <span>games</span>
+              <span>races</span>
             </div>
           </div>
         </div>
@@ -610,16 +860,16 @@
   <!-- Create Room Modal -->
   <div class="modal" id="createRoomModal">
     <div class="modal-content">
-      <div class="modal-title">🏠 Xona Yaratish</div>
-      <div class="modal-description">Yangi battle xonasi yarating va do'stlaringizni taklif qiling</div>
+      <div class="modal-title">🏁 poyga yaratish</div>
+      <div class="modal-description">Yangi typing race yarating va do'stlaringizni g'alabaga taklif qiling</div>
       
       <div class="form-group">
-        <label for="roomName">Xona nomi</label>
-        <input type="text" id="roomName" placeholder="Mening xonam" maxlength="30">
+        <label for="roomName">Poyga nomi</label>
+        <input type="text" id="roomName" placeholder="Mening super poygam" maxlength="30">
       </div>
 
       <div class="form-group">
-        <label for="roomType">Xona turi</label>
+        <label for="roomType">Poyga turi</label>
         <select id="roomType">
           <option value="public">🌐 Public - Hammaga ochiq</option>
           <option value="private">🔒 Private - Faqat kod bilan</option>
@@ -627,23 +877,23 @@
       </div>
 
       <div class="form-group">
-        <label for="maxPlayers">Maksimal o'yinchilar</label>
+        <label for="maxPlayers">Maksimal racerlar</label>
         <select id="maxPlayers">
-          <option value="2">2 o'yinchi</option>
-          <option value="4">4 o'yinchi</option>
-          <option value="6">6 o'yinchi</option>
-          <option value="8">8 o'yinchi</option>
+          <option value="2">2 racer</option>
+          <option value="4">4 racer</option>
+          <option value="6">6 racer</option>
+          <option value="8">8 racer</option>
         </select>
       </div>
 
       <div class="modal-buttons">
         <button class="btn btn-battle" onclick="confirmCreateRoom()">
           <span>🚀</span>
-          <span>Xona yaratish</span>
+          <span>poyga boshlash</span>
         </button>
         <button class="btn btn-secondary" onclick="closeModal('createRoomModal')">
           <span>❌</span>
-          <span>Bekor qilish</span>
+          <span>bekor qilish</span>
         </button>
       </div>
     </div>
@@ -652,23 +902,23 @@
   <!-- Room Created Modal -->
   <div class="modal" id="roomCreatedModal">
     <div class="modal-content">
-      <div class="modal-title">🎉 Xona Yaratildi!</div>
-      <div class="modal-description">Xonangiz muvaffaqiyatli yaratildi. Quyidagi kodni do'stlaringizga yuboring:</div>
+      <div class="modal-title">🎉 poyga tayyor!</div>
+      <div class="modal-description">Poygangiz muvaffaqiyatli yaratildi. Quyidagi kodni do'stlaringizga yuboring:</div>
       
       <div class="room-code-display">
-        <div class="room-code-label">Room Code</div>
+        <div class="room-code-label">Race Code</div>
         <div class="room-code-value" id="generatedRoomCode">ABC123</div>
-        <button class="copy-btn" onclick="copyRoomCode()">📋 Copy</button>
+        <button class="copy-btn" onclick="copyRoomCode()">📋 copy code</button>
       </div>
 
       <div class="modal-buttons">
         <button class="btn btn-primary" onclick="enterRoom()">
-          <span>🚪</span>
-          <span>Xonaga kirish</span>
+          <span>🏁</span>
+          <span>poygaga kirish</span>
         </button>
         <button class="btn btn-secondary" onclick="closeModal('roomCreatedModal')">
           <span>❌</span>
-          <span>Yopish</span>
+          <span>yopish</span>
         </button>
       </div>
     </div>
@@ -677,22 +927,22 @@
   <!-- Enter Code Modal -->
   <div class="modal" id="enterCodeModal">
     <div class="modal-content">
-      <div class="modal-title">🔗 Kod Kiritish</div>
-      <div class="modal-description">Xona kodini kiritib battle'ga qo'shiling</div>
+      <div class="modal-title">🎯 kod kiritish</div>
+      <div class="modal-description">Maxfiy poyga kodini kiritib race'ga qo'shiling</div>
       
       <div class="form-group">
-        <label for="roomCodeInput">Room Code</label>
-        <input type="text" id="roomCodeInput" placeholder="ABC123" maxlength="6" style="text-transform: uppercase; text-align: center; font-size: 1.2rem; letter-spacing: 2px;">
+        <label for="roomCodeInput">Race Code</label>
+        <input type="text" id="roomCodeInput" placeholder="ABC123" maxlength="6" style="text-transform: uppercase; text-align: center; font-size: 1.4rem; letter-spacing: 4px;">
       </div>
 
       <div class="modal-buttons">
         <button class="btn btn-primary" onclick="joinRoom()">
-          <span>🚪</span>
-          <span>Qo'shilish</span>
+          <span>🏁</span>
+          <span>poygaga qo'shilish</span>
         </button>
         <button class="btn btn-secondary" onclick="closeModal('enterCodeModal')">
           <span>❌</span>
-          <span>Bekor qilish</span>
+          <span>bekor qilish</span>
         </button>
       </div>
     </div>
@@ -700,26 +950,26 @@
 
   <!-- Browse Rooms Modal -->
   <div class="modal" id="browseRoomsModal">
-    <div class="modal-content" style="max-width: 700px;">
-      <div class="modal-title">📋 Ochiq Xonalar</div>
-      <div class="modal-description">Qo'shilish uchun xonani tanlang</div>
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-title">🏆 ochiq poygalar</div>
+      <div class="modal-description">Qo'shilish uchun poygani tanlang va g'olib bo'ling</div>
       
-      <div id="roomsList" style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
-        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-          <div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>
-          <div>Hozircha ochiq xonalar yo'q</div>
-          <div style="font-size: 0.9rem; margin-top: 5px;">Birinchi bo'lib xona yarating!</div>
+      <div id="roomsList" style="max-height: 400px; overflow-y: auto; margin: 30px 0;">
+        <div style="text-align: center; padding: 60px; color: var(--text-secondary);">
+          <div style="font-size: 3rem; margin-bottom: 20px;">🏁</div>
+          <div style="font-size: 1.2rem; margin-bottom: 10px;">Hozircha ochiq poygalar yo'q</div>
+          <div style="font-size: 1rem;">Birinchi bo'lib poyga yarating va boshqalarni mag'lub eting!</div>
         </div>
       </div>
 
       <div class="modal-buttons">
         <button class="btn btn-primary" onclick="refreshRooms()">
           <span>🔄</span>
-          <span>Yangilash</span>
+          <span>yangilash</span>
         </button>
         <button class="btn btn-secondary" onclick="closeModal('browseRoomsModal')">
           <span>❌</span>
-          <span>Yopish</span>
+          <span>yopish</span>
         </button>
       </div>
     </div>
@@ -758,9 +1008,9 @@
     
     if (snapshot.exists()) {
       const userData = snapshot.val();
-      document.getElementById('userScore').textContent = userData.score || 0;
+      document.getElementById('userScore').textContent = userData.battleWins || 0;
       document.getElementById('userWPM').textContent = Math.round(userData.avgWPM || 0);
-      document.getElementById('userGames').textContent = userData.gamesPlayed || 0;
+      document.getElementById('userGames').textContent = userData.battleGames || 0;
     }
   }
 
@@ -794,7 +1044,7 @@
 
   // Create room
   window.confirmCreateRoom = async function() {
-    const roomName = document.getElementById('roomName').value.trim() || 'Unnamed Room';
+    const roomName = document.getElementById('roomName').value.trim() || 'Unnamed Race';
     const roomType = document.getElementById('roomType').value;
     const maxPlayers = parseInt(document.getElementById('maxPlayers').value);
     
@@ -817,14 +1067,17 @@
           score: 0,
           wpm: 0,
           progress: 0,
+          position: 1,
+          finished: false,
           joinedAt: Date.now()
         }
       },
-      status: 'waiting', // waiting, playing, finished
+      status: 'waiting', // waiting, countdown, racing, finished
       createdAt: Date.now(),
       gameSettings: {
-        time: 30,
-        difficulty: 'medium'
+        time: 60,
+        difficulty: 'medium',
+        textLength: 'medium'
       }
     };
 
@@ -835,10 +1088,10 @@
       closeModal('createRoomModal');
       document.getElementById('roomCreatedModal').style.display = 'flex';
       
-      showNotification('🎉 Xona muvaffaqiyatli yaratildi!', 'success');
+      showNotification('🎉 Poyga muvaffaqiyatli yaratildi!', 'success');
     } catch (error) {
       console.error('Error creating room:', error);
-      showNotification('❌ Xona yaratishda xatolik!', 'error');
+      showNotification('❌ Poyga yaratishda xatolik!', 'error');
     }
   }
 
@@ -872,19 +1125,19 @@
       const snapshot = await get(roomRef);
       
       if (!snapshot.exists()) {
-        showNotification('❌ Xona topilmadi!', 'error');
+        showNotification('❌ Poyga topilmadi!', 'error');
         return;
       }
 
       const roomData = snapshot.val();
       
       if (roomData.currentPlayers >= roomData.maxPlayers) {
-        showNotification('❌ Xona to\'liq!', 'error');
+        showNotification('❌ Poyga to\'liq!', 'error');
         return;
       }
 
       if (roomData.status !== 'waiting') {
-        showNotification('❌ O\'yin allaqachon boshlangan!', 'error');
+        showNotification('❌ Poyga allaqachon boshlangan!', 'error');
         return;
       }
 
@@ -896,6 +1149,8 @@
         score: 0,
         wpm: 0,
         progress: 0,
+        position: roomData.currentPlayers + 1,
+        finished: false,
         joinedAt: Date.now()
       };
 
@@ -907,7 +1162,7 @@
       
     } catch (error) {
       console.error('Error joining room:', error);
-      showNotification('❌ Xonaga qo\'shilishda xatolik!', 'error');
+      showNotification('❌ Poygaga qo\'shilishda xatolik!', 'error');
     }
   }
 
@@ -919,10 +1174,10 @@
     
     if (!snapshot.exists()) {
       roomsList.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-          <div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>
-          <div>Hozircha ochiq xonalar yo'q</div>
-          <div style="font-size: 0.9rem; margin-top: 5px;">Birinchi bo'lib xona yarating!</div>
+        <div style="text-align: center; padding: 60px; color: var(--text-secondary);">
+          <div style="font-size: 3rem; margin-bottom: 20px;">🏁</div>
+          <div style="font-size: 1.2rem; margin-bottom: 10px;">Hozircha ochiq poygalar yo'q</div>
+          <div style="font-size: 1rem;">Birinchi bo'lib poyga yarating va boshqalarni mag'lub eting!</div>
         </div>
       `;
       return;
@@ -937,29 +1192,29 @@
 
     if (publicRooms.length === 0) {
       roomsList.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-          <div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>
-          <div>Hozircha ochiq xonalar yo'q</div>
-          <div style="font-size: 0.9rem; margin-top: 5px;">Birinchi bo'lib xona yarating!</div>
+        <div style="text-align: center; padding: 60px; color: var(--text-secondary);">
+          <div style="font-size: 3rem; margin-bottom: 20px;">🏁</div>
+          <div style="font-size: 1.2rem; margin-bottom: 10px;">Hozircha ochiq poygalar yo'q</div>
+          <div style="font-size: 1rem;">Birinchi bo'lib poyga yarating va boshqalarni mag'lub eting!</div>
         </div>
       `;
       return;
     }
 
     roomsList.innerHTML = publicRooms.map(room => `
-      <div style="background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 5px;">${room.name}</div>
-          <div style="color: var(--text-secondary); font-size: 0.9rem;">
-            👤 ${room.currentPlayers}/${room.maxPlayers} • 
-            👑 ${room.hostName} • 
-            ⏱ ${room.gameSettings.time}s • 
-            🎮 ${room.gameSettings.difficulty}
+      <div class="room-item">
+        <div class="room-info">
+          <div class="room-name">🏁 ${room.name}</div>
+          <div class="room-details">
+            <span>👥 ${room.currentPlayers}/${room.maxPlayers} racers</span>
+            <span>👑 Host: ${room.hostName}</span>
+            <span>⏱ ${room.gameSettings.time}s</span>
+            <span>🎮 ${room.gameSettings.difficulty}</span>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="joinRoomDirect('${room.code}')" style="padding: 8px 16px; font-size: 0.9rem;">
-          <span>🚪</span>
-          <span>Qo'shilish</span>
+        <button class="btn btn-primary" onclick="joinRoomDirect('${room.code}')" style="padding: 12px 20px; font-size: 0.9rem;">
+          <span>🏁</span>
+          <span>join race</span>
         </button>
       </div>
     `).join('');
@@ -972,14 +1227,14 @@
       const snapshot = await get(roomRef);
       
       if (!snapshot.exists()) {
-        showNotification('❌ Xona topilmadi!', 'error');
+        showNotification('❌ Poyga topilmadi!', 'error');
         return;
       }
 
       const roomData = snapshot.val();
       
       if (roomData.currentPlayers >= roomData.maxPlayers) {
-        showNotification('❌ Xona to\'liq!', 'error');
+        showNotification('❌ Poyga to\'liq!', 'error');
         return;
       }
 
@@ -991,6 +1246,8 @@
         score: 0,
         wpm: 0,
         progress: 0,
+        position: roomData.currentPlayers + 1,
+        finished: false,
         joinedAt: Date.now()
       };
 
@@ -1002,14 +1259,14 @@
       
     } catch (error) {
       console.error('Error joining room:', error);
-      showNotification('❌ Xonaga qo\'shilishda xatolik!', 'error');
+      showNotification('❌ Poygaga qo\'shilishda xatolik!', 'error');
     }
   }
 
   // Refresh rooms
   window.refreshRooms = function() {
     loadPublicRooms();
-    showNotification('🔄 Xonalar yangilandi!', 'success');
+    showNotification('🔄 Poygalar yangilandi!', 'success');
   }
 
   // Load room counts
@@ -1039,7 +1296,7 @@
     
     setTimeout(() => {
       notification.remove();
-    }, 3000);
+    }, 4000);
   }
 
   // Close modals on outside click
@@ -1060,8 +1317,12 @@
   loadUserStats();
   loadRoomCounts();
 
-  // Simulate online count (you can make this real-time)
-  document.getElementById('onlineCount').textContent = Math.floor(Math.random() * 50) + 10;
+  // Simulate online count with more realistic numbers
+  setInterval(() => {
+    const baseCount = 15;
+    const variation = Math.floor(Math.random() * 10);
+    document.getElementById('onlineCount').textContent = baseCount + variation;
+  }, 5000);
 </script>
 
 <script>
